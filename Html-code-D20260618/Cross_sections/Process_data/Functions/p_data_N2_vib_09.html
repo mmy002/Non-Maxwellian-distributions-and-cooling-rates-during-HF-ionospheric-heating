@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of p_data_N2_vib_09</title>
+  <meta name="keywords" content="p_data_N2_vib_09">
+  <meta name="description" content="Convert from cm to m">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Process_data --><!-- # Functions -->
+<h1>p_data_N2_vib_09
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Convert from cm to m</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [E_old,xs_old] = p_data_N2_vib_09() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert from cm to m</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Cross_section/Process_data/get_data_even_more_xs.html" class="code" title="function out = get_data_even_more_xs()">get_data_even_more_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2 and more vib. O2 0->2,3,4,5,6,7</li><li><a href="../../../Cross_section/Process_data/get_data_less_xs.html" class="code" title="function out = get_data_less_xs()">get_data_less_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2</li><li><a href="../../../Cross_section/Process_data/get_data_more_xs.html" class="code" title="function out = get_data_more_xs()">get_data_more_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2 and more vib. O2 0->2,3,4,5,6,7</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [E_old,xs_old] = p_data_N2_vib_09()</a>
+0002 
+0003 <span class="comment">% Convert from cm to m</span>
+0004 cm_to_m = 0.01; 
+0005 
+0006 <span class="comment">% Convert from [eV] to [J]</span>
+0007 eVtoJ = 1.602176634e-19;    
+0008 
+0009 <span class="comment">% Figure 1 in Cambell et al. 2004 with recommended (solid line) vib. excitations. Units: 10^-17 cm^2 per energy eV</span>
+0010 N2_vib_v_0_9_cambell_et_al = load(<span class="string">'N2_vib_cross_sections_v_0_9_cambell_et_al.mat'</span>); 
+0011 E_old = (N2_vib_v_0_9_cambell_et_al.N2_vib_cross_sections_v_0_9_cambell_et_al(:,1))*eVtoJ ;
+0012 xs_old = (N2_vib_v_0_9_cambell_et_al.N2_vib_cross_sections_v_0_9_cambell_et_al(:,2))*1e-17*(cm_to_m)^2; 
+0013 
+0014  <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

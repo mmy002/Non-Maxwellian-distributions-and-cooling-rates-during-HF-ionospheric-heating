@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of p_data_O2_vib</title>
+  <meta name="keywords" content="p_data_O2_vib">
+  <meta name="description" content="Convert from cm to m">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Process_data --><!-- # Functions -->
+<h1>p_data_O2_vib
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Convert from cm to m</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [E_old,xs_old] = p_data_O2_vib() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert from cm to m</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Cross_section/Process_data/get_data_less_xs.html" class="code" title="function out = get_data_less_xs()">get_data_less_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2</li><li><a href="../../../Cross_section/Process_data/get_data_withN2vib.html" class="code" title="function out = get_data_withN2vib()">get_data_withN2vib</a>	Original one with less cross sections</li><li><a href="../../../For_thesis/plot_f0_new.html" class="code" title="">plot_f0_new</a>	Plot figures for thesis</li><li><a href="../../../plot_f0.html" class="code" title="">plot_f0</a>	Plot figures for part I</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [E_old,xs_old] = p_data_O2_vib()</a>
+0002 
+0003 <span class="comment">% Convert from cm to m</span>
+0004 cm_to_m = 0.01; 
+0005 
+0006 <span class="comment">% Convert from [eV] to [J]</span>
+0007 eVtoJ = 1.602176634e-19;     
+0008 
+0009 <span class="comment">% Figure in 6.1 in Itakawa et al. 1989. v:0-&gt;1 at lower energies</span>
+0010 O2_vib_itakawa_v_0_1 = load(<span class="string">'cross_section_vib_O2_itikawa_et_al_v_0_1.mat'</span>); 
+0011 E_old_le = (10.^(O2_vib_itakawa_v_0_1.cross_section_vib_O2_itikawa_et_al_v_0_1(:,1)))*eVtoJ; <span class="comment">% Units: [J]</span>
+0012 xs_old_le = (10.^(O2_vib_itakawa_v_0_1.cross_section_vib_O2_itikawa_et_al_v_0_1(:,2)))*(cm_to_m)^2; <span class="comment">% Units: m^2: v:0-&gt;1</span>
+0013 
+0014 <span class="comment">% Figure in 6.1 in Itakawa et al. 1989. Sum v:0-&gt;1,2,3 osv. at higher energies</span>
+0015 O2_vib_itakawa_sum_v_0_up = load(<span class="string">'cross_section_vib_O2_itikawa_et_al_sum_v_0_up.mat'</span>); 
+0016 E_old_he = (10.^(O2_vib_itakawa_sum_v_0_up.cross_section_vib_O2_itikawa_et_al_sum_v_0_up(:,1)))*eVtoJ; <span class="comment">% [J]</span>
+0017 xs_old_he = (10.^(O2_vib_itakawa_sum_v_0_up.cross_section_vib_O2_itikawa_et_al_sum_v_0_up(:,2)))*(cm_to_m)^2; <span class="comment">% Units: m^2:</span>
+0018 
+0019 <span class="comment">% Split data</span>
+0020 E_split_O2_vib_1 = E_old_le(1:15); 
+0021 E_split_O2_vib_2 = E_old_le(16:30); 
+0022 E_split_O2_vib_3 = E_old_le(31:42); 
+0023 E_split_O2_vib_4 = E_old_le(43:53); 
+0024 E_split_O2_vib_5 = E_old_le(54:62); 
+0025 E_split_O2_vib_6 = E_old_le(63:71); 
+0026 E_split_O2_vib_7 = E_old_le(72:79); 
+0027 E_split_O2_vib_8 = E_old_le(80:86); 
+0028 E_split_O2_vib_9 = E_old_le(90:end);  
+0029 xs_split_O2_vib_1 = xs_old_le(1:15); 
+0030 xs_split_O2_vib_2 = xs_old_le(16:30); 
+0031 xs_split_O2_vib_3 = xs_old_le(31:42); 
+0032 xs_split_O2_vib_4 = xs_old_le(43:53); 
+0033 xs_split_O2_vib_5 = xs_old_le(54:62); 
+0034 xs_split_O2_vib_6 = xs_old_le(63:71); 
+0035 xs_split_O2_vib_7 = xs_old_le(72:79); 
+0036 xs_split_O2_vib_8 = xs_old_le(80:86); 
+0037 xs_split_O2_vib_9 = xs_old_le(90:end); 
+0038 
+0039 dE = E_old_le(2) - E_old_le(1); <span class="comment">% Delta E</span>
+0040 num_E = 30; <span class="comment">% Number of zeros between split data</span>
+0041 xs_new = zeros(num_E,1);
+0042 
+0043 <span class="comment">% Create zeros between split data</span>
+0044 E_new1 = (linspace(E_old_le(15)+dE,E_old_le(16)-dE,num_E))'; 
+0045 E_new2 = (linspace(E_old_le(30)+dE,E_old_le(31)-dE,num_E))'; 
+0046 E_new3 = (linspace(E_old_le(42)+dE,E_old_le(43)-dE,num_E))'; 
+0047 E_new4 = (linspace(E_old_le(53)+dE,E_old_le(54)-dE,num_E))'; 
+0048 E_new5 = (linspace(E_old_le(62)+dE,E_old_le(63)-dE,num_E))'; 
+0049 E_new6 = (linspace(E_old_le(71)+dE,E_old_le(72)-dE,num_E))'; 
+0050 E_new7 = (linspace(E_old_le(79)+dE,E_old_le(80)-dE,num_E))'; 
+0051 E_new8 = (linspace(E_old_le(86)+dE,E_old_le(90)-dE,num_E))'; 
+0052 E_new9 = (linspace(E_old_le(95)+dE,E_old_he(1)-dE,num_E))'; 
+0053 
+0054 <span class="comment">% Combine data with zeros between the split data points (zero padding)</span>
+0055 E_old = [E_split_O2_vib_1; E_new1; E_split_O2_vib_2; E_new2; E_split_O2_vib_3; E_new3; <span class="keyword">...</span>
+0056    E_split_O2_vib_4; E_new4; E_split_O2_vib_5; E_new5; E_split_O2_vib_6; E_new6; <span class="keyword">...</span>
+0057    E_split_O2_vib_7; E_new7; E_split_O2_vib_8; E_new8; E_split_O2_vib_9; <span class="keyword">...</span><span class="comment">.</span>
+0058    E_new9; E_old_he]; 
+0059 
+0060 xs_old = [xs_split_O2_vib_1; xs_new; xs_split_O2_vib_2; xs_new; xs_split_O2_vib_3; xs_new; <span class="keyword">...</span>
+0061    xs_split_O2_vib_4; xs_new; xs_split_O2_vib_5; xs_new; xs_split_O2_vib_6; xs_new; <span class="keyword">...</span>
+0062    xs_split_O2_vib_7; xs_new; xs_split_O2_vib_8; xs_new; xs_split_O2_vib_9; <span class="keyword">...</span><span class="comment">.</span>
+0063    xs_new; xs_old_he]; 
+0064 
+0065 
+0066 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

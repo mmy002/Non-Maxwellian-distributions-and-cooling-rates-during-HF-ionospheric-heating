@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of p_data_O2_vib_07</title>
+  <meta name="keywords" content="p_data_O2_vib_07">
+  <meta name="description" content="Convert from cm to m">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Process_data --><!-- # Functions -->
+<h1>p_data_O2_vib_07
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Convert from cm to m</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [E_old,xs_old] = p_data_O2_vib_07() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert from cm to m</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Cross_section/Process_data/get_data_even_more_xs.html" class="code" title="function out = get_data_even_more_xs()">get_data_even_more_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2 and more vib. O2 0->2,3,4,5,6,7</li><li><a href="../../../Cross_section/Process_data/get_data_more_xs.html" class="code" title="function out = get_data_more_xs()">get_data_more_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2 and more vib. O2 0->2,3,4,5,6,7</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [E_old,xs_old] = p_data_O2_vib_07()</a>
+0002 
+0003 <span class="comment">% Convert from cm to m</span>
+0004 cm_to_m = 0.01; 
+0005 
+0006 <span class="comment">% Convert from [eV] to [J]</span>
+0007 eVtoJ = 1.602176634e-19;  
+0008 
+0009 delta_E_th_itiawka = 50e-3; <span class="comment">% [J]</span>
+0010 
+0011 <span class="comment">% Table 1 in Allan 1995</span>
+0012 energy_allan = [0.214 0.338 0.460 0.579 0.696 0.812 0.925 1.036 1.144 1.251 1.355 1.458 1.558 1.656 <span class="keyword">...</span>
+0013     1.752 1.846 1.937 2.026 2.113 2.197]'*eVtoJ; <span class="comment">% J</span>
+0014 O2_vib_allan = ([0 0 0 0 0 0 0 0 0 0 0 0.11 0.055 0.016 0.005 0.018 0.016 0.015 0.012 0.009]/delta_E_th_itiawka)'<span class="keyword">...</span>
+0015     *1e-20*cm_to_m^2; 
+0016 
+0017 <span class="comment">% Add zeros between data</span>
+0018 num_E = 1; 
+0019 dE = zeros(length(O2_vib_allan),1); 
+0020 kk = zeros(20,1); 
+0021 hh = zeros(20,1); 
+0022 k = -1; 
+0023 h = 0;
+0024 E_allan_zero_pad = zeros(length(O2_vib_allan)+(length(O2_vib_allan)),1); 
+0025 O2_vib_allan_zero_pad = zeros(length(O2_vib_allan)+(length(O2_vib_allan)),1); 
+0026 
+0027 <span class="comment">% Find resolution of the energy, which varies</span>
+0028 <span class="keyword">for</span> j =1:length(O2_vib_allan)-1
+0029     dE(j) = energy_allan(j+1) - energy_allan(j); <span class="comment">% Delta E</span>
+0030 <span class="keyword">end</span> 
+0031 dE(end) = dE(end-1); 
+0032 
+0033 <span class="comment">%Insert zeros between data points</span>
+0034 <span class="keyword">for</span> i = 1:length(O2_vib_allan)
+0035         k = k+2; <span class="comment">% Index of oddetall, where the energy from the data goes</span>
+0036         kk(i) = k; 
+0037         h = h+2; <span class="comment">% index of partall, where new energies is put between then original energies -&gt; zero for xs</span>
+0038         hh(i) = h; 
+0039 
+0040     <span class="comment">% Orginal data</span>
+0041     E_allan_zero_pad(k) = energy_allan(i);  
+0042     O2_vib_allan_zero_pad(k) = O2_vib_allan(i);
+0043 
+0044     <span class="comment">% -&gt; zeros inserted between cross sectio data</span>
+0045     E_allan_zero_pad(h) = (linspace(energy_allan(i),energy_allan(i)+dE(i)/2,num_E))'; 
+0046     O2_vib_allan_zero_pad(h) = 0; 
+0047 
+0048 <span class="keyword">end</span>
+0049 
+0050 all_angles = 4*pi; <span class="comment">% Assume isotropic scattering</span>
+0051 
+0052 <span class="comment">% Fig. 4 in Allan 1995: original data for a scattering angle at 90 degree</span>
+0053 xs_allan_O2_vib_07 = load(<span class="string">'xs_allan_O2_vib_07.mat'</span>); 
+0054 E_old_vib_O2_he = xs_allan_O2_vib_07.xs_allan_O2_vib_07(:,1)*eVtoJ; <span class="comment">% J</span>
+0055 xs_old_vib_O2_he = xs_allan_O2_vib_07.xs_allan_O2_vib_07(:,2)*1e-19*cm_to_m^2*all_angles;
+0056 
+0057 <span class="comment">% set negative data to zero</span>
+0058 xs_old_vib_O2_he(11) = 0; 
+0059 
+0060 E_old = [E_allan_zero_pad; E_old_vib_O2_he];
+0061 xs_old = [O2_vib_allan_zero_pad; xs_old_vib_O2_he]; 
+0062 
+0063 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
