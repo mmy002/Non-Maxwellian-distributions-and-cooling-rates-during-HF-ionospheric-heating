@@ -1,0 +1,13 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  find_Te_LNM_LM -> cooling_rates_tables_pavlov_tot;
+
+  L_rot_el [URL="L_rot_el.html"];
+  L_rot_el_new [URL="L_rot_el_new.html"];
+  L_rot_el_old [URL="L_rot_el_old.html"];
+  L_stubbe_tot [URL="L_stubbe_tot.html"];
+  analytical_cooling_rates [URL="analytical_cooling_rates.html"];
+  cooling_rates_tables_pavlov2 [URL="cooling_rates_tables_pavlov2.html"];
+  cooling_rates_tables_pavlov_tot [URL="cooling_rates_tables_pavlov_tot.html"];
+  find_Te_LNM_LM [URL="find_Te_LNM_LM.html"];
+}

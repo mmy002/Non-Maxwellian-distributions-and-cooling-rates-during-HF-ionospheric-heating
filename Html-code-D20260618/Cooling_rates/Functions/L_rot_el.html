@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of L_rot_el</title>
+  <meta name="keywords" content="L_rot_el">
+  <meta name="description" content="Function for more cross sections (O2 vib 0->1,2,..,7)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cooling_rates --><!-- # Functions -->
+<h1>L_rot_el
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Function for more cross sections (O2 vib 0->1,2,..,7)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Function for more cross sections (O2 vib 0-&gt;1,2,..,7)
+ -&gt; makes xs_data_O2(33)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Cross_section/Funtion_interp/sigma_N2_el.html" class="code" title="function cross_sect = sigma_N2_el(E,E_old,xs_old)">sigma_N2_el</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_rot_02.html" class="code" title="function cross_sect = sigma_N2_rot_02(E,E_old,xs_old)">sigma_N2_rot_02</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_rot_04.html" class="code" title="function cross_sect = sigma_N2_rot_04(E,E_old,xs_old)">sigma_N2_rot_04</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_rot_06.html" class="code" title="function cross_sect = sigma_N2_rot_06(E,E_old,xs_old)">sigma_N2_rot_06</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_rot_08.html" class="code" title="function cross_sect = sigma_N2_rot_08(E,E_old,xs_old)">sigma_N2_rot_08</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_el.html" class="code" title="function cross_sect = sigma_O2_el(E,E_old,xs_old)">sigma_O2_el</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_rot_13.html" class="code" title="function cross_sect = sigma_O2_rot_13(E,E_old,xs_old)">sigma_O2_rot_13</a>	Calling: cross_sect = sigma_N2_rot_02(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O_el_2.html" class="code" title="function cross_sect = sigma_O_el_2(E,E_old,xs_old)">sigma_O_el_2</a>	Find values in cross sections energy vector E_old closest to E energy vector</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el(v_bins_stubbe,f0_exp_stubbe,A,xs_data,</a><span class="keyword">...</span>
+0002     nNe,nN2,nO2,nO,Te_non_max,Tn)
+0003 <span class="comment">% Function for more cross sections (O2 vib 0-&gt;1,2,..,7)</span>
+0004 <span class="comment">% -&gt; makes xs_data_O2(33)</span>
+0005 
+0006 <span class="comment">%% Some constant</span>
+0007 me = 9.10938291e-31;        <span class="comment">% Electron mass [kg]</span>
+0008 eVtoJ = 1.602176634*1e-19; <span class="comment">% Convert from eV to Joule</span>
+0009 k_b = 1.380649e-23;         <span class="comment">% Boltzmann constant [J/K]</span>
+0010 m_to_cm = 100;              <span class="comment">% Convert [m] to [cm]</span>
+0011 cm_neg3_to_m_neg3 = 1e6; <span class="comment">% from 1/cm^3 to 1/m^3</span>
+0012 
+0013 <span class="comment">%% Convert densities from m^-3 to cm^-3</span>
+0014 m_neg3_to_cm_neg3 = 1e-6; 
+0015 nNe_cm_neg3 = nNe*m_neg3_to_cm_neg3;  
+0016 nN2_cm_neg3 = nN2*m_neg3_to_cm_neg3; 
+0017 nO2_cm_neg3 = nO2*m_neg3_to_cm_neg3; 
+0018 nO_cm_neg3 = nO*m_neg3_to_cm_neg3;
+0019 
+0020 <span class="comment">%% Energy/speed in the middle fo the bin</span>
+0021 v_bin_mid = v_bins_stubbe(1:end-1)/2 + v_bins_stubbe(2:end)/2; <span class="comment">% [m/s]</span>
+0022 E_bin_mid = (me*v_bin_mid.^2)/2; <span class="comment">% [J]</span>
+0023 
+0024 <span class="comment">%% Cross sections</span>
+0025 KtoJ = 1.3806e-23;  <span class="comment">% Convert from [K] to [J]</span>
+0026 g_to_kg = 1/1000;   <span class="comment">% Convert from [g] to [kg]</span>
+0027 
+0028 m_N2 = 4.65e-23*g_to_kg; <span class="comment">% Mass of N2 [kg]</span>
+0029 m_O2 = 5.31e-23*g_to_kg; <span class="comment">% Mass of O2 [kg]</span>
+0030 m_O = 2.65e-23*g_to_kg; <span class="comment">% Mass of O [kg]</span>
+0031 
+0032 <span class="comment">% Excitation energy [eV]</span>
+0033 exE_N2elastic = (me/m_N2)*(Te_non_max - Tn)*KtoJ*(1/eVtoJ);  <span class="comment">%1e-6; ????????</span>
+0034 exE_O2elastic = (me/m_O2)*(Te_non_max - Tn)*KtoJ*(1/eVtoJ); <span class="comment">%1e-6; ????????</span>
+0035 exE_Oelastic = (me/m_O)*(Te_non_max - Tn)*KtoJ*(1/eVtoJ); <span class="comment">%1e-6; ????????</span>
+0036 exE_N2rot0_2 = 2*2.4668e-4;
+0037 exE_N2rot0_4 = 4*2.4668e-4; 
+0038 exE_N2rot0_6 = 6*2.4668e-4; 
+0039 exE_N2rot0_8 = 8*2.4668e-4; 
+0040 exE_O2rot1_3 = 2*1.783e-4;  
+0041 ex_E = [exE_N2elastic; exE_O2elastic; exE_Oelastic; exE_N2rot0_2; exE_N2rot0_4; <span class="keyword">...</span>
+0042     exE_N2rot0_6; exE_N2rot0_8; exE_O2rot1_3]*eVtoJ; <span class="comment">%Units [J].</span>
+0043 
+0044 <span class="comment">% Cross sections [m^2]. Energy input must be in [J].</span>
+0045 xs_e_N2elastic = <a href="../../Cross_section/Funtion_interp/sigma_N2_el.html" class="code" title="function cross_sect = sigma_N2_el(E,E_old,xs_old)">sigma_N2_el</a>(E_bin_mid,xs_data{1}(:,1),xs_data{1}(:,2));
+0046 xs_e_O2elastic = <a href="../../Cross_section/Funtion_interp/sigma_O2_el.html" class="code" title="function cross_sect = sigma_O2_el(E,E_old,xs_old)">sigma_O2_el</a>(E_bin_mid,xs_data{2}(:,1),xs_data{2}(:,2));
+0047 xs_e_Oelastic = <a href="../../Cross_section/Funtion_interp/sigma_O_el_2.html" class="code" title="function cross_sect = sigma_O_el_2(E,E_old,xs_old)">sigma_O_el_2</a>(E_bin_mid,xs_data{3}(:,1),xs_data{3}(:,2));
+0048 xs_e_N2rot0_2 = <a href="../../Cross_section/Funtion_interp/sigma_N2_rot_02.html" class="code" title="function cross_sect = sigma_N2_rot_02(E,E_old,xs_old)">sigma_N2_rot_02</a>(E_bin_mid,xs_data{15}(:,1),xs_data{15}(:,2)); 
+0049 xs_e_N2rot0_4 = <a href="../../Cross_section/Funtion_interp/sigma_N2_rot_04.html" class="code" title="function cross_sect = sigma_N2_rot_04(E,E_old,xs_old)">sigma_N2_rot_04</a>(E_bin_mid,xs_data{16}(:,1),xs_data{16}(:,2));
+0050 xs_e_N2rot0_6 = <a href="../../Cross_section/Funtion_interp/sigma_N2_rot_06.html" class="code" title="function cross_sect = sigma_N2_rot_06(E,E_old,xs_old)">sigma_N2_rot_06</a>(E_bin_mid,xs_data{17}(:,1),xs_data{17}(:,2)); 
+0051 xs_e_N2rot0_8 = <a href="../../Cross_section/Funtion_interp/sigma_N2_rot_08.html" class="code" title="function cross_sect = sigma_N2_rot_08(E,E_old,xs_old)">sigma_N2_rot_08</a>(E_bin_mid,xs_data{18}(:,1),xs_data{18}(:,2)); 
+0052 xs_e_O2rot1_3 = <a href="../../Cross_section/Funtion_interp/sigma_O2_rot_13.html" class="code" title="function cross_sect = sigma_O2_rot_13(E,E_old,xs_old)">sigma_O2_rot_13</a>(E_bin_mid,xs_data{33}(:,1),xs_data{33}(:,2));
+0053 xs_i = [xs_e_N2elastic xs_e_O2elastic xs_e_Oelastic xs_e_N2rot0_2 xs_e_N2rot0_4 <span class="keyword">...</span>
+0054     xs_e_N2rot0_6 xs_e_N2rot0_8 xs_e_O2rot1_3];
+0055 
+0056 <span class="comment">% Set cross sections to zero below threshold for excitation</span>
+0057 <span class="keyword">for</span> m = 1:length(ex_E)
+0058     [~,ind_trh] = min(abs(E_bin_mid-ex_E(m))); <span class="comment">% J</span>
+0059     xs_i(1:ind_trh,m) = 0; 
+0060 <span class="keyword">end</span> 
+0061 
+0062 <span class="comment">%% New stuff from Eq. 1 in Stubbe and Varum</span>
+0063 g_i_N2 = 1; <span class="comment">% Statistical weight of the i-th state</span>
+0064 g_i_O2 = 3; <span class="comment">% Statistical weight of the i-th state</span>
+0065 E_i_N2 = 0; <span class="comment">% Energy of i-th state of N_2 [J]</span>
+0066 E_i_O2 = 1.783e-4*eVtoJ;  <span class="comment">% Energy of i-th state of O_2 [J]</span>
+0067 E_j_O2 = 3*1.783e-4*eVtoJ; <span class="comment">% Energy of j-th state of O2 [J]</span>
+0068 
+0069 <span class="comment">%% N2 rot.</span>
+0070 max_level_N2 = 4;
+0071 E_v_N2 = [exE_N2rot0_2 exE_N2rot0_4 exE_N2rot0_6 exE_N2rot0_8]*eVtoJ; 
+0072 xs_N2_rot = [xs_e_N2rot0_2 xs_e_N2rot0_4 xs_e_N2rot0_6 xs_e_N2rot0_8]; 
+0073 Q_N2_non_max = zeros(max_level_N2,1); 
+0074 
+0075 <span class="comment">% NEW</span>
+0076 g_j_N2 = [5 9 13 17]; <span class="comment">% Statistical weight of the j-th state</span>
+0077 Z_N2 = zeros(max_level_N2,1);  
+0078 <span class="keyword">for</span> v_N2 = 1:max_level_N2
+0079     Z_N2(v_N2) = g_j_N2(v_N2)*exp(-E_v_N2(v_N2)/(k_b*Tn)); <span class="comment">% Partition function</span>
+0080 <span class="keyword">end</span> 
+0081 Z_N2 = sum(Z_N2); 
+0082 <span class="comment">% end NEW</span>
+0083 
+0084 <span class="comment">% Q [eV cm^3 s^-1]</span>
+0085 <span class="keyword">for</span> v_N2 = 1:max_level_N2
+0086     
+0087     <span class="comment">% Non-Maxwellian</span>
+0088     dist_N2 = exp(-E_i_N2/(k_b*Tn))*(exp(( (-E_v_N2(v_N2)/(k_b*Te_non_max*Tn))*(Te_non_max-Tn) )-1)); 
+0089     Q_0v_N2_SI_non_max = g_i_N2*dist_N2*E_v_N2(v_N2)*8*pi/me^2*A*trapz(E_bin_mid,xs_N2_rot(:,v_N2).*E_bin_mid.*f0_exp_stubbe); <span class="comment">% [J m^3 s^-1]</span>
+0090     Q_N2_non_max(v_N2) = Q_0v_N2_SI_non_max*(1/eVtoJ)*m_to_cm^3;  
+0091    
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% Cooling rates</span>
+0095 L_rot_N2 = (1/Z_N2)*nNe_cm_neg3*nN2_cm_neg3*sum(Q_N2_non_max); <span class="comment">% [eV cm^-3 s^-1]</span>
+0096 L_rot_N2_SI = L_rot_N2*eVtoJ*cm_neg3_to_m_neg3;<span class="comment">% [J m^-3 s^-1]</span>
+0097 
+0098 
+0099 <span class="comment">%% O2 rot.</span>
+0100 max_level_O2 = 1;
+0101 E_v_O2 = exE_O2rot1_3*eVtoJ; 
+0102 xs_O2_rot = xs_e_O2rot1_3; 
+0103 Q_O2_non_max = zeros(max_level_O2,1); 
+0104 
+0105 <span class="comment">% NEW</span>
+0106 g_j_O2 = 7; <span class="comment">% Statistical weight of the j-th state</span>
+0107 Z_O2 = zeros(max_level_O2,1);  
+0108 <span class="keyword">for</span> v_O2 = 1:max_level_O2
+0109     Z_O2(v_O2) = g_j_O2(v_O2)*exp(-E_j_O2/(k_b*Tn)); <span class="comment">% Partition function</span>
+0110 <span class="keyword">end</span> 
+0111 Z_O2 = sum(Z_O2); 
+0112 <span class="comment">% end NEW</span>
+0113 
+0114 <span class="comment">% Q [eV cm^3 s^-1]</span>
+0115 <span class="keyword">for</span> v_O2 = 1:max_level_O2
+0116     
+0117     <span class="comment">% Non-Maxwellian</span>
+0118     dist_O2 = exp(-E_i_O2/(k_b*Tn))*(exp(( (-E_v_O2(v_O2)/(k_b*Te_non_max*Tn))*(Te_non_max-Tn) )-1)); 
+0119     Q_0v_O2_SI_non_max = g_i_O2*dist_O2*E_v_O2(v_O2)*8*pi/me^2*A*trapz(E_bin_mid,xs_O2_rot(:,v_O2).*E_bin_mid.*f0_exp_stubbe);<span class="comment">% [J m^3 s^-1]</span>
+0120     Q_O2_non_max(v_O2) =  Q_0v_O2_SI_non_max*(1/eVtoJ)*m_to_cm^3; 
+0121   
+0122 <span class="keyword">end</span>
+0123 
+0124 <span class="comment">% Cooling rates</span>
+0125 L_rot_O2 = (1/Z_O2)*nNe_cm_neg3*nO2_cm_neg3*sum(Q_O2_non_max); <span class="comment">% [eV cm^-3 s^-1]</span>
+0126 L_rot_O2_SI = L_rot_O2*eVtoJ*cm_neg3_to_m_neg3; <span class="comment">% [J m^-3 s^-1]</span>
+0127 
+0128 
+0129 <span class="comment">%% Elastic collisions</span>
+0130 max_level_el = 3;
+0131 E_v_el = [exE_N2elastic exE_O2elastic exE_Oelastic]*eVtoJ; 
+0132 xs_el = [xs_e_N2elastic xs_e_O2elastic xs_e_Oelastic]; 
+0133 Q_el_non_max = zeros(max_level_el,1); 
+0134 <span class="keyword">for</span> v_el = 1:max_level_el
+0135     
+0136     <span class="comment">% Non-Maxwellian</span>
+0137     Q_0v_el_SI_non_max = E_v_el(v_el)*8*pi/me^2*A*trapz(E_bin_mid,xs_el(:,v_el).*E_bin_mid.*f0_exp_stubbe); <span class="comment">% [J m^3 s^-1]</span>
+0138     Q_el_non_max(v_O2) =  Q_0v_el_SI_non_max*(1/eVtoJ)*m_to_cm^3; <span class="comment">% [eV cm^3 s^-1]</span>
+0139 
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">% Cooling rates</span>
+0143 L_el = nNe_cm_neg3*nN2_cm_neg3*Q_el_non_max(1) + nNe_cm_neg3*nO2_cm_neg3*Q_el_non_max(2) + <span class="keyword">...</span>
+0144     nNe_cm_neg3*nO_cm_neg3*Q_el_non_max(3); <span class="comment">% [eV cm^-3 s^-1]</span>
+0145 L_el_SI = L_el*eVtoJ*cm_neg3_to_m_neg3;<span class="comment">% [J m^-3 s^-1]</span>
+0146 
+0147 
+0148 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of compute_cooling_rates_new</title>
+  <meta name="keywords" content="compute_cooling_rates_new">
+  <meta name="description" content="% Calculate cooling rates for different heights and amplitude of the electric field:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cooling_rates -->
+<h1>compute_cooling_rates_new
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Calculate cooling rates for different heights and amplitude of the electric field:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Calculate cooling rates for different heights and amplitude of the electric field: 
+ Add new function to compute more correct cooling rates for N2 and O2 rot. 
+ Add new cross sections for N2 and O2 rot.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Boltzmann_solver/compute_f0_stubbe_more_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_more_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_more_xs</a>	Use new cross sections of O2 vib. 0->1,2,3,4,5,6,7 from Allen 1995</li><li><a href="../Cooling_rates/Functions/L_rot_el_new.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_new(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_new</a>	Add new cross section for O2 and N2 rot</li><li><a href="../Cooling_rates/Functions/L_stubbe_tot.html" class="code" title="function L_sum = L_stubbe_tot(v_bins_stubbe,dIe,deg_Ie)">L_stubbe_tot</a>	remove maxwellian cooling rates</li><li><a href="../Cooling_rates/Functions/analytical_cooling_rates.html" class="code" title="function [L_non_max_vib,L_maxw_vib_2nd,L_maxw_vib_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] =analytical_cooling_rates(v_bins_stubbe,f0_exp_stubbe,Te_2nd,Te_L,A,nNe,nN2,nO2,T_vib,xs_data)">analytical_cooling_rates</a>	Now A (normalization constant) is also an input</li><li><a href="../Cooling_rates/Functions/find_Te_LNM_LM.html" class="code" title="function out = find_Te_LNM_LM(L_NM_tot,Te,Tn,nNe,nO,nN2,nO2)">find_Te_LNM_LM</a>	NEW: add cooling rates for electronic excitation of O_2</li><li><a href="../Cross_section/Process_data/get_data_even_more_xs.html" class="code" title="function out = get_data_even_more_xs()">get_data_even_more_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2 and more vib. O2 0->2,3,4,5,6,7</li><li><a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Calculate cooling rates for different heights and amplitude of the electric field:</span>
+0002 <span class="comment">% Add new function to compute more correct cooling rates for N2 and O2 rot.</span>
+0003 <span class="comment">% Add new cross sections for N2 and O2 rot.</span>
+0004 
+0005 <span class="comment">%% Geophysical and ionospheric</span>
+0006   
+0007 z0 = [70e3 80e3 90e3 100e3];  <span class="comment">% Altitude [m]</span>
+0008 f_HF = 4.6e6;                 <span class="comment">% Radio wave frequency [Hz]</span>
+0009 w_HF = 2*pi*f_HF;             <span class="comment">% Angular frequency of radio wave [rad/s]</span>
+0010 c = 2.99792458e8;             <span class="comment">% Speed of light [m/s]</span>
+0011 
+0012 <span class="comment">% Electric field [V/m]</span>
+0013 E0_field_height = [0.5 0.75 0.8 0.9 1 1.25 1.5 1.75 2.0 2.2 2.5 3.0 3.5 4.0 7.0;<span class="keyword">...</span>
+0014     0.5 0.75 0.8 0.9 1 1.25 1.5 1.75 2.0 2.2 2.5 3.0 3.5 4.0 5.0;<span class="keyword">...</span>
+0015     0.3 0.5 0.75 0.8 0.9 1 1.25 1.5 1.75 2.0 2.2 2.5 3.0 3.5 4.0;<span class="keyword">...</span>
+0016     0.3 0.5 0.75 0.8 0.9 1 1.25 1.5 1.75 2.0 2.2 2.5 3.0 3.5 4.0];  
+0017                                                               
+0018 <span class="comment">% Electron density without dust</span>
+0019 height_non_MSP = (60:1:120)*1e3; <span class="comment">% [m]</span>
+0020 Ne_MSP1 = load(<span class="string">'Sav_Ne_dust_night.mat'</span>); 
+0021 Ne_MSP = Ne_MSP1.Sav_Ne; <span class="comment">% With MSP</span>
+0022 Ne_no_MSP1 = load(<span class="string">'Diff_Ne_no_dust_night.mat'</span>);
+0023 Ne_no_MSP = Ne_no_MSP1.Diff_Ne; <span class="comment">% No MSP</span>
+0024 
+0025 <span class="comment">% Electron density at height</span>
+0026 Ne_no_MSP_z0 = zeros(1,length(z0)); 
+0027 <span class="keyword">for</span> kk = 1:length(z0)
+0028     ind_in = find(height_non_MSP==z0(kk)); 
+0029     Ne_no_MSP_z0(kk) = Ne_no_MSP(ind_in);  
+0030 <span class="keyword">end</span> 
+0031 
+0032 <span class="comment">%% Load and process data for cross sections</span>
+0033 <span class="comment">% With more O2 vib. cross sections and new cross section from Bell for fs O and new cross sections for O2 and N2 rot.</span>
+0034 xs_data = <a href="../Cross_section/Process_data/get_data_even_more_xs.html" class="code" title="function out = get_data_even_more_xs()">get_data_even_more_xs</a>(); 
+0035 
+0036 <span class="comment">%% Compute cooling rates in a folder with file name for one height and one electric field</span>
+0037 filename = <span class="string">'cooling-rate'</span>;
+0038 height_unit = <span class="string">'km'</span>; 
+0039 E_field_unit = <span class="string">'V_m'</span>; 
+0040 
+0041 <span class="comment">% Folder stuff</span>
+0042 t_start = clock;
+0043 dirname = sprintf(<span class="string">'Cooling-rate-run-%s'</span>,sprintf(<span class="string">'UT-%d%02d%02d-%02d%02d%02d'</span>,floor(clock))); 
+0044 mkdir(dirname) <span class="comment">% Create new folder</span>
+0045 addpath(dirname) <span class="comment">% Add created folder to matlab path</span>
+0046 cd(dirname) <span class="comment">% Go to folder with data for the MC run</span>
+0047 pwd 
+0048 
+0049 <span class="comment">%%</span>
+0050 
+0051 tic
+0052 <span class="keyword">for</span> j = 1:length(z0)
+0053     <span class="keyword">for</span> i = 1:size(E0_field_height,2)
+0054 
+0055         <span class="comment">% Call MATLAB MSIS</span>
+0056         [rho,temperature] = <a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>(z0(j)); 
+0057 
+0058         <span class="comment">% Neutral densities MATLAB MSIS</span>
+0059         nO = rho(:,2)';   <span class="comment">% [1/m^3]</span>
+0060         nN2 = rho(:,3)';    <span class="comment">% [1/m^3]</span>
+0061         nO2 = rho(:,4)';    <span class="comment">% [1/m^3]</span>
+0062 
+0063         <span class="comment">% Electron density [m^-3]</span>
+0064         n_e = Ne_no_MSP_z0(j);
+0065 
+0066         <span class="comment">% Neutral temperature</span>
+0067         Tn = temperature(2); 
+0068 
+0069         <span class="comment">% Max electron energy [eV]</span>
+0070         max_E = 6.0; 
+0071 
+0072         <span class="comment">% Electric field at heigh j</span>
+0073         E0_field = E0_field_height(j,i); 
+0074 
+0075         <span class="comment">% Compute non-Maxwellian distribution</span>
+0076         [f0_exp_stubbe,v_bins_stubbe,Te_nm_2nd,Te_grad,A,dI_sum,dIe,deg_Ie] = <span class="keyword">...</span>
+0077             <a href="../Boltzmann_solver/compute_f0_stubbe_more_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_more_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_more_xs</a>(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E);
+0078 
+0079         <span class="comment">% Cooling rates [J/(m^3*s)]</span>
+0080         L_stubbe = <a href="../Cooling_rates/Functions/L_stubbe_tot.html" class="code" title="function L_sum = L_stubbe_tot(v_bins_stubbe,dIe,deg_Ie)">L_stubbe_tot</a>(v_bins_stubbe,dIe,deg_Ie);     
+0081         [L_rot_N2,L_rot_O2,L_el] = <a href="../Cooling_rates/Functions/L_rot_el_new.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_new(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_new</a>(v_bins_stubbe,f0_exp_stubbe,A,xs_data,<span class="keyword">...</span>
+0082             n_e,nN2,nO2,nO,Te_nm_2nd,Tn); 
+0083         L_loop = L_stubbe + L_rot_N2 + L_rot_O2 + L_el;
+0084 
+0085         <span class="comment">% Compute electron temperature from Maxwellian cooling rates with the same total energy as non-Maxwellian</span>
+0086         <span class="keyword">if</span> ~isnan(L_loop) 
+0087             c_Te = @(Te) <a href="../Cooling_rates/Functions/find_Te_LNM_LM.html" class="code" title="function out = find_Te_LNM_LM(L_NM_tot,Te,Tn,nNe,nO,nN2,nO2)">find_Te_LNM_LM</a>(L_loop,Te,Tn,n_e,nO,nN2,nO2); <span class="comment">% This is Q-L</span>
+0088             <span class="keyword">try</span> 
+0089                 Te_nm_L = fzero(c_Te,[100 6000]); <span class="comment">% MATLAB fzero finds Te for Q(Te)-L(Te)=0</span>
+0090             <span class="keyword">catch</span>
+0091                 <span class="keyword">try</span>
+0092                     Te_nm_L = fzero(c_Te,[100 30000]); <span class="comment">% MATLAB fzero finds Te for Q(Te)-L(Te)=0</span>
+0093                 <span class="keyword">catch</span>
+0094                     T_nm_L = 50; 
+0095                 <span class="keyword">end</span> 
+0096             <span class="keyword">end</span> 
+0097         <span class="keyword">elseif</span> isnan(L_loop)
+0098             Te_nm_L = 0; 
+0099         <span class="keyword">end</span> 
+0100 
+0101         <span class="comment">% Call function to compute L and Q</span>
+0102         [L_non_max,L_maxw_2nd,L_maxw_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] = <a href="../Cooling_rates/Functions/analytical_cooling_rates.html" class="code" title="function [L_non_max_vib,L_maxw_vib_2nd,L_maxw_vib_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] =analytical_cooling_rates(v_bins_stubbe,f0_exp_stubbe,Te_2nd,Te_L,A,nNe,nN2,nO2,T_vib,xs_data)">analytical_cooling_rates</a><span class="keyword">...</span>
+0103             (v_bins_stubbe,f0_exp_stubbe,Te_nm_2nd,Te_nm_L,A,n_e,nN2,nO2,Tn,xs_data);  
+0104     
+0105         <span class="comment">% Save stuff</span>
+0106         currfilename = sprintf(<span class="string">'%s-%d-%s-%.2f-%s.mat'</span>,filename,z0(j)/1000,height_unit,E0_field,E_field_unit);
+0107         save(currfilename,<span class="keyword">...</span>
+0108         <span class="string">'Tn'</span>,<span class="keyword">...</span>
+0109         <span class="string">'n_e'</span>,<span class="keyword">...</span>
+0110         <span class="string">'f0_exp_stubbe'</span>,<span class="keyword">...</span>
+0111         <span class="string">'A'</span>,<span class="keyword">...</span>
+0112         <span class="string">'v_bins_stubbe'</span>,<span class="keyword">...</span>
+0113         <span class="string">'dIe'</span>,<span class="keyword">...</span>
+0114         <span class="string">'deg_Ie'</span>,<span class="keyword">...</span>
+0115         <span class="string">'Te_nm_2nd'</span>,<span class="keyword">...</span>
+0116         <span class="string">'Te_nm_L'</span>,<span class="keyword">...</span>
+0117         <span class="string">'Te_grad'</span>,<span class="keyword">...</span>
+0118         <span class="string">'L_loop'</span>,<span class="keyword">...</span>
+0119         <span class="string">'L_non_max'</span>,<span class="keyword">...</span>
+0120         <span class="string">'L_maxw_2nd'</span>,<span class="keyword">...</span>
+0121         <span class="string">'L_maxw_L'</span>,<span class="keyword">...</span>
+0122         <span class="string">'Q_non_max'</span>,<span class="keyword">...</span>
+0123         <span class="string">'Q_maxw_2nd'</span>,<span class="keyword">...</span>
+0124         <span class="string">'Q_maxw_L'</span>,<span class="keyword">...</span>
+0125         <span class="string">'max_E'</span>,<span class="keyword">...</span>
+0126         <span class="string">'E0_field'</span>);
+0127 
+0128     <span class="keyword">end</span> 
+0129 <span class="keyword">end</span> 
+0130 toc
+0131 
+0132</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

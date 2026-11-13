@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of find_Te_LNM_LM</title>
+  <meta name="keywords" content="find_Te_LNM_LM">
+  <meta name="description" content="NEW: add cooling rates for electronic excitation of O_2">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cooling_rates --><!-- # Functions -->
+<h1>find_Te_LNM_LM
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>NEW: add cooling rates for electronic excitation of O_2</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function out = find_Te_LNM_LM(L_NM_tot,Te,Tn,nNe,nO,nN2,nO2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> NEW: add cooling rates for electronic excitation of O_2
+ Compute electron temperature from Maxwellian cooling rates with
+ the same total energy as non-Maxwellian
+ L_NM_tot: Sum of non-Maxwellian cooling rates 
+ L_M_tot: Maxwellian cooling rates, mosly from Pavlov analytical expressions</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="cooling_rates_tables_pavlov_tot.html" class="code" title="function [L_SI] = cooling_rates_tables_pavlov_tot(Te,Tn,nNe,nO,nN2,nO2)">cooling_rates_tables_pavlov_tot</a>	This functions models cooling rates of electron colliding</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Cooling_rates/compute_cooling_rates_new.html" class="code" title="">compute_cooling_rates_new</a>	% Calculate cooling rates for different heights and amplitude of the electric field:</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out = find_Te_LNM_LM(L_NM_tot,Te,Tn,nNe,nO,nN2,nO2)</a>
+0002 <span class="comment">% NEW: add cooling rates for electronic excitation of O_2</span>
+0003 <span class="comment">% Compute electron temperature from Maxwellian cooling rates with</span>
+0004 <span class="comment">% the same total energy as non-Maxwellian</span>
+0005 <span class="comment">% L_NM_tot: Sum of non-Maxwellian cooling rates</span>
+0006 <span class="comment">% L_M_tot: Maxwellian cooling rates, mosly from Pavlov analytical expressions</span>
+0007 
+0008 <span class="comment">% Maxwellian cooling rates, mostly based on Pavlov analytical expression.</span>
+0009 L_M_tot = <a href="cooling_rates_tables_pavlov_tot.html" class="code" title="function [L_SI] = cooling_rates_tables_pavlov_tot(Te,Tn,nNe,nO,nN2,nO2)">cooling_rates_tables_pavlov_tot</a>(Te,Tn,nNe,nO,nN2,nO2);  
+0010 
+0011 out = L_NM_tot - L_M_tot;
+0012 
+0013 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

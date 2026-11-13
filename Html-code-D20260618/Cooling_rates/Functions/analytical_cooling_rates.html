@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of analytical_cooling_rates</title>
+  <meta name="keywords" content="analytical_cooling_rates">
+  <meta name="description" content="Now A (normalization constant) is also an input">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cooling_rates --><!-- # Functions -->
+<h1>analytical_cooling_rates
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Now A (normalization constant) is also an input</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [L_non_max_vib,L_maxw_vib_2nd,L_maxw_vib_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] =analytical_cooling_rates(v_bins_stubbe,f0_exp_stubbe,Te_2nd,Te_L,A,nNe,nN2,nO2,T_vib,xs_data) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Now A (normalization constant) is also an input
+ Add correct normalization constant for non-Maxwellian
+ Add new cross sections of O2 vib. 0-&gt;1,2,3,4,5,6,7 from Allen 1995
+ Remove cooling rates for O fs
+ Tidy up Q_0v</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_010.html" class="code" title="function cross_sect = sigma_N2_vib_010(E,E_old,xs_old)">sigma_N2_vib_010</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_N2_vib_09.html" class="code" title="function cross_sect = sigma_N2_vib_09(E,E_old,xs_old)">sigma_N2_vib_09</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_vib_02.html" class="code" title="function cross_sect = sigma_O2_vib_02(E,E_old,xs_old)">sigma_O2_vib_02</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_vib_03.html" class="code" title="function cross_sect = sigma_O2_vib_03(E,E_old,xs_old)">sigma_O2_vib_03</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_vib_04.html" class="code" title="function cross_sect = sigma_O2_vib_04(E,E_old,xs_old)">sigma_O2_vib_04</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_vib_05.html" class="code" title="function cross_sect = sigma_O2_vib_05(E,E_old,xs_old)">sigma_O2_vib_05</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_vib_06.html" class="code" title="function cross_sect = sigma_O2_vib_06(E,E_old,xs_old)">sigma_O2_vib_06</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O2_vib_07.html" class="code" title="function cross_sect = sigma_O2_vib_07(E,E_old,xs_old)">sigma_O2_vib_07</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>	Convert from [eV] to [J]</li><li><a href="../../Cross_section/Funtion_interp/sigma_O_fine_str_bell.html" class="code" title="function cross_sect = sigma_O_fine_str_bell(E,E_old,xs_old)">sigma_O_fine_str_bell</a>	Convert from [eV] to [J]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Cooling_rates/compute_cooling_rates_new.html" class="code" title="">compute_cooling_rates_new</a>	% Calculate cooling rates for different heights and amplitude of the electric field:</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [L_non_max_vib,L_maxw_vib_2nd,L_maxw_vib_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] = </a><span class="keyword">...</span>
+0002     analytical_cooling_rates(v_bins_stubbe,f0_exp_stubbe,Te_2nd,Te_L,A,nNe,nN2,nO2,T_vib,xs_data)
+0003 <span class="comment">% Now A (normalization constant) is also an input</span>
+0004 <span class="comment">% Add correct normalization constant for non-Maxwellian</span>
+0005 <span class="comment">% Add new cross sections of O2 vib. 0-&gt;1,2,3,4,5,6,7 from Allen 1995</span>
+0006 <span class="comment">% Remove cooling rates for O fs</span>
+0007 <span class="comment">% Tidy up Q_0v</span>
+0008 
+0009 <span class="comment">%% Some constant</span>
+0010 me = 9.10938291e-31;        <span class="comment">% Electron mass [kg]</span>
+0011 eVtoJ = 1.602176634e-19;    <span class="comment">% Convert from [eV] to [J]</span>
+0012 k_b = 1.380649e-23;         <span class="comment">% Boltzmann constant [J/K]</span>
+0013 m_to_cm = 100;              <span class="comment">% Convert [m] to [cm]</span>
+0014 K_to_eV = 8.6175e-5;        <span class="comment">% Convert from K to eV</span>
+0015 E1_N2_K = 3353; <span class="comment">% [K]</span>
+0016 E1_N2 = 3353*K_to_eV*eVtoJ; <span class="comment">% Energy of first vibrational level of N2 [J]</span>
+0017 deltaE_N2 = 20.6*K_to_eV*eVtoJ; <span class="comment">% [J]</span>
+0018 E1_O2_K = 2239; <span class="comment">% [K]</span>
+0019 E1_O2 = 2239*K_to_eV*eVtoJ; <span class="comment">% Energy of first vibrational level of O2 [J]</span>
+0020 deltaE_O2 = 17.3*K_to_eV*eVtoJ; <span class="comment">% [J]</span>
+0021 
+0022 <span class="comment">%% Convert densities from m^-3 to cm^-3</span>
+0023 m_neg3_to_cm_neg3 = 1e-6; 
+0024 nNe_cm_neg3 = nNe*m_neg3_to_cm_neg3;  
+0025 nN2_cm_neg3 = nN2*m_neg3_to_cm_neg3; 
+0026 nO2_cm_neg3 = nO2*m_neg3_to_cm_neg3; 
+0027 
+0028 <span class="comment">%% Energy/speed in the middle fo the bin</span>
+0029 <span class="comment">% v_bin_mid = v_bins_stubbe(1:end-1)/2 + v_bins_stubbe(2:end)/2; % [m/s]</span>
+0030 <span class="comment">% E_bin_mid = (me*v_bin_mid.^2)/2; % [J]</span>
+0031 
+0032 <span class="comment">%% Energy/speed bins with same resolution as Stubbe data, but higher maximum in the enery grid</span>
+0033 
+0034 <span class="comment">% Resolution Stubbe</span>
+0035 delta_v = v_bins_stubbe(2) - v_bins_stubbe(1); 
+0036 
+0037 <span class="comment">% New max edges</span>
+0038 max_E_2 = 12.5;
+0039 
+0040 <span class="comment">% New v-bins with same resolution as Stubbe</span>
+0041 v = v_bins_stubbe(end):delta_v:sqrt((2*eVtoJ*max_E_2)/me); 
+0042 v_bins = [v_bins_stubbe; v(2:end)']; 
+0043 
+0044 <span class="comment">% Energy/speed in the middle fo the bin</span>
+0045 v_bin_mid = v_bins(1:end-1)/2 + v_bins(2:end)/2; <span class="comment">% [m/s]</span>
+0046 E_bin_mid = (me*v_bin_mid.^2)/2; <span class="comment">% [J]</span>
+0047 
+0048 <span class="comment">%% Zero pad non-Maxwellian</span>
+0049 f0_exp_stubbe = [f0_exp_stubbe; zeros(length(v_bins)-length(v_bins_stubbe),1)]; 
+0050 
+0051 <span class="comment">%% Cross sections</span>
+0052 
+0053 E1_O2_eV = 2239*K_to_eV; <span class="comment">% Energy of first vibrational level of O2 [eV]</span>
+0054 deltaE_O2_eV = 17.3*K_to_eV; <span class="comment">% [eV]</span>
+0055 max_level_O2 = 7; 
+0056 E_v_O2 = zeros(max_level_O2,1); 
+0057 <span class="keyword">for</span> v_O2 = 1:max_level_O2
+0058     E_v_O2(v_O2) = v_O2*E1_O2_eV - v_O2*(v_O2-1)*deltaE_O2_eV; <span class="comment">% eV</span>
+0059 <span class="keyword">end</span> 
+0060 
+0061 <span class="comment">% Excitation energy for inelastic collisions [eV] from Itakawa 1986, 1989, 1990</span>
+0062 exE_N2vib0_1 = 0.2888; 
+0063 exE_N2vib0_2 = 0.5742; 
+0064 exE_N2vib0_3 = 0.8559; 
+0065 exE_N2vib0_4 = 1.1342; 
+0066 exE_N2vib0_5 = 1.4088; 
+0067 exE_N2vib0_6 = 1.6800; 
+0068 exE_N2vib0_7 = 1.9475; 
+0069 exE_N2vib0_8 = 2.2115;
+0070 exE_N2vib0_9 = 2.4718;
+0071 exE_N2vib0_10 = 2.7284;
+0072 exE_O2a1Dg = 0.9770; 
+0073 exE_O2b1Sgp = 1.6270; 
+0074 exE_Ofine_1_0 = 0.0085; 
+0075 exE_Ofine_2_0 = 0.0281; 
+0076 exE_Ofine_2_1 = 0.0196; 
+0077 exE_O1S = 4.1900; 
+0078 exE_O1D = 1.9670; 
+0079 exE_O2vib_01 = 0.193; 
+0080 exE_O2vib_02 = E_v_O2(2); 
+0081 exE_O2vib_03 = E_v_O2(3); 
+0082 exE_O2vib_04 = E_v_O2(4); 
+0083 exE_O2vib_05 = E_v_O2(5); 
+0084 exE_O2vib_06 = E_v_O2(6); 
+0085 exE_O2vib_07 = E_v_O2(7); 
+0086 
+0087 <span class="comment">% Excitation energy. Units [J].</span>
+0088 ex_E = [exE_N2vib0_1; exE_N2vib0_2; exE_N2vib0_3; exE_N2vib0_4; exE_N2vib0_5; <span class="keyword">...</span>
+0089     exE_N2vib0_6; exE_N2vib0_7; exE_N2vib0_8; exE_N2vib0_9; exE_N2vib0_10; <span class="keyword">...</span>
+0090     exE_O2a1Dg; exE_O2b1Sgp; exE_Ofine_1_0; exE_Ofine_2_0; exE_Ofine_2_1; exE_O1S; exE_O1D; exE_O2vib_01; <span class="keyword">...</span>
+0091     exE_O2vib_02; exE_O2vib_03; exE_O2vib_04; exE_O2vib_05; exE_O2vib_06; exE_O2vib_07]*eVtoJ; 
+0092 
+0093 <span class="comment">% Cross sections [m^2]. Energy in must be in [J].</span>
+0094 xs_e_N2vib0_1 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>(E_bin_mid,xs_data{4}(:,1),xs_data{4}(:,2)); 
+0095 xs_e_N2vib0_2 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>(E_bin_mid,xs_data{5}(:,1),xs_data{5}(:,2));
+0096 xs_e_N2vib0_3 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>(E_bin_mid,xs_data{6}(:,1),xs_data{6}(:,2)); 
+0097 xs_e_N2vib0_4 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>(E_bin_mid,xs_data{7}(:,1),xs_data{7}(:,2));
+0098 xs_e_N2vib0_5 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>(E_bin_mid,xs_data{8}(:,1),xs_data{8}(:,2)); 
+0099 xs_e_N2vib0_6 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>(E_bin_mid,xs_data{9}(:,1),xs_data{9}(:,2));
+0100 xs_e_N2vib0_7 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>(E_bin_mid,xs_data{10}(:,1),xs_data{10}(:,2)); 
+0101 xs_e_N2vib0_8 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>(E_bin_mid,xs_data{11}(:,1),xs_data{11}(:,2)); 
+0102 xs_e_N2vib0_9 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_09.html" class="code" title="function cross_sect = sigma_N2_vib_09(E,E_old,xs_old)">sigma_N2_vib_09</a>(E_bin_mid,xs_data{12}(:,1),xs_data{12}(:,2)); 
+0103 xs_e_N2vib0_10 = <a href="../../Cross_section/Funtion_interp/sigma_N2_vib_010.html" class="code" title="function cross_sect = sigma_N2_vib_010(E,E_old,xs_old)">sigma_N2_vib_010</a>(E_bin_mid,xs_data{13}(:,1),xs_data{13}(:,2)); 
+0104 xs_e_O2a1Dg = <a href="../../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>(E_bin_mid,xs_data{19}(:,1),xs_data{19}(:,2)); 
+0105 xs_e_O2b1Sgp = <a href="../../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>(E_bin_mid,xs_data{20}(:,1),xs_data{20}(:,2)); 
+0106 <span class="comment">% xs_e_Ofine_1_0 = sigma_O_fine_str_10(E_bin_mid,xs_data{21}(:,1),xs_data{21}(:,2));</span>
+0107 <span class="comment">% xs_e_Ofine_2_0 = sigma_O_fine_str_20(E_bin_mid,xs_data{22}(:,1),xs_data{22}(:,2));</span>
+0108 <span class="comment">% xs_e_Ofine_2_1 = sigma_O_fine_str_21(E_bin_mid,xs_data{23}(:,1),xs_data{23}(:,2));</span>
+0109 xs_e_Ofine_1_0 = <a href="../../Cross_section/Funtion_interp/sigma_O_fine_str_bell.html" class="code" title="function cross_sect = sigma_O_fine_str_bell(E,E_old,xs_old)">sigma_O_fine_str_bell</a>(E_bin_mid,xs_data{21}(:,1),xs_data{21}(:,2));  
+0110 xs_e_Ofine_2_0 = <a href="../../Cross_section/Funtion_interp/sigma_O_fine_str_bell.html" class="code" title="function cross_sect = sigma_O_fine_str_bell(E,E_old,xs_old)">sigma_O_fine_str_bell</a>(E_bin_mid,xs_data{22}(:,1),xs_data{22}(:,2)); 
+0111 xs_e_Ofine_2_1 = <a href="../../Cross_section/Funtion_interp/sigma_O_fine_str_bell.html" class="code" title="function cross_sect = sigma_O_fine_str_bell(E,E_old,xs_old)">sigma_O_fine_str_bell</a>(E_bin_mid,xs_data{23}(:,1),xs_data{23}(:,2));
+0112 xs_e_O3P1D = <a href="../../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>(E_bin_mid,xs_data{24}(:,1),xs_data{24}(:,2)); 
+0113 xs_e_O3P1S = <a href="../../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>(E_bin_mid,xs_data{25}(:,1),xs_data{25}(:,2)); 
+0114 xs_e_O2vib_01 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_02.html" class="code" title="function cross_sect = sigma_O2_vib_02(E,E_old,xs_old)">sigma_O2_vib_02</a>(E_bin_mid,xs_data{26}(:,1),xs_data{26}(:,2)); 
+0115 xs_e_O2vib_02 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_02.html" class="code" title="function cross_sect = sigma_O2_vib_02(E,E_old,xs_old)">sigma_O2_vib_02</a>(E_bin_mid,xs_data{27}(:,1),xs_data{27}(:,2)); 
+0116 xs_e_O2vib_03 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_03.html" class="code" title="function cross_sect = sigma_O2_vib_03(E,E_old,xs_old)">sigma_O2_vib_03</a>(E_bin_mid,xs_data{28}(:,1),xs_data{28}(:,2)); 
+0117 xs_e_O2vib_04 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_04.html" class="code" title="function cross_sect = sigma_O2_vib_04(E,E_old,xs_old)">sigma_O2_vib_04</a>(E_bin_mid,xs_data{29}(:,1),xs_data{29}(:,2)); 
+0118 xs_e_O2vib_05 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_05.html" class="code" title="function cross_sect = sigma_O2_vib_05(E,E_old,xs_old)">sigma_O2_vib_05</a>(E_bin_mid,xs_data{30}(:,1),xs_data{30}(:,2)); 
+0119 xs_e_O2vib_06 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_06.html" class="code" title="function cross_sect = sigma_O2_vib_06(E,E_old,xs_old)">sigma_O2_vib_06</a>(E_bin_mid,xs_data{31}(:,1),xs_data{31}(:,2)); 
+0120 xs_e_O2vib_07 = <a href="../../Cross_section/Funtion_interp/sigma_O2_vib_07.html" class="code" title="function cross_sect = sigma_O2_vib_07(E,E_old,xs_old)">sigma_O2_vib_07</a>(E_bin_mid,xs_data{32}(:,1),xs_data{32}(:,2)); 
+0121 xs_i = [xs_e_N2vib0_1 xs_e_N2vib0_2 xs_e_N2vib0_3 xs_e_N2vib0_4 xs_e_N2vib0_5 <span class="keyword">...</span>
+0122     xs_e_N2vib0_6 xs_e_N2vib0_7 xs_e_N2vib0_8 xs_e_N2vib0_9 xs_e_N2vib0_10 xs_e_O2a1Dg <span class="keyword">...</span>
+0123     xs_e_O2b1Sgp xs_e_Ofine_1_0 xs_e_Ofine_2_0 xs_e_Ofine_2_1 xs_e_O3P1D xs_e_O3P1S xs_e_O2vib_01 <span class="keyword">...</span>
+0124     xs_e_O2vib_02 xs_e_O2vib_03 xs_e_O2vib_04 xs_e_O2vib_05 xs_e_O2vib_06 xs_e_O2vib_07];
+0125 
+0126 <span class="comment">% Set cross sections to zero below threshold for excitation</span>
+0127 <span class="keyword">for</span> vv = 1:length(ex_E)
+0128     [~,ind_trh] = min(abs(E_bin_mid-ex_E(vv))); <span class="comment">% J</span>
+0129     xs_i(1:ind_trh,vv) = 0; 
+0130 <span class="keyword">end</span>  
+0131 
+0132 <span class="comment">%% Q_0v for vibrational excitation of N2 from Pavlov 1998a equation 11 with non-Max</span>
+0133 
+0134 xs_N2_vib = [xs_e_N2vib0_1 xs_e_N2vib0_2 xs_e_N2vib0_3 xs_e_N2vib0_4 <span class="keyword">...</span>
+0135     xs_e_N2vib0_5 xs_e_N2vib0_6 xs_e_N2vib0_7 xs_e_N2vib0_8 xs_e_N2vib0_9 xs_e_N2vib0_10];
+0136 max_level_N2 = 10;
+0137 E_v_N2 = zeros(max_level_N2,1); 
+0138 
+0139 Q0_v_N2_non_max = zeros(max_level_N2,1);
+0140 Q0_v_N2_maxw_2nd = zeros(max_level_N2,1);
+0141 Q0_v_N2_maxw_L = zeros(max_level_N2,1); 
+0142 <span class="keyword">for</span> v_N2 = 1:max_level_N2
+0143 
+0144     E_v_N2(v_N2) = v_N2*E1_N2 - v_N2*(v_N2-1)*deltaE_N2; <span class="comment">% Energy of the v-th vibrational level</span>
+0145     
+0146     <span class="comment">% Non-Maxwellian</span>
+0147     Q0_v_N2_non_max(v_N2) = E_v_N2(v_N2)*8*pi/me^2*A*<span class="keyword">...</span>
+0148     trapz(E_bin_mid,xs_N2_vib(:,v_N2).*E_bin_mid.*f0_exp_stubbe)*(1/eVtoJ)*m_to_cm^3*<span class="keyword">...</span>
+0149     (1 - exp(v_N2*E1_N2_K*((1/Te_2nd) - (1/T_vib))));
+0150 
+0151     <span class="comment">% Maxwellian: Te_2nd</span>
+0152     Q0_v_N2_maxw_2nd(v_N2) = E_v_N2(v_N2)*(8/(pi*me)).^0.5*(k_b*Te_2nd)^(-3/2)*<span class="keyword">...</span>
+0153     trapz(E_bin_mid,xs_N2_vib(:,v_N2).*E_bin_mid.*exp(-E_bin_mid./(k_b*Te_2nd)))*(1/eVtoJ)*m_to_cm^3*<span class="keyword">...</span>
+0154     (1 - exp(v_N2*E1_N2_K*((1/Te_2nd) - (1/T_vib))));  
+0155 
+0156      <span class="comment">% Maxwellian: Te_L</span>
+0157     Q0_v_N2_maxw_L(v_N2) = E_v_N2(v_N2)*(8/(pi*me)).^0.5*(k_b*Te_L)^(-3/2)*<span class="keyword">...</span>
+0158     trapz(E_bin_mid,xs_N2_vib(:,v_N2).*E_bin_mid.*exp(-E_bin_mid./(k_b*Te_L)))*(1/eVtoJ)*m_to_cm^3*<span class="keyword">...</span>
+0159     (1 - exp(v_N2*E1_N2_K*((1/Te_L) - (1/T_vib))));  
+0160 
+0161 <span class="keyword">end</span>
+0162 
+0163 <span class="comment">% N2: Equation 11 from Pavlov (1998a) [eV cm^-3 s^-1]</span>
+0164 L_vib_N2_non_max = nNe_cm_neg3*nN2_cm_neg3*(1-exp(-E1_N2_K/T_vib))*sum(Q0_v_N2_non_max);
+0165 L_vib_N2_maxw_2nd = nNe_cm_neg3*nN2_cm_neg3*(1-exp(-E1_N2_K/T_vib))*sum(Q0_v_N2_maxw_2nd);
+0166 L_vib_N2_maxw_L = nNe_cm_neg3*nN2_cm_neg3*(1-exp(-E1_N2_K/T_vib))*sum(Q0_v_N2_maxw_L);
+0167 
+0168 <span class="comment">%% Q_0v for vibrational excitation of O2 from from Pavlov 1998c equation 8</span>
+0169 
+0170 xs_O2_vib = [xs_e_O2vib_01 xs_e_O2vib_02 xs_e_O2vib_03 xs_e_O2vib_04 <span class="keyword">...</span>
+0171     xs_e_O2vib_05 xs_e_O2vib_06 xs_e_O2vib_07];
+0172 max_level_O2 = 7; 
+0173 E_v_O2 = zeros(max_level_O2,1); 
+0174 
+0175 Q0_v_O2_non_max = zeros(max_level_O2,1);
+0176 Q0_v_O2_maxw_2nd = zeros(max_level_O2,1); 
+0177 Q0_v_O2_maxw_L = zeros(max_level_O2,1); 
+0178 <span class="keyword">for</span> v_O2 = 1:max_level_O2
+0179 
+0180     E_v_O2(v_O2) = v_O2*E1_O2 - v_O2*(v_O2-1)*deltaE_O2; 
+0181 
+0182     <span class="comment">% Non-Maxwellian</span>
+0183     Q0_v_O2_non_max(v_O2) = E_v_O2(v_O2)*8*pi/me^2*A*<span class="keyword">...</span>
+0184     trapz(E_bin_mid,xs_O2_vib(:,v_O2).*E_bin_mid.*f0_exp_stubbe)*(1/eVtoJ)*m_to_cm^3*<span class="keyword">...</span>
+0185     (1 - exp(v_O2*E1_O2_K*((1/Te_2nd) - (1/T_vib))));
+0186 
+0187     <span class="comment">% Maxwellian: Te_2nd</span>
+0188     Q0_v_O2_maxw_2nd(v_O2) = E_v_O2(v_O2)*(8/(pi*me)).^0.5*(k_b*Te_2nd)^(-3/2)*<span class="keyword">...</span>
+0189     trapz(E_bin_mid,xs_O2_vib(:,v_O2).*E_bin_mid.*exp(-E_bin_mid./(k_b*Te_2nd)))*(1/eVtoJ)*m_to_cm^3*<span class="keyword">...</span>
+0190     (1 - exp(v_O2*E1_O2_K*((1/Te_2nd) - (1/T_vib))));  
+0191 
+0192     <span class="comment">% Maxwellian: Te_L</span>
+0193     Q0_v_O2_maxw_L(v_O2) = E_v_O2(v_O2)*(8/(pi*me)).^0.5*(k_b*Te_L)^(-3/2)*<span class="keyword">...</span>
+0194     trapz(E_bin_mid,xs_O2_vib(:,v_O2).*E_bin_mid.*exp(-E_bin_mid./(k_b*Te_L)))*(1/eVtoJ)*m_to_cm^3*<span class="keyword">...</span>
+0195     (1 - exp(v_O2*E1_O2_K*((1/Te_L) - (1/T_vib)))); 
+0196 
+0197 <span class="keyword">end</span>
+0198 
+0199 <span class="comment">% O2: Equation 8 from Pavlov (1998c) [eV cm^-3 s^-1]</span>
+0200 L_vib_O2_non_max = nNe_cm_neg3*nO2_cm_neg3*(1-exp(-E1_O2_K/T_vib))*sum(Q0_v_O2_non_max);
+0201 L_vib_O2_maxw_2nd = nNe_cm_neg3*nO2_cm_neg3*(1-exp(-E1_O2_K/T_vib))*sum(Q0_v_O2_maxw_2nd);
+0202 L_vib_O2_maxw_L = nNe_cm_neg3*nO2_cm_neg3*(1-exp(-E1_O2_K/T_vib))*sum(Q0_v_O2_maxw_L);
+0203 
+0204 <span class="comment">%% Q [eV*cm^3s^-1]:</span>
+0205 Q_non_max = cell(1,2); 
+0206 Q_non_max{1,1} = Q0_v_N2_non_max;  
+0207 Q_non_max{1,2} = Q0_v_O2_non_max; 
+0208 Q_maxw_2nd = cell(1,2); 
+0209 Q_maxw_2nd{1,1} = Q0_v_N2_maxw_2nd;  
+0210 Q_maxw_2nd{1,2} = Q0_v_O2_maxw_2nd; 
+0211 Q_maxw_L = cell(1,2); 
+0212 Q_maxw_L{1,1} = Q0_v_N2_maxw_L;  
+0213 Q_maxw_L{1,2} = Q0_v_O2_maxw_L; 
+0214 
+0215 <span class="comment">%% Electron cooling rate [eV/cm^3s^1]:</span>
+0216 L_non_max_vib = [L_vib_N2_non_max; L_vib_O2_non_max]; 
+0217 L_maxw_vib_2nd = [L_vib_N2_maxw_2nd; L_vib_O2_maxw_2nd]; 
+0218 L_maxw_vib_L = [L_vib_N2_maxw_L; L_vib_O2_maxw_L]; 
+0219 
+0220 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
