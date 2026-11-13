@@ -1,0 +1,9 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+
+  get_data_even_more_xs [URL="get_data_even_more_xs.html"];
+  get_data_less_xs [URL="get_data_less_xs.html"];
+  get_data_more_xs [URL="get_data_more_xs.html"];
+  get_data_withN2vib [URL="get_data_withN2vib.html"];
+  read_data_rot [URL="read_data_rot.html"];
+}
