@@ -1,0 +1,1208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_cooling_rates</title>
+  <meta name="keywords" content="plot_cooling_rates">
+  <meta name="description" content="% Analyse data for cooling rates">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html . -->
+<h1>plot_cooling_rates
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="up.png"></a></h2>
+<div class="box"><strong>% Analyse data for cooling rates</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Analyse data for cooling rates 
+ Add new function to compute more correct cooling rates for N2 and O2 rot. 
+ Add new cross sections for N2 and O2 rot.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(matlabicon.gif)">
+<li><a href="Cooling_rates/Functions/L_rot_el_new.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_new(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_new</a>	Add new cross section for O2 and N2 rot</li><li><a href="Cooling_rates/Functions/cooling_rates_tables_pavlov2.html" class="code" title="function [L_vib_N2,L_vib_O2,L_oxygen_10,L_oxygen_20,L_oxygen_21,L_rot_N2,L_rot_O2,L_elas,L_delta_O2,L_sigma_O2] = cooling_rates_tables_pavlov2(Te,Tn,nNe,nN2,nO2,nO)">cooling_rates_tables_pavlov2</a>	This functions models cooling rates of electron colliding</li><li><a href="Cross_section/Process_data/get_data_even_more_xs.html" class="code" title="function out = get_data_even_more_xs()">get_data_even_more_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2 and more vib. O2 0->2,3,4,5,6,7</li><li><a href="Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Analyse data for cooling rates</span>
+0002 <span class="comment">% Add new function to compute more correct cooling rates for N2 and O2 rot.</span>
+0003 <span class="comment">% Add new cross sections for N2 and O2 rot.</span>
+0004 
+0005 <span class="comment">% Go to data to plot cooling rates:</span>
+0006 <span class="comment">% /home/margaretha/Documents/MATLAB/Non_Maxwellian/Code_data/Cooling_rates/Data/</span>
+0007 
+0008 <span class="comment">%% Graphical setup</span>
+0009 ftsza = 11.5; 
+0010 ftszl = 14; 
+0011 ftszlg = 10.5;
+0012 ftszt = 15; 
+0013 
+0014 <span class="comment">%% Some constant</span>
+0015 me = 9.10938291e-31;        <span class="comment">% Electron mass [kg]</span>
+0016 eVtoJ = 1.602176634e-19;    <span class="comment">% Convert from [eV] to [J]</span>
+0017 k_b = 1.380649e-23;         <span class="comment">% Boltzmann constant [J/K]</span>
+0018 k_b_eV = 8.617333e-5;       <span class="comment">% Boltzmann constant [eV/K]</span>
+0019 q_e = 1.602176634e-19;      <span class="comment">% Elementary charge of 1 electron [C]</span>
+0020 cm_to_m = 0.01;             <span class="comment">% Convert from [cm] to [m]</span>
+0021 g_to_kg = 1/1000;           <span class="comment">% Convert from [g] to [kg]</span>
+0022 m_neg3_to_cm_neg3 = 1e-6;   <span class="comment">% Convert densities from m^-3 to cm^-3</span>
+0023 m_to_cm = 100;              <span class="comment">% Convert [m] to [cm]</span>
+0024 
+0025 <span class="comment">%% Sort data according to altitude and E-field strength</span>
+0026 dfiles = dir(<span class="string">'*.mat'</span>);
+0027 load(dfiles(1).name)
+0028 
+0029 <span class="comment">% Extract height and electric field from files</span>
+0030 get_z0_E0 = cell(numel(dfiles),2); 
+0031 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0032 
+0033     load(dfiles(i1).name)
+0034     my_filename = dfiles(i1).name; 
+0035     [~,N,~] = fileparts(my_filename); 
+0036     a = strsplit(N,<span class="string">'-'</span>);
+0037     get_z0_E0{i1,1} = a{3}; 
+0038     get_z0_E0{i1,2} = a{5}; 
+0039 
+0040 <span class="keyword">end</span> 
+0041 
+0042 <span class="comment">% Convert from cell to double</span>
+0043 get_z0_E0_new = zeros(size(get_z0_E0)); 
+0044 <span class="keyword">for</span> k = 1:size(get_z0_E0,1)
+0045     get_z0_E0_new(k,1) = str2double(get_z0_E0{k,1}); 
+0046     get_z0_E0_new(k,2) = str2double(get_z0_E0{k,2});
+0047 <span class="keyword">end</span> 
+0048 
+0049 <span class="comment">% Sort files</span>
+0050 [sort_dfiles,ind_sort_files] = sortrows(get_z0_E0_new); 
+0051 dfiles_cell = struct2cell(dfiles)'; 
+0052 dfiles_new1 = cell(size(dfiles,1),6); 
+0053 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0054     index = find(i1 == ind_sort_files); 
+0055     dfiles_new1{index,1} = dfiles_cell{i1,1}; 
+0056     dfiles_new1{index,2} = dfiles_cell{i1,2}; 
+0057     dfiles_new1{index,3} = dfiles_cell{i1,3}; 
+0058     dfiles_new1{index,4} = dfiles_cell{i1,4}; 
+0059     dfiles_new1{index,5} = dfiles_cell{i1,5}; 
+0060     dfiles_new1{index,6} = dfiles_cell{i1,6};  
+0061 <span class="keyword">end</span> 
+0062 
+0063 <span class="comment">% Convert from cell to struct</span>
+0064 fields = [&quot;name&quot;, &quot;folder&quot;, &quot;date&quot;, &quot;bytes&quot;, &quot;isdir&quot;, &quot;datenum&quot;];
+0065 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0066     dfiles_new2 = cell2struct(dfiles_new1,fields,2);
+0067 <span class="keyword">end</span> 
+0068 
+0069 <span class="comment">%% Find height z0 and electric field strength E0 in data</span>
+0070 z0 = unique(sort_dfiles(:,1)); 
+0071 E0_field_height = zeros(length(z0),size(sort_dfiles,1)/length(z0)); 
+0072 <span class="keyword">for</span> l = 1:length(z0)
+0073     <span class="keyword">for</span> k = 1:size(sort_dfiles,1)/length(z0)
+0074         n = l-1; 
+0075         m = k + size(sort_dfiles,1)/length(z0)*n; 
+0076         E0_field_height(l,k) = sort_dfiles(m,2); 
+0077     <span class="keyword">end</span> 
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="comment">%% Index at different heights and electric field:</span>
+0081 <span class="comment">% row are height index</span>
+0082 <span class="comment">% columns are electric field index</span>
+0083 ind = zeros(length(E0_field_height),length(z0))'; 
+0084 v = 0; 
+0085 <span class="keyword">for</span> j = 1:length(z0)
+0086     a = 1+v; 
+0087     ind(j,:) = a:a+length(E0_field_height)-1; 
+0088     v = v+length(E0_field_height); 
+0089 <span class="keyword">end</span> 
+0090 
+0091 <span class="comment">%% rehape height vector z0 to match the number of files</span>
+0092 z_intm = zeros(size(ind)); 
+0093 <span class="keyword">for</span> m = 1:length(z0)
+0094     z_intm(m,:) = z0(m); 
+0095 <span class="keyword">end</span>
+0096 z = reshape(z_intm',size(dfiles)); 
+0097 
+0098 <span class="comment">%% Load and process data for cross sections</span>
+0099 <span class="comment">% With more O2 vib. cross sections and new cross section from Bell for fs O</span>
+0100 <span class="comment">% and new cross sections for O2 and N2 rot.</span>
+0101 xs_data = <a href="Cross_section/Process_data/get_data_even_more_xs.html" class="code" title="function out = get_data_even_more_xs()">get_data_even_more_xs</a>(); 
+0102 
+0103 <span class="comment">%% Load data (go first to the folder containing the data...)</span>
+0104 load(dfiles_new2(1).name)
+0105 
+0106 <span class="comment">% Non-Maxwellian electron temperature</span>
+0107 Te_NM_2nd = zeros(1,length(z0)*length(E0_field_height));
+0108 Te_NM_L = zeros(1,length(z0)*length(E0_field_height));
+0109 
+0110 <span class="comment">% Q</span>
+0111 Q_0v_non_max_N2 = zeros(1,length(z0)*length(E0_field_height));
+0112 Q_0v_maxw_N2_2nd = zeros(1,length(z0)*length(E0_field_height));
+0113 Q_0v_maxw_N2_L= zeros(1,length(z0)*length(E0_field_height));
+0114 Q_0v_non_max_O2 = zeros(1,length(z0)*length(E0_field_height));
+0115 Q_0v_maxw_O2_2nd = zeros(1,length(z0)*length(E0_field_height));
+0116 Q_0v_maxw_O2_L = zeros(1,length(z0)*length(E0_field_height));
+0117 Q_non_max_O_fs = zeros(1,length(z0)*length(E0_field_height));
+0118 Q_maxw_O_fs_2nd = zeros(1,length(z0)*length(E0_field_height));
+0119 Q_maxw_O_fs_L = zeros(1,length(z0)*length(E0_field_height));
+0120 Q_non_max_a1delta_O2 = zeros(1,length(z0)*length(E0_field_height));
+0121 Q_maxw_a1delta_O2_L = zeros(1,length(z0)*length(E0_field_height));
+0122 Q_non_max_b1sigma_O2 = zeros(1,length(z0)*length(E0_field_height));
+0123 Q_maxw_b1sigma_O2_L = zeros(1,length(z0)*length(E0_field_height));
+0124 Q_non_max_rot_N2 = zeros(1,length(z0)*length(E0_field_height));
+0125 Q_maxw_rot_N2_L = zeros(1,length(z0)*length(E0_field_height));
+0126 Q_non_max_rot_O2 = zeros(1,length(z0)*length(E0_field_height));
+0127 Q_maxw_rot_O2_L = zeros(1,length(z0)*length(E0_field_height));
+0128 Q_non_max_el = zeros(1,length(z0)*length(E0_field_height));
+0129 Q_maxw_el_L = zeros(1,length(z0)*length(E0_field_height));
+0130 
+0131 <span class="comment">% Maxwellian cooling rates from Pavlov tables</span>
+0132 L_oxygen_10_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0133 L_oxygen_20_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0134 L_oxygen_21_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0135 L_O_fs_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0136 L_a1delta_O2_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0137 L_b1sigma_O2_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0138 L_rot_N2_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0139 L_rot_O2_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0140 L_elas_pavlov_tables_2nd = zeros(1,length(z0)*length(E0_field_height));
+0141 L_oxygen_10_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0142 L_oxygen_20_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0143 L_oxygen_21_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0144 L_O_fs_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0145 L_a1delta_O2_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0146 L_b1sigma_O2_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0147 L_vib_N2_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0148 L_vib_O2_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0149 L_rot_N2_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0150 L_rot_O2_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0151 L_elas_pavlov_tables_L = zeros(1,length(z0)*length(E0_field_height));
+0152 
+0153 <span class="comment">% Cooling rates for N2 vib.</span>
+0154 L_vib_N2_nonmax = zeros(1,length(z0)*length(E0_field_height));
+0155 L_vib_N2_maxw_2nd = zeros(1,length(z0)*length(E0_field_height));
+0156 L_vib_N2_maxw_L = zeros(1,length(z0)*length(E0_field_height));
+0157 
+0158 <span class="comment">% Cooling rates for O2 vib.</span>
+0159 L_vib_O2_nonmax = zeros(1,length(z0)*length(E0_field_height));
+0160 L_vib_O2_maxw_2nd = zeros(1,length(z0)*length(E0_field_height));
+0161 L_vib_O2_maxw_L = zeros(1,length(z0)*length(E0_field_height));
+0162 
+0163 <span class="comment">% Cooling rates from inelastic collision integral from non-maxwellia distribution</span>
+0164 L_N2_vib_dIe = zeros(1,length(z0)*length(E0_field));
+0165 L_Ofine_1_0_dIe = zeros(1,length(z0)*length(E0_field_height));
+0166 L_Ofine_2_0_dIe = zeros(1,length(z0)*length(E0_field_height));
+0167 L_Ofine_2_1_dIe = zeros(1,length(z0)*length(E0_field_height));
+0168 L_non_max_O_fs = zeros(1,length(z0)*length(E0_field_height));
+0169 L_O2a1Dg_dIe = zeros(1,length(z0)*length(E0_field_height));
+0170 L_O2b1Sgp_dIe = zeros(1,length(z0)*length(E0_field_height));
+0171 L_O3P1D_dIe = zeros(1,length(z0)*length(E0_field_height));
+0172 L_O3P1S_dIe = zeros(1,length(z0)*length(E0_field_height));
+0173 L_O2_vib_dIe = zeros(1,length(z0)*length(E0_field));
+0174 
+0175 <span class="comment">% Calculated non-Maxwellian cooling rates</span>
+0176 L_N2_rot = zeros(1,length(z0)*length(E0_field_height));
+0177 L_O2_rot = zeros(1,length(z0)*length(E0_field_height));
+0178 L_el = zeros(1,length(z0)*length(E0_field_height));
+0179 
+0180 <span class="comment">% Absorped power = cooling rates</span>
+0181 L = zeros(1,length(z0)*length(E0_field_height));
+0182 
+0183 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0184 
+0185     load(dfiles_new2(i1).name)
+0186     
+0187     <span class="comment">% Non-Maxwellian temperature [K]</span>
+0188     Te_NM_2nd(i1) = Te_nm_2nd;
+0189     Te_NM_L(i1) = Te_nm_L; 
+0190 
+0191     <span class="comment">% Call MATLAB MSIS [1/m^3]</span>
+0192     [rho,~] = <a href="Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>(z(i1)*1e3); 
+0193     
+0194     <span class="comment">% Neutral densities MATLAB MSIS</span>
+0195     nO = rho(:,2)';   <span class="comment">% [1/m^3]</span>
+0196     nN2 = rho(:,3)';    <span class="comment">% [1/m^3]</span>
+0197     nO2 = rho(:,4)';    <span class="comment">% [1/m^3]</span>
+0198 
+0199     <span class="comment">% Electron density as a function of height [1/m^3]</span>
+0200     N_e = n_e; 
+0201 
+0202     <span class="comment">% Neutral temperature [K]</span>
+0203     T_n = Tn; 
+0204 
+0205     <span class="comment">% Q_0v [ev*cm^3/s]</span>
+0206     Q_0v_maxw_N2_2nd(i1) = sum(Q_maxw_2nd{1,1});   <span class="comment">% OBS: newer cross sections than Pavlov N2 vib. !!!!</span>
+0207     Q_0v_maxw_N2_L(i1) = sum(Q_maxw_L{1,1});       <span class="comment">% OBS: newer cross sections than Pavlov N2 vib. !!!!</span>
+0208     Q_0v_maxw_O2_2nd(i1) = sum(Q_maxw_2nd{1,2}); 
+0209     Q_0v_maxw_O2_L(i1) = sum(Q_maxw_L{1,2});  
+0210 
+0211     <span class="comment">% Absorped power=sum of cooling rates</span>
+0212     L(i1) = L_loop; <span class="comment">% [J m^-3 s^-1]</span>
+0213 
+0214     <span class="comment">% Pavlov tables cooling rates [eV/(cm^3*s)]</span>
+0215     <span class="comment">% At temperature T_{2nd}</span>
+0216     [~,~,L_oxygen_10_pavlov_tables_2nd(i1),L_oxygen_20_pavlov_tables_2nd(i1),L_oxygen_21_pavlov_tables_2nd(i1),<span class="keyword">...</span>
+0217         L_rot_N2_pavlov_tables_2nd(i1),L_rot_O2_pavlov_tables_2nd(i1),L_elas_pavlov_tables_2nd(i1),<span class="keyword">...</span>
+0218         L_a1delta_O2_pavlov_tables_2nd(i1),L_b1sigma_O2_pavlov_tables_2nd(i1)] <span class="keyword">...</span>
+0219         = <a href="Cooling_rates/Functions/cooling_rates_tables_pavlov2.html" class="code" title="function [L_vib_N2,L_vib_O2,L_oxygen_10,L_oxygen_20,L_oxygen_21,L_rot_N2,L_rot_O2,L_elas,L_delta_O2,L_sigma_O2] = cooling_rates_tables_pavlov2(Te,Tn,nNe,nN2,nO2,nO)">cooling_rates_tables_pavlov2</a>(Te_NM_2nd(i1),Tn,N_e,nN2,nO2,nO);
+0220     L_O_fs_pavlov_tables_2nd(i1) = L_oxygen_10_pavlov_tables_2nd(i1)+L_oxygen_20_pavlov_tables_2nd(i1)<span class="keyword">...</span>
+0221         +L_oxygen_21_pavlov_tables_2nd(i1);
+0222     <span class="comment">% At temperature T_L</span>
+0223     [L_vib_N2_pavlov_tables_L(i1),L_vib_O2_pavlov_tables_L(i1),L_oxygen_10_pavlov_tables_L(i1),<span class="keyword">...</span>
+0224         L_oxygen_20_pavlov_tables_L(i1),L_oxygen_21_pavlov_tables_L(i1),<span class="keyword">...</span>
+0225         L_rot_N2_pavlov_tables_L(i1),L_rot_O2_pavlov_tables_L(i1),L_elas_pavlov_tables_L(i1),<span class="keyword">...</span>
+0226         L_a1delta_O2_pavlov_tables_L(i1),L_b1sigma_O2_pavlov_tables_L(i1)] <span class="keyword">...</span>
+0227         = <a href="Cooling_rates/Functions/cooling_rates_tables_pavlov2.html" class="code" title="function [L_vib_N2,L_vib_O2,L_oxygen_10,L_oxygen_20,L_oxygen_21,L_rot_N2,L_rot_O2,L_elas,L_delta_O2,L_sigma_O2] = cooling_rates_tables_pavlov2(Te,Tn,nNe,nN2,nO2,nO)">cooling_rates_tables_pavlov2</a>(Te_NM_L(i1),Tn,N_e,nN2,nO2,nO);
+0228     L_O_fs_pavlov_tables_L(i1) = L_oxygen_10_pavlov_tables_L(i1)+L_oxygen_20_pavlov_tables_L(i1)<span class="keyword">...</span>
+0229         +L_oxygen_21_pavlov_tables_L(i1);
+0230 
+0231     <span class="comment">% Cooling rates [ev*cm^-3/s]</span>
+0232     L_vib_N2_nonmax(i1) = L_non_max(1,1);
+0233     L_vib_N2_maxw_2nd(i1) = L_maxw_2nd(1,1); <span class="comment">% OBS: newer cross sections than Pavlov N2 vib. !!!!</span>
+0234     L_vib_N2_maxw_L(i1) = L_maxw_L(1,1);     <span class="comment">% OBS: newer cross sections than Pavlov N2 vib. !!!!</span>
+0235     L_vib_O2_nonmax(i1) = L_non_max(2,1);
+0236     L_vib_O2_maxw_2nd(i1) = L_maxw_2nd(2,1);
+0237     L_vib_O2_maxw_L(i1) = L_maxw_L(2,1);
+0238 
+0239     <span class="comment">% Degrading electrons due to collisions: Sum of loss and gain [#e/(m^3*s)]</span>
+0240     sum_dIe_N2_vib = sum(dIe(:,1:10),2) + sum(deg_Ie(:,1:10),2);  
+0241     sum_dIe_Ofine_1_0 = sum(dIe(:,13),2) + sum(deg_Ie(:,13),2); 
+0242     sum_dIe_Ofine_2_0 = sum(dIe(:,14),2) + sum(deg_Ie(:,14),2); 
+0243     sum_dIe_Ofine_2_1 = sum(dIe(:,15),2) + sum(deg_Ie(:,15),2); 
+0244     sum_dIe_O2a1Dg = sum(dIe(:,11),2) + sum(deg_Ie(:,11),2); 
+0245     sum_dIe_O2b1Sgp = sum(dIe(:,12),2) + sum(deg_Ie(:,12),2); 
+0246     sum_dIe_O3P1D = sum(dIe(:,16),2) + sum(deg_Ie(:,16),2); 
+0247     sum_dIe_O3P1S = sum(dIe(:,17),2) + sum(deg_Ie(:,17),2); 
+0248     sum_dIe_O2_vib = sum(dIe(:,18:end),2) + sum(deg_Ie(:,18:end),2);
+0249 
+0250     <span class="comment">% Energy/speed in the middle of the bin</span>
+0251     v_bin_mid = v_bins_stubbe(1:end-1)/2 + v_bins_stubbe(2:end)/2; <span class="comment">% [m/s]</span>
+0252     E_bin_mid = (me*v_bin_mid.^2)/2; <span class="comment">% [J]</span>
+0253     E_bin_mid_eV = (me*v_bin_mid.^2)/(2*eVtoJ); <span class="comment">% [eV]</span>
+0254     
+0255     <span class="comment">% Cooling rates from inelastic collision integral E(eV)*histogram [ev/(cm^3*s)]</span>
+0256     L_N2_vib_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_N2_vib)*m_neg3_to_cm_neg3; 
+0257     L_Ofine_1_0_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_Ofine_1_0)*m_neg3_to_cm_neg3; 
+0258     L_Ofine_2_0_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_Ofine_2_0)*m_neg3_to_cm_neg3; 
+0259     L_Ofine_2_1_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_Ofine_2_1)*m_neg3_to_cm_neg3; 
+0260     L_non_max_O_fs(i1) = L_Ofine_1_0_dIe(i1)+L_Ofine_2_0_dIe(i1)+L_Ofine_2_1_dIe(i1);
+0261     L_O2a1Dg_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_O2a1Dg)*m_neg3_to_cm_neg3; 
+0262     L_O2b1Sgp_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_O2b1Sgp)*m_neg3_to_cm_neg3; 
+0263     L_O3P1D_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_O3P1D)*m_neg3_to_cm_neg3; 
+0264     L_O3P1S_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_O3P1S)*m_neg3_to_cm_neg3;
+0265     L_O2_vib_dIe(i1) = sum(-E_bin_mid_eV.*sum_dIe_O2_vib)*m_neg3_to_cm_neg3; 
+0266 
+0267     <span class="comment">% Cooling rates for rotational and elastic [ev/(cm^3*s)]</span>
+0268     [L_N2_rot(i1),L_O2_rot(i1),L_el(i1)] = <a href="Cooling_rates/Functions/L_rot_el_new.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_new(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_new</a>(v_bins_stubbe,f0_exp_stubbe,A,xs_data,<span class="keyword">...</span>
+0269     N_e,nN2,nO2,nO,Te_NM_2nd(i1),Tn); 
+0270     L_N2_rot(i1) = L_N2_rot(i1)*m_neg3_to_cm_neg3*(1/eVtoJ); 
+0271     L_O2_rot(i1) = L_O2_rot(i1)*m_neg3_to_cm_neg3*(1/eVtoJ); 
+0272     L_el(i1) = L_el(i1)*m_neg3_to_cm_neg3*(1/eVtoJ);  
+0273 
+0274     <span class="comment">% Q [ev*cm^3/s]</span>
+0275     Q_0v_non_max_N2(i1) = L_N2_vib_dIe(i1)/(N_e*m_neg3_to_cm_neg3*nN2*m_neg3_to_cm_neg3); 
+0276     Q_0v_non_max_O2(i1) = L_O2_vib_dIe(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3); 
+0277     Q_non_max_O_fs(i1) = (L_Ofine_1_0_dIe(i1)+L_Ofine_2_0_dIe(i1)+L_Ofine_2_1_dIe(i1))/(N_e*m_neg3_to_cm_neg3*nO*m_neg3_to_cm_neg3); 
+0278     Q_maxw_O_fs_2nd(i1) = L_O_fs_pavlov_tables_2nd(i1)/(N_e*m_neg3_to_cm_neg3*nO*m_neg3_to_cm_neg3); 
+0279     Q_maxw_O_fs_L(i1) = L_O_fs_pavlov_tables_L(i1)/(N_e*m_neg3_to_cm_neg3*nO*m_neg3_to_cm_neg3); 
+0280     Q_non_max_a1delta_O2(i1) = L_O2a1Dg_dIe(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3); 
+0281     Q_maxw_a1delta_O2_L(i1) = L_a1delta_O2_pavlov_tables_L(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3); 
+0282     Q_non_max_b1sigma_O2(i1) = L_O2b1Sgp_dIe(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3); 
+0283     Q_maxw_b1sigma_O2_L(i1) = L_b1sigma_O2_pavlov_tables_L(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3); 
+0284     Q_non_max_rot_N2(i1) = L_N2_rot(i1)/(N_e*m_neg3_to_cm_neg3*nN2*m_neg3_to_cm_neg3); 
+0285     Q_maxw_rot_N2_L(i1) = L_rot_N2_pavlov_tables_L(i1)/(N_e*m_neg3_to_cm_neg3*nN2*m_neg3_to_cm_neg3);
+0286     Q_non_max_rot_O2(i1) = L_O2_rot(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3); 
+0287     Q_maxw_rot_O2_L(i1) = L_rot_O2_pavlov_tables_L(i1)/(N_e*m_neg3_to_cm_neg3*nO2*m_neg3_to_cm_neg3);
+0288     Q_non_max_el(i1) = L_el(i1)/(N_e*m_neg3_to_cm_neg3*(nN2+nO2+nO)*m_neg3_to_cm_neg3); 
+0289     Q_maxw_el_L(i1) = L_elas_pavlov_tables_L(i1)/(N_e*m_neg3_to_cm_neg3*(nN2+nO2+nO)*m_neg3_to_cm_neg3);
+0290   
+0291 <span class="keyword">end</span> 
+0292 
+0293 <span class="comment">%% Choose electric fields to plot for the different heights</span>
+0294 pick_E0_70_km = 1:size(E0_field_height,2)-1; 
+0295 pick_E0_80_km = 1:size(E0_field_height,2)-1; 
+0296 pick_E0_90_km = 2:size(E0_field_height,2); 
+0297 pick_E0_100_km = 2:size(E0_field_height,2); 
+0298 
+0299 <span class="comment">%% N2: M-&gt;2nd</span>
+0300 
+0301 figure
+0302 
+0303 subplot(2,2,1)
+0304 yyaxis left
+0305 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_non_max_N2(ind(1,pick_E0_70_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0306 hold on;
+0307 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_maxw_N2_2nd(ind(1,pick_E0_70_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0308 hold off; 
+0309 ax = gca; 
+0310 ax.YColor = <span class="string">'b'</span>; 
+0311 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0312 ylim([-15 -8])
+0313 yticks([-15 -14 -13 -12 -11 -10 -9 -8])
+0314 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0315 yyaxis right
+0316 plot(E0_field_height(1,pick_E0_70_km),Te_NM_2nd(ind(1,pick_E0_70_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0317 ylabel(<span class="string">'Te [K]'</span>)
+0318 ylim([0 6000])
+0319 xlim([0 4])
+0320 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0321 ax = gca; 
+0322 ax.YColor = <span class="string">'r'</span>;
+0323 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0324 
+0325 subplot(2,2,2)
+0326 yyaxis left
+0327 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_non_max_N2(ind(2,pick_E0_80_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0328 hold on;
+0329 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_maxw_N2_2nd(ind(2,pick_E0_80_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0330 hold off; 
+0331 ax = gca; 
+0332 ax.YColor = <span class="string">'b'</span>; 
+0333 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0334 ylim([-15 -8])
+0335 yticks([-15 -14 -13 -12 -11 -10 -9 -8])
+0336 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0337 yyaxis right
+0338 plot(E0_field_height(2,pick_E0_80_km),Te_NM_2nd(ind(2,pick_E0_80_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0339 legend()
+0340 ylabel(<span class="string">'Te [K]'</span>)
+0341 ylim([0 6000])
+0342 xlim([0 4])
+0343 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0344 ax = gca; 
+0345 ax.YColor = <span class="string">'r'</span>;
+0346 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0347 
+0348 subplot(2,2,3)
+0349 yyaxis left
+0350 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_non_max_N2(ind(3,pick_E0_90_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0351 hold on;
+0352 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_maxw_N2_2nd(ind(3,pick_E0_90_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0353 hold off; 
+0354 ax = gca; 
+0355 ax.YColor = <span class="string">'b'</span>; 
+0356 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0357 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0358 ylim([-15 -8])
+0359 yticks([-15 -14 -13 -12 -11 -10 -9 -8])
+0360 title(<span class="string">'90 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0361 yyaxis right
+0362 plot(E0_field_height(3,pick_E0_90_km),Te_NM_2nd(ind(3,pick_E0_90_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0363 legend()
+0364 ylabel(<span class="string">'Te [K]'</span>)
+0365 ylim([0 6000])
+0366 xlim([0 4])
+0367 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0368 ax = gca; 
+0369 ax.YColor = <span class="string">'r'</span>;
+0370 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0371 
+0372 subplot(2,2,4)
+0373 yyaxis left
+0374 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_non_max_N2(ind(4,pick_E0_100_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0375 hold on;
+0376 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_maxw_N2_2nd(ind(4,pick_E0_100_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0377 hold off; 
+0378 ax = gca; 
+0379 ax.YColor = <span class="string">'b'</span>; 
+0380 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0381 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0382 ylim([-15 -8])
+0383 yticks([-15 -14 -13 -12 -11 -10 -9 -8])
+0384 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0385 yyaxis right
+0386 plot(E0_field_height(4,pick_E0_100_km),Te_NM_2nd(ind(4,pick_E0_100_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0387 legend()
+0388 ylabel(<span class="string">'Te [K]'</span>)
+0389 ylim([0 6000])
+0390 xlim([0 4])
+0391 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0392 ax = gca; 
+0393 ax.YColor = <span class="string">'r'</span>;
+0394 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0395 
+0396 sgtitle(<span class="string">'Vibrational excitation of molecular nitrogen'</span>)
+0397 
+0398 <span class="comment">%% O2: M-&gt;2nd</span>
+0399 
+0400 figure
+0401 
+0402 subplot(2,2,1)
+0403 yyaxis left
+0404 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_non_max_O2(ind(1,pick_E0_70_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0405 hold on;
+0406 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_maxw_O2_2nd(ind(1,pick_E0_70_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0407 hold off; 
+0408 ax = gca; 
+0409 ax.YColor = <span class="string">'b'</span>; 
+0410 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0411 ylim([-13 -8])
+0412 yticks([-13 -12 -11 -10 -9 -8])
+0413 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0414 yyaxis right
+0415 plot(E0_field_height(1,pick_E0_70_km),Te_NM_2nd(ind(1,pick_E0_70_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0416 legend()
+0417 ylabel(<span class="string">'Te [K]'</span>)
+0418 ylim([0 6000])
+0419 xlim([0 4])
+0420 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0421 ax = gca; 
+0422 ax.YColor = <span class="string">'r'</span>;
+0423 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0424 
+0425 subplot(2,2,2)
+0426 yyaxis left
+0427 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_non_max_O2(ind(2,pick_E0_80_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0428 hold on;
+0429 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_maxw_O2_2nd(ind(2,pick_E0_80_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0430 hold off; 
+0431 ax = gca; 
+0432 ax.YColor = <span class="string">'b'</span>; 
+0433 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0434 ylim([-13 -8])
+0435 yticks([-13 -12 -11 -10 -9 -8])
+0436 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0437 yyaxis right
+0438 plot(E0_field_height(2,pick_E0_80_km),Te_NM_2nd(ind(2,pick_E0_80_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0439 legend()
+0440 ylabel(<span class="string">'Te [K]'</span>)
+0441 ylim([0 6000])
+0442 xlim([0 4])
+0443 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0444 ax = gca; 
+0445 ax.YColor = <span class="string">'r'</span>;
+0446 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0447 
+0448 subplot(2,2,3)
+0449 yyaxis left
+0450 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_non_max_O2(ind(3,pick_E0_90_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0451 hold on;
+0452 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_maxw_O2_2nd(ind(3,pick_E0_90_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0453 hold off; 
+0454 ax = gca; 
+0455 ax.YColor = <span class="string">'b'</span>; 
+0456 ylabel(<span class="string">'log Q_ [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0457 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0458 ylim([-13 -8])
+0459 yticks([-13 -12 -11 -10 -9 -8])
+0460 title(<span class="string">'90 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0461 yyaxis right
+0462 plot(E0_field_height(3,pick_E0_90_km),Te_NM_2nd(ind(3,pick_E0_90_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0463 legend()
+0464 ylabel(<span class="string">'Te [K]'</span>)
+0465 ylim([0 6000])
+0466 xlim([0 4])
+0467 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0468 ax = gca; 
+0469 ax.YColor = <span class="string">'r'</span>;
+0470 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0471 
+0472 subplot(2,2,4)
+0473 yyaxis left
+0474 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_non_max_O2(ind(4,pick_E0_100_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0475 hold on;
+0476 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_maxw_O2_2nd(ind(4,pick_E0_100_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0477 hold off; 
+0478 ax = gca; 
+0479 ax.YColor = <span class="string">'b'</span>; 
+0480 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0481 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0482 ylim([-13 -8])
+0483 yticks([-13 -12 -11 -10 -9 -8])
+0484 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0485 yyaxis right
+0486 plot(E0_field_height(4,pick_E0_100_km),Te_NM_2nd(ind(4,pick_E0_100_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0487 legend()
+0488 ylabel(<span class="string">'Te [K]'</span>)
+0489 ylim([0 6000])
+0490 xlim([0 4])
+0491 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0492 ax = gca; 
+0493 ax.YColor = <span class="string">'r'</span>;
+0494 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0495 
+0496 sgtitle(<span class="string">'Vibrational excitation of molecular oxygen'</span>)
+0497 
+0498 <span class="comment">%% Fs O: M-&gt;2nd</span>
+0499 
+0500 figure 
+0501 
+0502 subplot(2,2,1)
+0503 yyaxis left
+0504 plot(E0_field_height(1,pick_E0_70_km),log10(Q_non_max_O_fs(ind(1,pick_E0_70_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0505 hold on;
+0506 plot(E0_field_height(1,pick_E0_70_km),log10(Q_maxw_O_fs_2nd(ind(1,pick_E0_70_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0507 hold off; 
+0508 ax = gca; 
+0509 ax.YColor = <span class="string">'b'</span>; 
+0510 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0511 ylim([-11.6 -10.8])
+0512 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0513 yyaxis right
+0514 plot(E0_field_height(1,pick_E0_70_km),Te_NM_2nd(ind(1,pick_E0_70_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0515 legend()
+0516 ylabel(<span class="string">'Te [K]'</span>)
+0517 ylim([0 6000])
+0518 xlim([0 4])
+0519 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0520 ax = gca; 
+0521 ax.YColor = <span class="string">'r'</span>;
+0522 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0523 
+0524 subplot(2,2,2)
+0525 yyaxis left
+0526 plot(E0_field_height(2,pick_E0_80_km),log10(Q_non_max_O_fs(ind(2,pick_E0_80_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0527 hold on;
+0528 plot(E0_field_height(2,pick_E0_80_km),log10(Q_maxw_O_fs_2nd(ind(2,pick_E0_80_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0529 hold off; 
+0530 ax = gca; 
+0531 ax.YColor = <span class="string">'b'</span>; 
+0532 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0533 ylim([-11.6 -10.8])
+0534 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0535 yyaxis right
+0536 plot(E0_field_height(2,pick_E0_80_km),Te_NM_2nd(ind(2,pick_E0_80_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0537 legend()
+0538 ylabel(<span class="string">'Te [K]'</span>)
+0539 ylim([0 6000])
+0540 xlim([0 4])
+0541 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0542 ax = gca; 
+0543 ax.YColor = <span class="string">'r'</span>;
+0544 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0545 
+0546 subplot(2,2,3)
+0547 yyaxis left
+0548 plot(E0_field_height(3,pick_E0_90_km),log10(Q_non_max_O_fs(ind(3,pick_E0_90_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0549 hold on;
+0550 plot(E0_field_height(3,pick_E0_90_km),log10(Q_maxw_O_fs_2nd(ind(3,pick_E0_90_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0551 hold off; 
+0552 ax = gca; 
+0553 ax.YColor = <span class="string">'b'</span>; 
+0554 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0555 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0556 ylim([-11.6 -10.8])
+0557 title(<span class="string">'90 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0558 yyaxis right
+0559 plot(E0_field_height(3,pick_E0_90_km),Te_NM_2nd(ind(3,pick_E0_90_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0560 ylabel(<span class="string">'Te [K]'</span>)
+0561 ylim([0 6000])
+0562 xlim([0 4])
+0563 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0564 ax = gca; 
+0565 ax.YColor = <span class="string">'r'</span>;
+0566 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0567 
+0568 subplot(2,2,4)
+0569 yyaxis left
+0570 plot(E0_field_height(4,pick_E0_100_km),log10(Q_non_max_O_fs(ind(4,pick_E0_100_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0571 hold on;
+0572 plot(E0_field_height(4,pick_E0_100_km),log10(Q_maxw_O_fs_2nd(ind(4,pick_E0_100_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0573 hold off; 
+0574 ax = gca; 
+0575 ax.YColor = <span class="string">'b'</span>; 
+0576 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0577 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0578 ylim([-11.6 -10.8])
+0579 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0580 yyaxis right
+0581 plot(E0_field_height(4,pick_E0_100_km),Te_NM_2nd(ind(4,pick_E0_100_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0582 legend()
+0583 ylabel(<span class="string">'Te [K]'</span>)
+0584 ylim([0 6000])
+0585 xlim([0 4])
+0586 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_{2nd}'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0587 ax = gca; 
+0588 ax.YColor = <span class="string">'r'</span>;
+0589 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0590 
+0591 sgtitle(<span class="string">'Excitation of fine structures in atomic oxygen'</span>)
+0592 
+0593 <span class="comment">%% N2: M-&gt;L</span>
+0594 
+0595 figure
+0596 
+0597 subplot(2,2,1)
+0598 yyaxis left
+0599 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_non_max_N2(ind(1,pick_E0_70_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0600 hold on;
+0601 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_maxw_N2_L(ind(1,pick_E0_70_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0602 hold off; 
+0603 ax = gca; 
+0604 ax.YColor = <span class="string">'b'</span>; 
+0605 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0606 ylim([-15 -9])
+0607 yticks([-15 -14 -13 -12 -11 -10 -9])
+0608 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0609 yyaxis right
+0610 plot(E0_field_height(1,pick_E0_70_km),Te_NM_L(ind(1,pick_E0_70_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0611 ylabel(<span class="string">'Te [K]'</span>)
+0612 ylim([0 4000])
+0613 xlim([0 4])
+0614 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0615 ax = gca; 
+0616 ax.YColor = <span class="string">'r'</span>;
+0617 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0618 
+0619 subplot(2,2,2)
+0620 yyaxis left
+0621 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_non_max_N2(ind(2,pick_E0_80_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0622 hold on;
+0623 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_maxw_N2_L(ind(2,pick_E0_80_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0624 hold off; 
+0625 ax = gca; 
+0626 ax.YColor = <span class="string">'b'</span>; 
+0627 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0628 ylim([-15 -9])
+0629 yticks([-15 -14 -13 -12 -11 -10 -9])
+0630 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0631 yyaxis right
+0632 plot(E0_field_height(2,pick_E0_80_km),Te_NM_L(ind(2,pick_E0_80_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0633 legend()
+0634 ylabel(<span class="string">'Te [K]'</span>)
+0635 ylim([0 4000])
+0636 xlim([0 4])
+0637 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0638 ax = gca; 
+0639 ax.YColor = <span class="string">'r'</span>;
+0640 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0641 
+0642 subplot(2,2,3)
+0643 yyaxis left
+0644 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_non_max_N2(ind(3,pick_E0_90_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0645 hold on;
+0646 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_maxw_N2_L(ind(3,pick_E0_90_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0647 hold off; 
+0648 ax = gca; 
+0649 ax.YColor = <span class="string">'b'</span>; 
+0650 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0651 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0652 ylim([-15 -9])
+0653 yticks([-15 -14 -13 -12 -11 -10 -9])
+0654 title(<span class="string">'90 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0655 yyaxis right
+0656 plot(E0_field_height(3,pick_E0_90_km),Te_NM_L(ind(3,pick_E0_90_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0657 legend()
+0658 ylabel(<span class="string">'Te [K]'</span>)
+0659 ylim([0 4000])
+0660 xlim([0 4])
+0661 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0662 ax = gca; 
+0663 ax.YColor = <span class="string">'r'</span>;
+0664 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0665 
+0666 subplot(2,2,4)
+0667 yyaxis left
+0668 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_non_max_N2(ind(4,pick_E0_100_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0669 hold on;
+0670 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_maxw_N2_L(ind(4,pick_E0_100_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0671 hold off; 
+0672 ax = gca; 
+0673 ax.YColor = <span class="string">'b'</span>; 
+0674 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0675 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0676 ylim([-15 -9])
+0677 yticks([-15 -14 -13 -12 -11 -10 -9])
+0678 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0679 yyaxis right
+0680 plot(E0_field_height(4,pick_E0_100_km),Te_NM_L(ind(4,pick_E0_100_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0681 legend()
+0682 ylabel(<span class="string">'Te [K]'</span>)
+0683 ylim([0 4000])
+0684 xlim([0 4])
+0685 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0686 ax = gca; 
+0687 ax.YColor = <span class="string">'r'</span>;
+0688 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0689 
+0690 sgtitle(<span class="string">'Vibrational excitation of molecular nitrogen'</span>)
+0691 
+0692 <span class="comment">%% O2: M-&gt;L</span>
+0693 
+0694 figure
+0695 
+0696 subplot(2,2,1)
+0697 yyaxis left
+0698 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_non_max_O2(ind(1,pick_E0_70_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0699 hold on;
+0700 plot(E0_field_height(1,pick_E0_70_km),log10(Q_0v_maxw_O2_L(ind(1,pick_E0_70_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0701 hold off; 
+0702 ax = gca; 
+0703 ax.YColor = <span class="string">'b'</span>; 
+0704 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0705 ylim([-13 -8])
+0706 yticks([-13 -12 -11 -10 -9 -8])
+0707 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0708 yyaxis right
+0709 plot(E0_field_height(1,pick_E0_70_km),Te_NM_L(ind(1,pick_E0_70_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0710 legend()
+0711 ylabel(<span class="string">'Te [K]'</span>)
+0712 ylim([0 4000])
+0713 xlim([0 4])
+0714 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0715 ax = gca; 
+0716 ax.YColor = <span class="string">'r'</span>;
+0717 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0718 
+0719 subplot(2,2,2)
+0720 yyaxis left
+0721 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_non_max_O2(ind(2,pick_E0_80_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0722 hold on;
+0723 plot(E0_field_height(2,pick_E0_80_km),log10(Q_0v_maxw_O2_L(ind(2,pick_E0_80_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0724 hold off; 
+0725 ax = gca; 
+0726 ax.YColor = <span class="string">'b'</span>; 
+0727 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0728 ylim([-13 -8])
+0729 yticks([-13 -12 -11 -10 -9 -8])
+0730 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0731 yyaxis right
+0732 plot(E0_field_height(2,pick_E0_80_km),Te_NM_L(ind(2,pick_E0_80_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0733 legend()
+0734 ylabel(<span class="string">'Te [K]'</span>)
+0735 ylim([0 4000])
+0736 xlim([0 4])
+0737 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0738 ax = gca; 
+0739 ax.YColor = <span class="string">'r'</span>;
+0740 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0741 
+0742 subplot(2,2,3)
+0743 yyaxis left
+0744 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_non_max_O2(ind(3,pick_E0_90_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0745 hold on;
+0746 plot(E0_field_height(3,pick_E0_90_km),log10(Q_0v_maxw_O2_L(ind(3,pick_E0_90_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0747 hold off; 
+0748 ax = gca; 
+0749 ax.YColor = <span class="string">'b'</span>; 
+0750 ylabel(<span class="string">'log Q_ [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0751 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0752 ylim([-13 -8])
+0753 yticks([-13 -12 -11 -10 -9 -8])
+0754 title(<span class="string">'90 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0755 yyaxis right
+0756 plot(E0_field_height(3,pick_E0_90_km),Te_NM_L(ind(3,pick_E0_90_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0757 legend()
+0758 ylabel(<span class="string">'Te [K]'</span>)
+0759 ylim([0 4000])
+0760 xlim([0 4])
+0761 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0762 ax = gca; 
+0763 ax.YColor = <span class="string">'r'</span>;
+0764 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01])
+0765 
+0766 subplot(2,2,4)
+0767 yyaxis left
+0768 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_non_max_O2(ind(4,pick_E0_100_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0769 hold on;
+0770 plot(E0_field_height(4,pick_E0_100_km),log10(Q_0v_maxw_O2_L(ind(4,pick_E0_100_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2)
+0771 hold off; 
+0772 ax = gca; 
+0773 ax.YColor = <span class="string">'b'</span>; 
+0774 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0775 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0776 ylim([-13 -8])
+0777 yticks([-13 -12 -11 -10 -9 -8])
+0778 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0779 yyaxis right
+0780 plot(E0_field_height(4,pick_E0_100_km),Te_NM_L(ind(4,pick_E0_100_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0781 legend()
+0782 ylabel(<span class="string">'Te [K]'</span>)
+0783 ylim([0 4000])
+0784 xlim([0 4])
+0785 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0786 ax = gca; 
+0787 ax.YColor = <span class="string">'r'</span>;
+0788 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0789 
+0790 sgtitle(<span class="string">'Vibrational excitation of molecular oxygen'</span>)
+0791 
+0792 <span class="comment">%% Fs O: M-&gt;L</span>
+0793 
+0794 figure 
+0795 
+0796 subplot(2,2,1)
+0797 yyaxis left
+0798 plot(E0_field_height(1,pick_E0_70_km),log10(Q_non_max_O_fs(ind(1,pick_E0_70_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0799 hold on;
+0800 plot(E0_field_height(1,pick_E0_70_km),log10(Q_maxw_O_fs_L(ind(1,pick_E0_70_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0801 hold off; 
+0802 ax = gca; 
+0803 ax.YColor = <span class="string">'b'</span>; 
+0804 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0805 ylim([-11.6 -10.8])
+0806 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0807 yyaxis right
+0808 plot(E0_field_height(1,pick_E0_70_km),Te_NM_L(ind(1,pick_E0_70_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0809 legend()
+0810 ylabel(<span class="string">'Te [K]'</span>)
+0811 ylim([0 4000])
+0812 xlim([0 4])
+0813 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0814 ax = gca; 
+0815 ax.YColor = <span class="string">'r'</span>;
+0816 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0817 
+0818 subplot(2,2,2)
+0819 yyaxis left
+0820 plot(E0_field_height(2,pick_E0_80_km),log10(Q_non_max_O_fs(ind(2,pick_E0_80_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0821 hold on;
+0822 plot(E0_field_height(2,pick_E0_80_km),log10(Q_maxw_O_fs_L(ind(2,pick_E0_80_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0823 hold off; 
+0824 ax = gca; 
+0825 ax.YColor = <span class="string">'b'</span>; 
+0826 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0827 ylim([-11.6 -10.8])
+0828 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0829 yyaxis right
+0830 plot(E0_field_height(2,pick_E0_80_km),Te_NM_L(ind(2,pick_E0_80_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0831 legend()
+0832 ylabel(<span class="string">'Te [K]'</span>)
+0833 ylim([0 4000])
+0834 xlim([0 4])
+0835 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0836 ax = gca; 
+0837 ax.YColor = <span class="string">'r'</span>;
+0838 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0839 
+0840 subplot(2,2,3)
+0841 yyaxis left
+0842 plot(E0_field_height(3,pick_E0_90_km),log10(Q_non_max_O_fs(ind(3,pick_E0_90_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0843 hold on;
+0844 plot(E0_field_height(3,pick_E0_90_km),log10(Q_maxw_O_fs_L(ind(3,pick_E0_90_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0845 hold off; 
+0846 ax = gca; 
+0847 ax.YColor = <span class="string">'b'</span>; 
+0848 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0849 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0850 ylim([-11.6 -10.8])
+0851 title(<span class="string">'90 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0852 yyaxis right
+0853 plot(E0_field_height(3,pick_E0_90_km),Te_NM_L(ind(3,pick_E0_90_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0854 legend()
+0855 ylabel(<span class="string">'Te [K]'</span>)
+0856 ylim([0 4000])
+0857 xlim([0 4])
+0858 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0859 ax = gca; 
+0860 ax.YColor = <span class="string">'r'</span>;
+0861 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0862 
+0863 subplot(2,2,4)
+0864 yyaxis left
+0865 plot(E0_field_height(4,pick_E0_100_km),log10(Q_non_max_O_fs(ind(4,pick_E0_100_km))),<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2) 
+0866 hold on;
+0867 plot(E0_field_height(4,pick_E0_100_km),log10(Q_maxw_O_fs_L(ind(4,pick_E0_100_km))),<span class="string">'b-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0868 hold off; 
+0869 ax = gca; 
+0870 ax.YColor = <span class="string">'b'</span>; 
+0871 ylabel(<span class="string">'log Q [eV cm^3 s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0872 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,ftszl)
+0873 ylim([-11.6 -10.8])
+0874 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,ftszt) 
+0875 yyaxis right
+0876 plot(E0_field_height(4,pick_E0_100_km),Te_NM_L(ind(4,pick_E0_100_km)),<span class="string">'r--'</span>,<span class="string">'LineWidth'</span>,2) 
+0877 legend()
+0878 ylabel(<span class="string">'Te [K]'</span>)
+0879 ylim([0 4000])
+0880 xlim([0 4])
+0881 legend(<span class="string">'Q_{NM}'</span>,<span class="string">'Q_{M}'</span>,<span class="string">'T_L'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg)
+0882 ax = gca; 
+0883 ax.YColor = <span class="string">'r'</span>;
+0884 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0885 
+0886 sgtitle(<span class="string">'Excitation of fine structures in atomic oxygen'</span>)
+0887 
+0888 
+0889 <span class="comment">%% Create data for bar plot</span>
+0890 
+0891 ch_z0 = [3 3]; <span class="comment">% 100 km</span>
+0892 ch_E0 = [3 12]; <span class="comment">% E_0 2.5 and 2.5  V/m</span>
+0893 
+0894 data_NM = zeros(length(ch_z0),10); 
+0895 data_M_2nd = zeros(length(ch_z0),10); 
+0896 data_M_L = zeros(length(ch_z0),10); 
+0897 <span class="keyword">for</span> i = 1:length(ch_z0)
+0898 
+0899     a1 = ch_z0(i);
+0900     b1 = ch_E0(i); 
+0901 
+0902     <span class="comment">% Non-Maxwellian</span>
+0903     O_fs_NM = L_Ofine_1_0_dIe(ind(a1,b1))+L_Ofine_2_0_dIe(ind(a1,b1))+L_Ofine_2_1_dIe(ind(a1,b1)); 
+0904     data_NM(i,:) = [L_vib_N2_nonmax(ind(a1,b1)) L_vib_O2_nonmax(ind(a1,b1))  L_N2_rot(ind(a1,b1)) <span class="keyword">...</span>
+0905         L_O2_rot(ind(a1,b1)) L_el(ind(a1,b1)) O_fs_NM  L_O2a1Dg_dIe(ind(a1,b1))  <span class="keyword">...</span>
+0906         L_O2b1Sgp_dIe(ind(a1,b1)) L_O3P1S_dIe(ind(a1,b1)) L_O3P1D_dIe(ind(a1,b1))]; 
+0907   
+0908     <span class="comment">% Maxwellian at T_2nd</span>
+0909     O_fs_M_2nd = L_oxygen_10_pavlov_tables_2nd(ind(a1,b1))+L_oxygen_20_pavlov_tables_2nd(ind(a1,b1))+<span class="keyword">...</span>
+0910         L_oxygen_21_pavlov_tables_2nd(ind(a1,b1)); 
+0911     data_M_2nd(i,:) = [L_vib_N2_maxw_2nd(ind(a1,b1)) L_vib_O2_maxw_2nd(ind(a1,b1))  <span class="keyword">...</span>
+0912         L_rot_N2_pavlov_tables_2nd(ind(a1,b1)) L_rot_O2_pavlov_tables_2nd(ind(a1,b1)) <span class="keyword">...</span>
+0913         L_elas_pavlov_tables_2nd(ind(a1,b1)) O_fs_M_2nd L_a1delta_O2_pavlov_tables_2nd(ind(a1,b1))  <span class="keyword">...</span>
+0914         L_b1sigma_O2_pavlov_tables_2nd(ind(a1,b1)) 0 0]; 
+0915 
+0916     <span class="comment">% Maxwellian at T_L</span>
+0917     O_fs_M_L = L_oxygen_10_pavlov_tables_L(ind(a1,b1))+L_oxygen_20_pavlov_tables_L(ind(a1,b1))+<span class="keyword">...</span>
+0918         L_oxygen_21_pavlov_tables_L(ind(a1,b1));
+0919     data_M_L(i,:) = [L_vib_N2_pavlov_tables_L(ind(a1,b1)) L_vib_O2_pavlov_tables_L(ind(a1,b1))  <span class="keyword">...</span>
+0920         L_rot_N2_pavlov_tables_L(ind(a1,b1)) L_rot_O2_pavlov_tables_L(ind(a1,b1)) <span class="keyword">...</span>
+0921         L_elas_pavlov_tables_L(ind(a1,b1)) O_fs_M_L L_a1delta_O2_pavlov_tables_L(ind(a1,b1))  <span class="keyword">...</span>
+0922         L_b1sigma_O2_pavlov_tables_L(ind(a1,b1)) 0 0]; 
+0923 
+0924 <span class="keyword">end</span> 
+0925 
+0926 legend_text = {<span class="string">'N_2 vib.'</span>,<span class="string">'O_2 vib.'</span>,<span class="string">'N_2 rot.'</span>,<span class="string">'O_2 rot.'</span>,<span class="string">'ela.'</span>,<span class="string">'O fs'</span>,<span class="string">'O2a1'</span>,<span class="string">'O2b1'</span>}; 
+0927 X = categorical({<span class="string">'M:T_e=2nd'</span>,<span class="string">'Non-M.'</span>,<span class="string">'M:T_e=L'</span>}); 
+0928 X = reordercats(X,{<span class="string">'M:T_e=2nd'</span>,<span class="string">'Non-M.'</span>,<span class="string">'M:T_e=L'</span>});
+0929 
+0930 
+0931 <span class="comment">%% Scatter and bar plot</span>
+0932 
+0933 <span class="comment">% Graphical setup</span>
+0934 ftsza_2 = 11.5; 
+0935 ftszl_2 = 14.5; 
+0936 ftszlg_2 = 9.5;
+0937 ftszt_2 = 16; 
+0938 
+0939 <span class="comment">% Total Maxwellian cooling rates at Te = T_2nd</span>
+0940 L_M_tot = (L_vib_N2_maxw_2nd + L_vib_O2_maxw_2nd + L_oxygen_10_pavlov_tables_2nd +<span class="keyword">...</span>
+0941         L_oxygen_20_pavlov_tables_2nd + L_oxygen_21_pavlov_tables_2nd +<span class="keyword">...</span>
+0942         L_rot_N2_pavlov_tables_2nd + L_rot_O2_pavlov_tables_2nd + L_elas_pavlov_tables_2nd + <span class="keyword">...</span>
+0943         L_a1delta_O2_pavlov_tables_2nd + L_b1sigma_O2_pavlov_tables_2nd)*eVtoJ*(1/m_neg3_to_cm_neg3); 
+0944 
+0945 
+0946 <span class="comment">% For plotting</span>
+0947 my_values = [8 9 10 11 12 13 14 15 <span class="keyword">...</span>
+0948     16 17 18 19 20 21 22 23 24 25 26 27 28 <span class="keyword">...</span>
+0949     31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 <span class="keyword">...</span>
+0950     46 47 48 49 50 51 52 53 54 55 56 57 58 59 60]; 
+0951 ratio_L = zeros(1,length(my_values)); 
+0952 ratio_Te = zeros(1,length(my_values)); 
+0953 L_plot = zeros(1,length(my_values)); 
+0954 z_plot = zeros(1,length(my_values)); 
+0955 <span class="keyword">for</span> h = 1:length(my_values)
+0956     ratio_L(h) = L_M_tot(my_values(h))./L(my_values(h)); 
+0957     ratio_Te(h) = Te_NM_2nd(my_values(h))./Te_NM_L(my_values(h)); 
+0958     L_plot(h) = L(my_values(h)); 
+0959     z_plot(h) = z(my_values(h)); 
+0960 <span class="keyword">end</span> 
+0961 
+0962 figure
+0963 subplot(2,2,1)
+0964 scatter(L_plot,z_plot',37,ratio_L,<span class="string">'filled'</span>)
+0965 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+0966 set(gca,<span class="string">'fontsize'</span>,ftsza_2,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.015 0.008]) 
+0967 xlabel(<span class="string">'Q_{abs} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+0968 ylabel(<span class="string">'Height [km]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+0969 colorbar
+0970 colormap(parula)
+0971 xlim([1e-11 1e-5])
+0972 xticks([1e-11 1e-9 1e-7 1e-5])
+0973 title(<span class="string">'(a)'</span>,<span class="string">'FontSize'</span>,ftszt_2)
+0974 ylim([60 110])
+0975 yticks([60 70 80 90 100 110])
+0976 
+0977 subplot(2,2,2)
+0978 scatter(L_plot,z_plot',37,ratio_Te,<span class="string">'filled'</span>)
+0979 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+0980 set(gca,<span class="string">'fontsize'</span>,ftsza_2,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.015 0.008]) 
+0981 xlabel(<span class="string">'Q_{abs} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+0982 colorbar
+0983 colormap(&quot;turbo&quot;)
+0984 xlim([1e-11 1e-5])
+0985 xticks([1e-11 1e-9 1e-7 1e-5])
+0986 title(<span class="string">'(b)'</span>,<span class="string">'FontSize'</span>,ftszt_2)
+0987 ylim([60 110])
+0988 yticks([60 70 80 90 100 110])
+0989 
+0990 subplot(2,2,3)
+0991 bar(X,[data_M_2nd(1,:)*eVtoJ*(1/m_neg3_to_cm_neg3); data_NM(1,:)*eVtoJ*(1/m_neg3_to_cm_neg3); <span class="keyword">...</span>
+0992     data_M_L(1,:)*eVtoJ*(1/m_neg3_to_cm_neg3)],&quot;stacked&quot;)
+0993 set(gca,<span class="string">'fontsize'</span>,ftsza_2,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+0994 title(<span class="string">'(c)'</span>,<span class="string">'FontSize'</span>,ftszt_2)
+0995 ylabel(<span class="string">'L_{tot} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+0996 subplot(2,2,4) 
+0997 bar(X,[data_M_2nd(2,:)*eVtoJ*(1/m_neg3_to_cm_neg3); data_NM(2,:)*eVtoJ*(1/m_neg3_to_cm_neg3); <span class="keyword">...</span>
+0998     data_M_L(2,:)*eVtoJ*(1/m_neg3_to_cm_neg3)],&quot;stacked&quot;)
+0999 set(gca,<span class="string">'fontsize'</span>,ftsza_2,<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.02 0.01]) 
+1000 title(<span class="string">'(d)'</span>,<span class="string">'FontSize'</span>,ftszt_2)
+1001 legend(legend_text,<span class="string">'Location'</span>,<span class="string">'northeast'</span>,<span class="string">'FontSize'</span>,ftszlg_2,<span class="string">'NumColumns'</span>,2)
+1002 colororder(<span class="string">'glow12'</span>)
+1003 
+1004 <span class="comment">%% Scatter plot for ratio</span>
+1005 
+1006 my_values_2 = [6 7 8 9 10 11 12 13 14 15 <span class="keyword">...</span>
+1007     20 21 22 23 24 25 26 27 28 29 30 <span class="keyword">...</span>
+1008     35 36 37 38 39 40 41 42 43 44 45 <span class="keyword">...</span>
+1009    50  51 52 53 54 55 56 57 58 59 60]; 
+1010 ratio_Q_N2 = zeros(1,length(my_values_2)); 
+1011 ratio_Q_O2 = zeros(1,length(my_values_2)); 
+1012 L_plot_2 = zeros(1,length(my_values_2)); 
+1013 z_plot_2 = zeros(1,length(my_values_2)); 
+1014 <span class="keyword">for</span> h = 1:length(my_values_2)
+1015     ratio_Q_N2(h) = Q_0v_non_max_N2(my_values_2(h))./Q_0v_maxw_N2_L(my_values_2(h)); 
+1016     ratio_Q_O2(h) = Q_0v_non_max_O2(my_values_2(h))./Q_0v_maxw_O2_L(my_values_2(h)); 
+1017     L_plot_2(h) = L(my_values_2(h)); 
+1018     z_plot_2(h) = z(my_values_2(h)); 
+1019 <span class="keyword">end</span> 
+1020 
+1021 figure
+1022 subplot(2,2,1)
+1023 scatter(L_plot_2,z_plot_2',37,ratio_Q_N2,<span class="string">'filled'</span>)
+1024 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+1025 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.009 0.004]) 
+1026 colorbar
+1027 colormap(turbo)
+1028 xlim([1e-11 1e-5])
+1029 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1030 ylim([60 110])
+1031 yticks([60 70 80 90 100 110])
+1032 ylabel(<span class="string">'Height [km]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1033 title(<span class="string">'N2 vib.'</span>,<span class="string">'FontSize'</span>,ftszt_2) 
+1034 subplot(2,2,2)
+1035 scatter(L_plot_2,z_plot_2',37,ratio_Q_O2,<span class="string">'filled'</span>)
+1036 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+1037 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.009 0.004]) 
+1038 colorbar
+1039 colormap(turbo)
+1040 xlim([1e-11 1e-5])
+1041 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1042 ylim([60 110])
+1043 yticks([60 70 80 90 100 110])
+1044 ylabel(<span class="string">'Height [km]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1045 title(<span class="string">'O2 vib.'</span>,<span class="string">'FontSize'</span>,ftszt_2) 
+1046 subplot(2,2,3)
+1047 scatter(L,z',37,Q_non_max_rot_N2./Q_maxw_rot_N2_L,<span class="string">'filled'</span>)
+1048 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+1049 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.009 0.004]) 
+1050 colorbar
+1051 colormap(turbo)
+1052 xlim([1e-11 1e-5])
+1053 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1054 ylim([60 110])
+1055 yticks([60 70 80 90 100 110])
+1056 xlabel(<span class="string">'Q_{abs} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1057 ylabel(<span class="string">'Height [km]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1058 title(<span class="string">'N2 rot.'</span>,<span class="string">'FontSize'</span>,ftszt_2) 
+1059 subplot(2,2,4)
+1060 scatter(L,z',37,Q_non_max_O_fs./Q_maxw_O_fs_L,<span class="string">'filled'</span>)
+1061 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+1062 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.017 0.009]) 
+1063 colorbar
+1064 colormap(turbo)
+1065 xlim([1e-11 1e-5])
+1066 xticks([1e-11 1e-9 1e-7 1e-5])
+1067 ylim([60 110])
+1068 yticks([60 70 80 90 100 110])
+1069 xlabel(<span class="string">'Q_{abs} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1070 title(<span class="string">'O fs'</span>,<span class="string">'FontSize'</span>,ftszt) 
+1071 
+1072 <span class="comment">%% Plot ratio non-Mawellian vs Maxwellian</span>
+1073 
+1074 <span class="comment">% Graphical setup</span>
+1075 ftszl_3 = 16.0; 
+1076 ftszlg_3 = 10.1;
+1077 ftszt_3 = 17; 
+1078 
+1079 pick_E0_70_km_2 = 7:size(E0_field_height,2); 
+1080 pick_E0_80_km_2 = 5:size(E0_field_height,2); 
+1081 pick_E0_90_km_2 = 5:size(E0_field_height,2); 
+1082 pick_E0_100_km_2 = 5:size(E0_field_height,2); 
+1083 
+1084 col1 = [0,204,204]/255; 
+1085 col2 = [0,0,204]/255; 
+1086 col3 = [127,0,255]/255; 
+1087 col4 = [204,0,102]/255; 
+1088 
+1089 figure 
+1090 
+1091 subplot(2,2,1)
+1092 semilogx(L(ind(1,pick_E0_70_km_2)),Q_0v_non_max_N2(ind(1,pick_E0_70_km_2))./<span class="keyword">...</span><span class="comment">.</span>
+1093     Q_0v_maxw_N2_L(ind(1,pick_E0_70_km_2)),<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col1)
+1094 hold on;
+1095 semilogx(L(ind(2,pick_E0_80_km_2)),Q_0v_non_max_N2(ind(2,pick_E0_80_km_2))./<span class="keyword">...</span>
+1096     Q_0v_maxw_N2_L(ind(2,pick_E0_80_km_2)),<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col2)
+1097 semilogx(L(ind(3,pick_E0_90_km_2)),Q_0v_non_max_N2(ind(3,pick_E0_90_km_2))./<span class="keyword">...</span>
+1098     Q_0v_maxw_N2_L(ind(3,pick_E0_90_km_2)),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col3)
+1099 semilogx(L(ind(4,pick_E0_100_km_2)),Q_0v_non_max_N2(ind(4,pick_E0_100_km_2))./<span class="keyword">...</span>
+1100     Q_0v_maxw_N2_L(ind(4,pick_E0_100_km_2)),<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col4)
+1101 hold off; 
+1102 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.017 0.009]) 
+1103 ylabel(<span class="string">'Ratio'</span>,<span class="string">'FontSize'</span>,ftszl_3)
+1104 xlim([1e-11 1e-5])
+1105 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1106 title(<span class="string">'N2 vib.'</span>,<span class="string">'FontSize'</span>,ftszt_3) 
+1107 legend(<span class="string">'70 km'</span>,<span class="string">'80 km'</span>,<span class="string">'90 km'</span>,<span class="string">'100 km'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg_3)
+1108 
+1109 subplot(2,2,2)
+1110 semilogx(L(ind(1,pick_E0_70_km_2)),Q_0v_non_max_O2(ind(1,pick_E0_70_km_2))./<span class="keyword">...</span><span class="comment">..</span>
+1111     Q_0v_maxw_O2_L(ind(1,pick_E0_70_km_2)),<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col1)
+1112 hold on;
+1113 semilogx(L(ind(2,pick_E0_80_km_2)),Q_0v_non_max_O2(ind(2,pick_E0_80_km_2))./<span class="keyword">...</span>
+1114     Q_0v_maxw_O2_L(ind(2,pick_E0_80_km_2)),<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col2)
+1115 semilogx(L(ind(3,pick_E0_90_km_2)),Q_0v_non_max_O2(ind(3,pick_E0_90_km_2))./<span class="keyword">...</span>
+1116     Q_0v_maxw_O2_L(ind(3,pick_E0_90_km_2)),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col3)
+1117 semilogx(L(ind(4,pick_E0_100_km_2)),Q_0v_non_max_O2(ind(4,pick_E0_100_km_2))./<span class="keyword">...</span>
+1118     Q_0v_maxw_O2_L(ind(4,pick_E0_100_km_2)),<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col4)
+1119 hold off; 
+1120 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.017 0.009]) 
+1121 xlim([1e-11 1e-5])
+1122 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1123 title(<span class="string">'O2 vib.'</span>,<span class="string">'FontSize'</span>,ftszt_3) 
+1124 legend(<span class="string">'70 km'</span>,<span class="string">'80 km'</span>,<span class="string">'90 km'</span>,<span class="string">'100 km'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg_3)
+1125 
+1126 subplot(2,2,3)
+1127 semilogx(L(ind(1,:)),Q_non_max_rot_N2(ind(1,:))./Q_maxw_rot_N2_L(ind(1,:)),<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col1)
+1128 hold on;
+1129 semilogx(L(ind(2,:)),Q_non_max_rot_N2(ind(2,:))./Q_maxw_rot_N2_L(ind(2,:)),<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col2)
+1130 semilogx(L(ind(3,:)),Q_non_max_rot_N2(ind(3,:))./Q_maxw_rot_N2_L(ind(3,:)),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col3)
+1131 semilogx(L(ind(4,:)),Q_non_max_rot_N2(ind(4,:))./Q_maxw_rot_N2_L(ind(4,:)),<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col4)
+1132 hold off; 
+1133 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.017 0.009]) 
+1134 xlabel(<span class="string">'Q_{abs} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1135 ylabel(<span class="string">'Ratio'</span>,<span class="string">'FontSize'</span>,ftszl_3)
+1136 xlim([1e-11 1e-5])
+1137 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1138 title(<span class="string">'N_2 rot.'</span>,<span class="string">'FontSize'</span>,ftszt_3) 
+1139 legend(<span class="string">'70 km'</span>,<span class="string">'80 km'</span>,<span class="string">'90 km'</span>,<span class="string">'100 km'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg_3)
+1140 
+1141 subplot(2,2,4)
+1142 semilogx(L(ind(1,:)),Q_non_max_O_fs(ind(1,:))./Q_maxw_O_fs_L(ind(1,:)),<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col1)
+1143 hold on;
+1144 semilogx(L(ind(2,:)),Q_non_max_O_fs(ind(2,:))./Q_maxw_O_fs_L(ind(2,:)),<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col2)
+1145 semilogx(L(ind(3,:)),Q_non_max_O_fs(ind(3,:))./Q_maxw_O_fs_L(ind(3,:)),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col3)
+1146 semilogx(L(ind(4,:)),Q_non_max_O_fs(ind(4,:))./Q_maxw_O_fs_L(ind(4,:)),<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col4)
+1147 hold off; 
+1148 set(gca,<span class="string">'fontsize'</span>,ftsza,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.017 0.009]) 
+1149 xlabel(<span class="string">'Q_{abs} [J m^{-3} s^{-1}]'</span>,<span class="string">'FontSize'</span>,ftszl_2)
+1150 xlim([1e-11 1e-5])
+1151 xticks([1e-11 1e-10 1e-9 1e-8 1e-7 1e-6 1e-5])
+1152 title(<span class="string">'O fs'</span>,<span class="string">'FontSize'</span>,ftszt_3) 
+1153 legend(<span class="string">'70 km'</span>,<span class="string">'80 km'</span>,<span class="string">'90 km'</span>,<span class="string">'100 km'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,ftszlg_3)
+1154 
+1155 
+1156 
+1157 
+1158 
+1159 
+1160 
+1161 
+1162 
+1163 
+1164</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

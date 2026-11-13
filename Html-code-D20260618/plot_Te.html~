@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_Te</title>
+  <meta name="keywords" content="plot_Te">
+  <meta name="description" content="Go to data to plot Te:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html . -->
+<h1>plot_Te
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Go to data to plot Te:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Go to data to plot Te:
+ /home/margaretha/Documents/MATLAB/Non_Maxwellian/Code_data/Cooling_rates/Data/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Go to data to plot Te:</span>
+0002 <span class="comment">% /home/margaretha/Documents/MATLAB/Non_Maxwellian/Code_data/Cooling_rates/Data/</span>
+0003 
+0004 <span class="comment">%% Graphical setup</span>
+0005 font_a = 12.0; <span class="comment">% Font size for tics</span>
+0006 font_lb = 14.5; <span class="comment">% Font size for label</span>
+0007 font_lg = 11.5; <span class="comment">% Font size for legends</span>
+0008 font_t = 15; <span class="comment">% Font size for title</span>
+0009 
+0010 <span class="comment">%% Sort data according to altitude and E-field strength</span>
+0011 dfiles = dir(<span class="string">'*.mat'</span>);
+0012 load(dfiles(1).name)
+0013 
+0014 <span class="comment">% Extract height and electric field from files</span>
+0015 get_z0_E0 = cell(numel(dfiles),2); 
+0016 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0017     load(dfiles(i1).name)
+0018     my_filename = dfiles(i1).name; 
+0019     [~,N,~] = fileparts(my_filename); 
+0020     a1 = strsplit(N,<span class="string">'-'</span>);
+0021     get_z0_E0{i1,1} = a1{3}; 
+0022     get_z0_E0{i1,2} = a1{5}; 
+0023 <span class="keyword">end</span> 
+0024 
+0025 <span class="comment">% Convert from cell to double</span>
+0026 get_z0_E0_new = zeros(size(get_z0_E0)); 
+0027 <span class="keyword">for</span> k = 1:size(get_z0_E0,1)
+0028     get_z0_E0_new(k,1) = str2double(get_z0_E0{k,1}); 
+0029     get_z0_E0_new(k,2) = str2double(get_z0_E0{k,2});
+0030 <span class="keyword">end</span> 
+0031 
+0032 <span class="comment">% Sort files</span>
+0033 [sort_dfiles,ind_sort] = sortrows(get_z0_E0_new); 
+0034 dfiles_cell = struct2cell(dfiles)'; 
+0035 dfiles_new1 = cell(size(dfiles,1),6); 
+0036 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0037     index = find(i1 == ind_sort); 
+0038     dfiles_new1{index,1} = dfiles_cell{i1,1}; 
+0039     dfiles_new1{index,2} = dfiles_cell{i1,2}; 
+0040     dfiles_new1{index,3} = dfiles_cell{i1,3}; 
+0041     dfiles_new1{index,4} = dfiles_cell{i1,4}; 
+0042     dfiles_new1{index,5} = dfiles_cell{i1,5}; 
+0043     dfiles_new1{index,6} = dfiles_cell{i1,6};  
+0044 <span class="keyword">end</span> 
+0045 
+0046 <span class="comment">% Convert from cell to struct</span>
+0047 fields = [&quot;name&quot;, &quot;folder&quot;, &quot;date&quot;, &quot;bytes&quot;, &quot;isdir&quot;, &quot;datenum&quot;];
+0048 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0049     dfiles_new2 = cell2struct(dfiles_new1,fields,2);
+0050 <span class="keyword">end</span> 
+0051 
+0052 <span class="comment">%% Find height z0 and electric field strength E0 in data</span>
+0053 z0 = unique(sort_dfiles(:,1)); 
+0054 E0_field_height = zeros(length(z0),size(sort_dfiles,1)/length(z0)); 
+0055 <span class="keyword">for</span> l = 1:length(z0)
+0056     <span class="keyword">for</span> k = 1:size(sort_dfiles,1)/length(z0)
+0057         n = l-1; 
+0058         m = k + size(sort_dfiles,1)/length(z0)*n; 
+0059         E0_field_height(l,k) = sort_dfiles(m,2); 
+0060     <span class="keyword">end</span> 
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="comment">%% Index at different heights</span>
+0064 <span class="comment">% row are height index</span>
+0065 <span class="comment">% columns are electric field index</span>
+0066 ind = zeros(size(E0_field_height,2),length(z0))'; 
+0067 v = 0; 
+0068 <span class="keyword">for</span> j = 1:length(z0)
+0069     aa = 1+v; 
+0070     ind(j,:) = aa:aa+size(E0_field_height,2)-1; 
+0071     v = v+size(E0_field_height,2); 
+0072 <span class="keyword">end</span> 
+0073 
+0074 <span class="comment">%% Load data (go first to the folder containing the data...)</span>
+0075 
+0076 <span class="comment">% Convert from [eV] to [J]</span>
+0077 eVtoJ = 1.602176634e-19;  
+0078 
+0079 <span class="comment">% Non-Maxwellian electron temperature</span>
+0080 Te_2nd = zeros(1,length(z0)*size(E0_field_height,2));
+0081 Te_eff = zeros(length(Te_grad),length(z0)*size(E0_field_height,2));
+0082 <span class="keyword">for</span> i1 = 1:numel(dfiles)
+0083 
+0084     load(dfiles_new2(i1).name)
+0085     
+0086     <span class="comment">% Non-Maxwellian temperature (second moment) from Stubbe distribution function</span>
+0087     Te_2nd(i1) = Te_nm_2nd;
+0088 
+0089     <span class="comment">% Gradient temperature</span>
+0090     Te_eff(:,i1) = Te_grad; 
+0091 
+0092     <span class="comment">% Energy/speed for Te_grad: constant delta E</span>
+0093     res = length(Te_grad)+1;  <span class="comment">% Resolution</span>
+0094     E_bins_new = (linspace(0,eVtoJ*max_E,res))'; <span class="comment">% Bin edges [J]</span>
+0095     E_bin_mid_eV_height = (E_bins_new(1:end-1)/2 + E_bins_new(2:end)/2)*(1/eVtoJ); <span class="comment">% [eV]</span>
+0096 
+0097 <span class="keyword">end</span> 
+0098 
+0099 <span class="comment">%% Plot gradient temperature with seconed moment temperature</span>
+0100 
+0101 <span class="comment">% Find electric field of 2.0 V/m forplotting</span>
+0102 [~,my_ind_E0_2] = find(E0_field_height==2); 
+0103 
+0104 fig = figure; 
+0105 subplot(2,1,1)
+0106 plot(E0_field_height(1,:),Te_2nd(ind(1,:)),<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,2.0)
+0107 hold on; 
+0108 plot(E0_field_height(2,:),Te_2nd(ind(2,:)),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0109 plot(E0_field_height(3,:),Te_2nd(ind(3,:)),<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2.0)
+0110 plot(E0_field_height(4,:),Te_2nd(ind(4,:)),<span class="string">'LineWidth'</span>,2.0)
+0111 hold off; 
+0112 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.008 0.005])
+0113 xlim([0.75 4])
+0114 legend(<span class="string">'70 km'</span>,<span class="string">'80 km'</span>,<span class="string">'90 km'</span>,<span class="string">'100 km'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0115 xlabel(<span class="string">'E_0 [V/m]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0116 ylabel(<span class="string">'T_{2nd} [K]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0117 title(<span class="string">'(a)'</span>,<span class="string">'FontSize'</span>,font_t)
+0118 
+0119 subplot(2,1,2)
+0120 plot(E_bin_mid_eV_height,Te_eff(:,ind(1,my_ind_E0_2(1))),<span class="string">'--'</span>,<span class="string">'LineWidth'</span>,2.0)
+0121 hold on; 
+0122 plot(E_bin_mid_eV_height,Te_eff(:,ind(2,my_ind_E0_2(2))),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0123 plot(E_bin_mid_eV_height,Te_eff(:,ind(3,my_ind_E0_2(3))),<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2.0)
+0124 plot(E_bin_mid_eV_height,Te_eff(:,ind(4,my_ind_E0_2(4))),<span class="string">'LineWidth'</span>,2.0)
+0125 hold off; 
+0126 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.008 0.005])
+0127 ylabel(<span class="string">'T_{eff} [K]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0128 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0129 title(<span class="string">'(b)'</span>,<span class="string">'FontSize'</span>,font_t)
+0130 legend(<span class="string">'70 km'</span>,<span class="string">'80 km'</span>,<span class="string">'90 km'</span>,<span class="string">'100 km'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>,<span class="string">'FontSize'</span>,font_lg)
+0131 ylim([0 12000])
+0132 yticks([0 2500 5000 7500 10000])
+0133 yticklabels({<span class="string">'0'</span>,<span class="string">'2500'</span>,<span class="string">'5000'</span>,<span class="string">'7500'</span>,<span class="string">'10000'</span>})
+0134 xlim([0 2.0])
+0135 colororder(<span class="string">'sail'</span>)
+0136 
+0137 <span class="comment">% fig.PaperPositionMode = 'manual';</span>
+0138 <span class="comment">% orient(fig,'landscape')</span>
+0139 <span class="comment">% print(fig,'fig06.pdf','-dpdf')</span>
+0140</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

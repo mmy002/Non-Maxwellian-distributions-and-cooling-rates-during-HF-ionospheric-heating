@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_f0</title>
+  <meta name="keywords" content="plot_f0">
+  <meta name="description" content="Plot figures for part I">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html . -->
+<h1>plot_f0
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Plot figures for part I</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Plot figures for part I</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Boltzmann_solver/compute_f0_stubbe_less_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_less_xs</a>	Use old cross sections for O2 vib. 0->1 from Itikawa</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_el.html" class="code" title="function cross_sect = sigma_N2_el(E,E_old,xs_old)">sigma_N2_el</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_02.html" class="code" title="function cross_sect = sigma_N2_rot_02(E,E_old,xs_old)">sigma_N2_rot_02</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_04.html" class="code" title="function cross_sect = sigma_N2_rot_04(E,E_old,xs_old)">sigma_N2_rot_04</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_06.html" class="code" title="function cross_sect = sigma_N2_rot_06(E,E_old,xs_old)">sigma_N2_rot_06</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_08.html" class="code" title="function cross_sect = sigma_N2_rot_08(E,E_old,xs_old)">sigma_N2_rot_08</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_010.html" class="code" title="function cross_sect = sigma_N2_vib_010(E,E_old,xs_old)">sigma_N2_vib_010</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_09.html" class="code" title="function cross_sect = sigma_N2_vib_09(E,E_old,xs_old)">sigma_N2_vib_09</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_el.html" class="code" title="function cross_sect = sigma_O2_el(E,E_old,xs_old)">sigma_O2_el</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_el_2.html" class="code" title="function cross_sect = sigma_O_el_2(E,E_old,xs_old)">sigma_O_el_2</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_10.html" class="code" title="function cross_sect = sigma_O_fine_str_10(E,E_old,xs_old)">sigma_O_fine_str_10</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_20.html" class="code" title="function cross_sect = sigma_O_fine_str_20(E,E_old,xs_old)">sigma_O_fine_str_20</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_21.html" class="code" title="function cross_sect = sigma_O_fine_str_21(E,E_old,xs_old)">sigma_O_fine_str_21</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Process_data/Functions/p_data_O2_vib.html" class="code" title="function [E_old,xs_old] = p_data_O2_vib()">p_data_O2_vib</a>	Convert from cm to m</li><li><a href="../Cross_section/Process_data/get_data_less_xs.html" class="code" title="function out = get_data_less_xs()">get_data_less_xs</a>	Now with vib. N2 0->9, 0->10, 1->2 and rot. O2</li><li><a href="../Fun_plot/JackKnife.html" class="code" title="function [Pa,Li,t] = JackKnife(varargin)">JackKnife</a>	JACKKNIFE plots jackknife errorbars around a given curve</li><li><a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>	CMLINES   Change the color of plotted lines using the colormap.</li><li><a href="../Fun_plot/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>	COLORBAR_LABELED - colorbar with label for range linear or log</li><li><a href="../Functions/convert_fv2fE.html" class="code" title="function f0_E_stubbe = convert_fv2fE(v_bins_stubbe,f0_v_stubbe)">convert_fv2fE</a>	</li><li><a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Plot figures for part I</span>
+0002 
+0003 <span class="comment">%% Graphics setup</span>
+0004 font_a = 12.0; <span class="comment">% Font for tics</span>
+0005 font_lb = 14; <span class="comment">% Font size for label</span>
+0006 font_lg = 11.5; <span class="comment">% Font size for legends</span>
+0007 font_t = 15; <span class="comment">% Font size for title</span>
+0008 
+0009 <span class="comment">%% Some constant</span>
+0010 me = 9.10938291e-31;          <span class="comment">% Electron mass [kg]</span>
+0011 eVtoJ = 1.602176634e-19;      <span class="comment">% Convert from [eV] to [J]</span>
+0012 k_b = 1.380649e-23;           <span class="comment">% Boltzmann constant [J/K]</span>
+0013 k_b_eV = 8.617333e-5;         <span class="comment">% Boltzmann constant [eV/K]</span>
+0014 q_e = 1.602176634e-19;        <span class="comment">% Elementary charge of 1 electron [C]</span>
+0015 cm_to_m = 0.01;               <span class="comment">% Convert from [cm] to [m]</span>
+0016 g_to_kg = 1/1000;             <span class="comment">% Convert from [g] to [kg]</span>
+0017 m_neg3_to_cm_neg3 = 1e-6;     <span class="comment">% Convert densities from m^-3 to cm^-3</span>
+0018 
+0019 <span class="comment">%% Geophysical and ionospheric</span>
+0020 f_HF = 4.6e6;                 <span class="comment">% Radio wave frequency [Hz]</span>
+0021 w_HF = 2*pi*f_HF;             <span class="comment">% Angular frequency of radio wave [rad/s]</span>
+0022 c = 2.99792458e8;             <span class="comment">% Speed of light [m/s]</span>
+0023 n_e = 1e10;                   <span class="comment">% Electron density [m^-3]</span>
+0024 Tn = 200;                     <span class="comment">% Neutral temperature</span>
+0025 
+0026 <span class="comment">%% Load and process data for cross sections</span>
+0027 xs_data = <a href="../Cross_section/Process_data/get_data_less_xs.html" class="code" title="function out = get_data_less_xs()">get_data_less_xs</a>(); 
+0028 
+0029 <span class="comment">%% Iteration for 70, 100 and 120 km</span>
+0030 z0_1 = [70e3 85e3 100e3];    <span class="comment">% Altitude [m]</span>
+0031 E0_field_1 = [0.8 1.5 2.5];   <span class="comment">% Electric field [V/m]</span>
+0032 f_E_stubbe_1 = cell(length(z0_1),length(E0_field_1)); 
+0033 f0_stubbe_1 = cell(length(z0_1),length(E0_field_1)); 
+0034 A_stubbe_1 = zeros(length(z0_1),length(E0_field_1)); 
+0035 f_max_E_1 = cell(length(z0_1),length(E0_field_1)); 
+0036 Te_1 = zeros(length(z0_1),length(E0_field_1)); 
+0037 <span class="keyword">for</span> j = 1:length(z0_1)
+0038     <span class="keyword">for</span> i = 1:length(E0_field_1)
+0039 
+0040         <span class="comment">% Call MATLAB MSIS</span>
+0041         [rho,~] = <a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>(z0_1(j)); 
+0042 
+0043         <span class="comment">% Neutral densities MATLAB MSIS</span>
+0044         nO = rho(:,2)';   <span class="comment">% [1/m^3]</span>
+0045         nN2 = rho(:,3)';    <span class="comment">% [1/m^3]</span>
+0046         nO2 = rho(:,4)';    <span class="comment">% [1/m^3]</span>
+0047 
+0048         <span class="comment">% Max electron energy [eV]</span>
+0049         max_E = 6.0; 
+0050 
+0051         <span class="comment">% Compute non-Maxwellian distribution</span>
+0052         [f0_exp_stubbe,v_bins_stubbe,Te_nm_2nd,~,A,~,~,~] = <span class="keyword">...</span>
+0053             <a href="../Boltzmann_solver/compute_f0_stubbe_less_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_less_xs</a>(E0_field_1(i),n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E);
+0054 
+0055         <span class="comment">% Energy/speed in the middle fo the bin</span>
+0056         v_bin_mid = v_bins_stubbe(1:end-1)/2 + v_bins_stubbe(2:end)/2; <span class="comment">% [m/s]</span>
+0057         E_bin_mid_eV = (me*v_bin_mid.^2)/(2*eVtoJ); <span class="comment">% [eV]</span>
+0058 
+0059         <span class="comment">% Speed distribution [#e/m^3 * s/m]</span>
+0060         f0_speed_distri = n_e*A*4*pi*v_bin_mid.^2.*f0_exp_stubbe;
+0061 
+0062         <span class="comment">% Convert speed distribution to energy distribution [#e/m^3 * 1/eV]</span>
+0063         f_E_stubbe_1{j,i} = <a href="../Functions/convert_fv2fE.html" class="code" title="function f0_E_stubbe = convert_fv2fE(v_bins_stubbe,f0_v_stubbe)">convert_fv2fE</a>(v_bins_stubbe,f0_speed_distri);
+0064 
+0065         <span class="comment">% distribution witn no unit</span>
+0066         f0_stubbe_1{j,i} = f0_exp_stubbe; 
+0067 
+0068         <span class="comment">% Normalization constant</span>
+0069         A_stubbe_1(j,i) = A; 
+0070 
+0071         <span class="comment">% Electron temperature (second moment of distribution function)</span>
+0072         Te_1(j,i) = Te_nm_2nd;
+0073 
+0074         <span class="comment">% Maxwellian speed distribution [#e/m^3 * s/m]</span>
+0075         A_max = (me/(2*pi*k_b*Te_1(j,i)))^(3/2);
+0076         f_max_v = n_e*A_max*4*pi*v_bin_mid.^2.*exp(-me*v_bin_mid.^2/(2*k_b*Te_1(j,i))); 
+0077 
+0078         <span class="comment">% Maxwellian energy distribution[#e/m^3 * 1/eV]</span>
+0079         f_max_E_1{j,i} = <a href="../Functions/convert_fv2fE.html" class="code" title="function f0_E_stubbe = convert_fv2fE(v_bins_stubbe,f0_v_stubbe)">convert_fv2fE</a>(v_bins_stubbe,f_max_v);  
+0080 
+0081     <span class="keyword">end</span> 
+0082 <span class="keyword">end</span> 
+0083 
+0084 <span class="comment">%% Plot figure 2</span>
+0085 
+0086 <span class="comment">% Some colors</span>
+0087 col_gray = [170,170,170]/255; 
+0088 col1 = [76,153,0]/255; 
+0089 col3 = [82,213,0]/255; 
+0090 col4 = [0,145,147]/255; 
+0091 col6 = [0,213,214]/255; 
+0092 col7 = [20,120,199]/255; 
+0093 col9 = [45,140,243]/255; 
+0094 
+0095 <span class="comment">% Limit axis</span>
+0096 lim_x_min = 1e-2; 
+0097 lim_x_max = 5;
+0098 lim_y_min = 1e2; 
+0099 lim_y_max = 1e12; 
+0100 
+0101 figure
+0102 
+0103 subplot(1,3,1)
+0104 loglog(E_bin_mid_eV,f_max_E_1{1,1},<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col_gray)
+0105 hold on;
+0106 loglog(E_bin_mid_eV,f_max_E_1{1,3},<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col_gray)
+0107 loglog(E_bin_mid_eV,f_E_stubbe_1{1,1},<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col1)
+0108 loglog(E_bin_mid_eV,f_E_stubbe_1{1,3},<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col3)
+0109 hold off; 
+0110 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.009 0.008])
+0111 legend(sprintf(<span class="string">'%0.0f %s'</span>,Te_1(1,1),<span class="string">'K'</span>),<span class="keyword">...</span>
+0112     sprintf(<span class="string">'%0.0f %s'</span>,Te_1(1,3),<span class="string">'K'</span>),<span class="string">'0.8 V/m'</span>,<span class="string">'2.5 V/m'</span>,<span class="string">'Location'</span>,<span class="string">'southwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0113 title(<span class="string">'70 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0114 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0115 ylabel(<span class="string">'f_0(E) [m^{-3} eV^{ -1}]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0116 xlim([lim_x_min lim_x_max])
+0117 xticks([1e-2 1e-1 1e0 5])
+0118 ylim([lim_y_min lim_y_max])
+0119 
+0120 subplot(1,3,2)
+0121 loglog(E_bin_mid_eV,f_max_E_1{2,1},<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col_gray)
+0122 hold on;
+0123 loglog(E_bin_mid_eV,f_max_E_1{2,3},<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col_gray)
+0124 loglog(E_bin_mid_eV,f_E_stubbe_1{2,1},<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col4)
+0125 loglog(E_bin_mid_eV,f_E_stubbe_1{2,3},<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col6)
+0126 hold off; 
+0127 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.009 0.008])
+0128 legend(sprintf(<span class="string">'%0.0f %s'</span>,Te_1(2,1),<span class="string">'K'</span>),<span class="keyword">...</span>
+0129     sprintf(<span class="string">'%0.0f %s'</span>,Te_1(2,3),<span class="string">'K'</span>),<span class="string">'0.8 V/m'</span>,<span class="string">'2.5 V/m'</span>,<span class="string">'Location'</span>,<span class="string">'southwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0130 title(<span class="string">'85 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0131 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0132 xlim([lim_x_min lim_x_max])
+0133 xticks([1e-2 1e-1 1e0 5])
+0134 ylim([lim_y_min lim_y_max])
+0135 
+0136 subplot(1,3,3)
+0137 loglog(E_bin_mid_eV,f_max_E_1{3,1},<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col_gray)
+0138 hold on;
+0139 loglog(E_bin_mid_eV,f_max_E_1{3,3},<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col_gray)
+0140 loglog(E_bin_mid_eV,f_E_stubbe_1{3,1},<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col7)
+0141 loglog(E_bin_mid_eV,f_E_stubbe_1{3,3},<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'color'</span>,col9)
+0142 hold off; 
+0143 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.009 0.008])
+0144 legend(sprintf(<span class="string">'%0.0f %s'</span>,Te_1(3,1),<span class="string">'K'</span>),<span class="keyword">...</span>
+0145     sprintf(<span class="string">'%0.0f %s'</span>,Te_1(3,3),<span class="string">'K'</span>),<span class="string">'0.8 V/m'</span>,<span class="string">'2.5 V/m'</span>,<span class="string">'Location'</span>,<span class="string">'southwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0146 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0147 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0148 xlim([1e-2 lim_x_max])
+0149 xticks([lim_x_min 1e-1 1e0 5])
+0150 ylim([lim_y_min lim_y_max])
+0151 
+0152 <span class="comment">%% Distribution at 90 km and E0 = 2 V/m</span>
+0153 
+0154 z0_2 = 90e3; 
+0155 E0_field_2 = 2.0;
+0156 
+0157 <span class="comment">% Call MATLAB MSIS</span>
+0158 [rho,temperature] = <a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>(z0_2); 
+0159 
+0160 <span class="comment">% Neutral densities MATLAB MSIS</span>
+0161 nO = rho(:,2)';   <span class="comment">% [1/m^3]</span>
+0162 nN2 = rho(:,3)';    <span class="comment">% [1/m^3]</span>
+0163 nO2 = rho(:,4)';    <span class="comment">% [1/m^3]</span>
+0164 
+0165 <span class="comment">% Max electron energy [eV]</span>
+0166 max_E = 6.0; 
+0167 
+0168 <span class="comment">% Compute non-Maxwellian distribution</span>
+0169 [f0_exp_stubbe,v_bins_stubbe,Te_nm_2nd,~,A,~,~,~] = <span class="keyword">...</span>
+0170     <a href="../Boltzmann_solver/compute_f0_stubbe_less_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_less_xs</a>(E0_field_2,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E);
+0171 
+0172 <span class="comment">% Energy/speed in the middle fo the bin</span>
+0173 v_bin_mid = v_bins_stubbe(1:end-1)/2 + v_bins_stubbe(2:end)/2; <span class="comment">% [m/s]</span>
+0174 E_bin_mid = (me*v_bin_mid.^2)/2; <span class="comment">% [J]</span>
+0175 E_bin_mid_eV = (me*v_bin_mid.^2)/(2*eVtoJ); <span class="comment">% [eV]</span>
+0176 
+0177 <span class="comment">% Distribution [s^3/m^6]</span>
+0178 f0 = A*f0_exp_stubbe;
+0179 
+0180 <span class="comment">% Electron temperature (second moment of distribution function)</span>
+0181 Te_2 = Te_nm_2nd;
+0182 
+0183 <span class="comment">% Maxwellian distribution [s^3/m^6]</span>
+0184 A_max = (me/(2*pi*k_b*Te_2))^(3/2);
+0185 f_max = A_max*exp(-me*v_bin_mid.^2/(2*k_b*Te_2));  
+0186 
+0187 <span class="comment">%% Call funnction for interpolation of cross section data</span>
+0188 xs_e_N2elastic = <a href="../Cross_section/Funtion_interp/sigma_N2_el.html" class="code" title="function cross_sect = sigma_N2_el(E,E_old,xs_old)">sigma_N2_el</a>(E_bin_mid,xs_data{1}(:,1),xs_data{1}(:,2));
+0189 xs_e_O2elastic = <a href="../Cross_section/Funtion_interp/sigma_O2_el.html" class="code" title="function cross_sect = sigma_O2_el(E,E_old,xs_old)">sigma_O2_el</a>(E_bin_mid,xs_data{2}(:,1),xs_data{2}(:,2));
+0190 xs_e_Oelastic = <a href="../Cross_section/Funtion_interp/sigma_O_el_2.html" class="code" title="function cross_sect = sigma_O_el_2(E,E_old,xs_old)">sigma_O_el_2</a>(E_bin_mid,xs_data{3}(:,1),xs_data{3}(:,2));
+0191 xs_e_N2vib0_1 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>(E_bin_mid,xs_data{4}(:,1),xs_data{4}(:,2)); 
+0192 xs_e_N2vib0_2 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>(E_bin_mid,xs_data{5}(:,1),xs_data{5}(:,2));
+0193 xs_e_N2vib0_3 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>(E_bin_mid,xs_data{6}(:,1),xs_data{6}(:,2)); 
+0194 xs_e_N2vib0_4 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>(E_bin_mid,xs_data{7}(:,1),xs_data{7}(:,2));
+0195 xs_e_N2vib0_5 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>(E_bin_mid,xs_data{8}(:,1),xs_data{8}(:,2)); 
+0196 xs_e_N2vib0_6 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>(E_bin_mid,xs_data{9}(:,1),xs_data{9}(:,2));
+0197 xs_e_N2vib0_7 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>(E_bin_mid,xs_data{10}(:,1),xs_data{10}(:,2)); 
+0198 xs_e_N2vib0_8 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>(E_bin_mid,xs_data{11}(:,1),xs_data{11}(:,2)); 
+0199 xs_e_N2vib0_9 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_09.html" class="code" title="function cross_sect = sigma_N2_vib_09(E,E_old,xs_old)">sigma_N2_vib_09</a>(E_bin_mid,xs_data{12}(:,1),xs_data{12}(:,2)); 
+0200 xs_e_N2vib0_10 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_010.html" class="code" title="function cross_sect = sigma_N2_vib_010(E,E_old,xs_old)">sigma_N2_vib_010</a>(E_bin_mid,xs_data{13}(:,1),xs_data{13}(:,2)); 
+0201 xs_e_N2rot0_2 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_02.html" class="code" title="function cross_sect = sigma_N2_rot_02(E,E_old,xs_old)">sigma_N2_rot_02</a>(E_bin_mid,xs_data{15}(:,1),xs_data{15}(:,2)); 
+0202 xs_e_N2rot0_4 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_04.html" class="code" title="function cross_sect = sigma_N2_rot_04(E,E_old,xs_old)">sigma_N2_rot_04</a>(E_bin_mid,xs_data{16}(:,1),xs_data{16}(:,2));
+0203 xs_e_N2rot0_6 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_06.html" class="code" title="function cross_sect = sigma_N2_rot_06(E,E_old,xs_old)">sigma_N2_rot_06</a>(E_bin_mid,xs_data{17}(:,1),xs_data{17}(:,2)); 
+0204 xs_e_N2rot0_8 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_08.html" class="code" title="function cross_sect = sigma_N2_rot_08(E,E_old,xs_old)">sigma_N2_rot_08</a>(E_bin_mid,xs_data{18}(:,1),xs_data{18}(:,2));
+0205 xs_e_O2a1Dg = <a href="../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>(E_bin_mid,xs_data{19}(:,1),xs_data{19}(:,2)); 
+0206 xs_e_O2b1Sgp = <a href="../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>(E_bin_mid,xs_data{20}(:,1),xs_data{20}(:,2)); 
+0207 xs_e_Ofine_1_0 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_10.html" class="code" title="function cross_sect = sigma_O_fine_str_10(E,E_old,xs_old)">sigma_O_fine_str_10</a>(E_bin_mid,xs_data{21}(:,1),xs_data{21}(:,2));  
+0208 xs_e_Ofine_2_0 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_20.html" class="code" title="function cross_sect = sigma_O_fine_str_20(E,E_old,xs_old)">sigma_O_fine_str_20</a>(E_bin_mid,xs_data{22}(:,1),xs_data{22}(:,2)); 
+0209 xs_e_Ofine_2_1 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_21.html" class="code" title="function cross_sect = sigma_O_fine_str_21(E,E_old,xs_old)">sigma_O_fine_str_21</a>(E_bin_mid,xs_data{23}(:,1),xs_data{23}(:,2));  
+0210 xs_e_O3P1D = <a href="../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>(E_bin_mid,xs_data{24}(:,1),xs_data{24}(:,2)); 
+0211 xs_e_O3P1S = <a href="../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>(E_bin_mid,xs_data{25}(:,1),xs_data{25}(:,2)); 
+0212 
+0213 <span class="comment">% Cross sections from Itikawa 1989</span>
+0214 [E_old,xs_old] = <a href="../Cross_section/Process_data/Functions/p_data_O2_vib.html" class="code" title="function [E_old,xs_old] = p_data_O2_vib()">p_data_O2_vib</a>(); 
+0215 
+0216 <span class="comment">%% Plot figure 3 for 90 km and E0=2.0 V/m with cross sections</span>
+0217 
+0218 <span class="comment">% Some color</span>
+0219 col60 = [0,0,120]/255; 
+0220 
+0221 figure
+0222 
+0223 subplot(2,1,1)
+0224 semilogy(E_bin_mid_eV,f0,<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2.0)
+0225 hold on; 
+0226 semilogy(E_bin_mid_eV,f_max,<span class="string">'m-.'</span>,<span class="string">'LineWidth'</span>,2.0)
+0227 hold off; 
+0228 xlim([0.005 2.6])
+0229 xticks([0.1 0.5 1 1.5 2])
+0230 ylim([1e-28 1e-16])
+0231 yticks([1e-28 1e-24 1e-20 1e-16])
+0232 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.0035 0.0015])
+0233 ylabel(<span class="string">'f_0 [s^3 m^{- 6}]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0234 title(<span class="string">'(a)'</span>,<span class="string">'FontSize'</span>,font_t)
+0235 xline(0.1)
+0236 xline(1)
+0237 xline(1.72)
+0238 text(0.03,1e-24,<span class="string">'1'</span>,<span class="string">'FontSize'</span>,15)
+0239 text(0.5,1e-24,<span class="string">'2'</span>,<span class="string">'FontSize'</span>,15)
+0240 text(1.3,1e-24,<span class="string">'3'</span>,<span class="string">'FontSize'</span>,15)
+0241 text(2,1e-24,<span class="string">'4'</span>,<span class="string">'FontSize'</span>,15)
+0242 
+0243 subplot(2,1,2)
+0244 ph1 = semilogy(repmat(E_bin_mid_eV,1,8),[xs_e_N2vib0_1 xs_e_N2vib0_2 <span class="keyword">...</span>
+0245     xs_e_N2vib0_3 xs_e_N2vib0_4 xs_e_N2vib0_5 xs_e_N2vib0_6 <span class="keyword">...</span>
+0246     xs_e_N2vib0_7 xs_e_N2vib0_8],<span class="string">'LineWidth'</span>,2.5); 
+0247 cmp1 = colormap(<span class="string">'winter'</span>); 
+0248 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph1,cmp1)
+0249 hold on;
+0250 semilogy(E_old*(1/eVtoJ),xs_old,<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.5,<span class="string">'color'</span>,col60); 
+0251 ph3 = semilogy(repmat(E_bin_mid_eV,1,3),[xs_e_Ofine_2_1 xs_e_Ofine_2_0 xs_e_Ofine_1_0], <span class="keyword">...</span>
+0252     <span class="string">'LineWidth'</span>,2.5);
+0253 cmp3 = colormap(<span class="string">'cool'</span>); 
+0254 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph3,cmp3)
+0255 hold on; 
+0256 ph4 = semilogy(repmat(E_bin_mid_eV,1,4),[xs_e_O2a1Dg xs_e_O2b1Sgp xs_e_O3P1D xs_e_O3P1S],<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2.5);
+0257 cmp4 = colormap(<span class="string">'autumn'</span>); 
+0258 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph4,cmp4)
+0259 hold off; 
+0260 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.005 0.002])
+0261 xlim([0.005 2.6])
+0262 xticks([0.1 0.5 1 1.5 2])
+0263 ylim([1e-24 1e-19])
+0264 yticks([1e-24 1e-23 1e-22 1e-21 1e-20 1e-19])
+0265 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0266 ylabel(<span class="string">'Cross section [m^2]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0267 title(<span class="string">'(b)'</span>,<span class="string">'FontSize'</span>,font_t)
+0268 xline(0.1)
+0269 xline(1)
+0270 xline(1.72)
+0271 
+0272 
+0273 <span class="comment">%% Load MC data</span>
+0274 
+0275 <span class="comment">% Histogram [#e/m^3] for all the time steps</span>
+0276 N_E_80_km = load(<span class="string">'N_E_80_km.mat'</span>); 
+0277 N_E_80_km = N_E_80_km.N_E; 
+0278 N_E_120_km = load(<span class="string">'N_E_120_km.mat'</span>); 
+0279 N_E_120_km = N_E_120_km.N_E; 
+0280 N_E_100_km = load(<span class="string">'N_E_100_km.mat'</span>); 
+0281 N_E_100_km = N_E_100_km.N_E; 
+0282 N_v_80_km = load(<span class="string">'N_v_80_km.mat'</span>); 
+0283 N_v_80_km = N_v_80_km.N_v; 
+0284 N_v_100_km = load(<span class="string">'N_v_100_km.mat'</span>); 
+0285 N_v_100_km = N_v_100_km.N_v; 
+0286 N_v_120_km = load(<span class="string">'N_v_120_km.mat'</span>); 
+0287 N_v_120_km = N_v_120_km.N_v; 
+0288 avg_t_80_km = load(<span class="string">'avg_t_80_km.mat'</span>); 
+0289 avg_t_80_km = avg_t_80_km.avg_t; 
+0290 avg_t_100_km = load(<span class="string">'avg_t_100_km.mat'</span>); 
+0291 avg_t_100_km = avg_t_100_km.avg_t; 
+0292 avg_t_120_km = load(<span class="string">'avg_t_120_km.mat'</span>); 
+0293 avg_t_120_km = avg_t_120_km.avg_t; 
+0294 
+0295 <span class="comment">% Index at equilibrium</span>
+0296 ind_eq_80_km = 31; <span class="comment">% at 0.003 s</span>
+0297 ind_eq_100_km = 41; <span class="comment">% at 0.3 s</span>
+0298 ind_eq_120_km = 41; <span class="comment">% 10.0 s</span>
+0299 
+0300 <span class="comment">% Histogram [#e/m^3] as a function of v_bins_mid_MC: average over all time steps</span>
+0301 N_v_avg_80_km = sum(N_v_80_km(:,ind_eq_80_km:end),2)/(length(avg_t_80_km)-ind_eq_80_km+1);
+0302 N_v_avg_100_km = sum(N_v_100_km(:,ind_eq_100_km:end),2)/(length(avg_t_100_km)-ind_eq_100_km+1);
+0303 N_v_avg_120_km = sum(N_v_120_km(:,ind_eq_120_km:end),2)/(length(avg_t_120_km)-ind_eq_120_km+1);
+0304 
+0305 <span class="comment">% Energy bins [eV]</span>
+0306 E_bins_MC = 0:0.025:4;
+0307 
+0308 <span class="comment">% Bin-edges</span>
+0309 v_bins_MC = linspace(0,sqrt((2*eVtoJ*E_bins_MC(end))/me),length(E_bins_MC)); <span class="comment">% [m/s]</span>
+0310 
+0311 <span class="comment">% Convert speed bins to energy bins</span>
+0312 E_bins_conv_MC = (me*v_bins_MC.^2)/(2*eVtoJ); <span class="comment">% eV</span>
+0313 
+0314 <span class="comment">% Energies/speed in the middle of the bin</span>
+0315 v_bin_mid_MC = v_bins_MC(1:end-1)/2 + v_bins_MC(2:end)/2; <span class="comment">% [m/s]</span>
+0316 E_bin_mid_MC = E_bins_MC(1:end-1)/2 + E_bins_MC(2:end)/2; 
+0317 E_bin_mid_conv_MC = ((me*v_bin_mid_MC.^2)/(2*eVtoJ))'; <span class="comment">% [eV]</span>
+0318 
+0319 <span class="comment">% Resolution of speed</span>
+0320 delta_v_MC = zeros(length(E_bins_conv_MC)-1,1); 
+0321 <span class="keyword">for</span> i = 1:length(E_bins_conv_MC)-1
+0322     delta_v_MC(i,1) = v_bins_MC(i+1)-v_bins_MC(i); <span class="comment">% [eV]</span>
+0323 <span class="keyword">end</span> 
+0324 
+0325 <span class="comment">% Resolution of converted energy</span>
+0326 delta_E_conv_MC = zeros(length(E_bins_conv_MC)-1,1); 
+0327 <span class="keyword">for</span> i = 1:length(E_bins_conv_MC)-1
+0328     delta_E_conv_MC(i,1) = E_bins_conv_MC(i+1)-E_bins_conv_MC(i); <span class="comment">% [eV]</span>
+0329 <span class="keyword">end</span> 
+0330 
+0331 <span class="comment">% Convert to energy distribution [#e/m^3 1/eV]</span>
+0332 f_E_MC_avg_80_km = (N_v_avg_80_km*10000)./delta_E_conv_MC;
+0333 f_E_MC_avg_100_km = (N_v_avg_100_km*10000)./delta_E_conv_MC;
+0334 f_E_MC_avg_120_km = (N_v_avg_120_km*10000)./delta_E_conv_MC;
+0335 f_E_MC_80_km = (N_v_80_km*10000)./delta_E_conv_MC;
+0336 f_E_MC_100_km = (N_v_100_km*10000)./delta_E_conv_MC;
+0337 f_E_MC_120_km = (N_v_120_km*10000)./delta_E_conv_MC;
+0338 
+0339 <span class="comment">% Convert to speed distribution [#e/m^3 s/m]</span>
+0340 f_v_MC_avg_80_km = (N_v_avg_80_km*10000)./delta_v_MC;
+0341 f_v_MC_avg_100_km = (N_v_avg_100_km*10000)./delta_v_MC;
+0342 f_v_MC_avg_120_km = (N_v_avg_120_km*10000)./delta_v_MC;
+0343 
+0344 <span class="comment">%% Plot figure 4: MC energy distribution and energy as a function of time for 80, 100 and 120 km</span>
+0345 
+0346 aftsz = 12.0; <span class="comment">% font-size for axe</span>
+0347 font_lb = 13; <span class="comment">% Font size for label</span>
+0348 font_lg = 10.5; <span class="comment">% Font size for legends</span>
+0349 font_t = 14; <span class="comment">% Font size for title</span>
+0350 
+0351 <span class="comment">% Pick some nice indices to plot</span>
+0352 pick_ind_legend_80_km = [1 2 8 31 length(avg_t_80_km)]; 
+0353 pick_ind_legend_100_km = [1 2 10 41 length(avg_t_100_km)]; 
+0354 pick_ind_legend_120_km = [1 2 4 29 length(avg_t_120_km)];
+0355 
+0356 <span class="comment">%fig = figure;</span>
+0357 figure
+0358 subplot(2,3,1)
+0359 phNE = semilogy(E_bin_mid_MC,N_E_80_km(:,pick_ind_legend_80_km));
+0360 set(phNE,<span class="string">'linewidth'</span>,2)
+0361 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0362 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0363 ylabel(<span class="string">'[#e]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0364 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0365 legend(strcat(num2str(1000*avg_t_80_km(pick_ind_legend_80_km)',<span class="string">'%2.1f'</span>),<span class="string">' ms'</span>),<span class="string">'FontSize'</span>,font_lg)
+0366 xlim([0 2.7])
+0367 xticks([0 0.5 1 1.5 2 2.5])
+0368 subplot(2,3,2)
+0369 phNE = semilogy(E_bin_mid_MC,N_E_100_km(:,pick_ind_legend_100_km));
+0370 set(phNE,<span class="string">'linewidth'</span>,2)
+0371 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0372 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0373 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0374 legend(strcat(num2str(avg_t_100_km(pick_ind_legend_100_km)',<span class="string">'%2.2f'</span>),<span class="string">' s'</span>),<span class="string">'FontSize'</span>,font_lg)
+0375 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0376 xlim([0 2.7])
+0377 xticks([0 0.5 1 1.5 2 2.5])
+0378 subplot(2,3,3)
+0379 phNE = semilogy(E_bin_mid_MC,N_E_120_km(:,pick_ind_legend_120_km));
+0380 set(phNE,<span class="string">'linewidth'</span>,2)
+0381 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0382 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0383 title(<span class="string">'120 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0384 legend(strcat(num2str(avg_t_120_km(pick_ind_legend_120_km)',<span class="string">'%2.1f'</span>),<span class="string">' s'</span>),<span class="string">'FontSize'</span>,font_lg)
+0385 xlim([0 2.7])
+0386 xticks([0 0.5 1 1.5 2 2.5])
+0387 subplot(2,3,4)
+0388 imagesc(avg_t_80_km*1000,E_bin_mid_MC,log10(N_E_80_km))
+0389 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0390 xlabel(<span class="string">'Time [ms]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0391 ylabel(<span class="string">'Energy [eV]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0392 ylim([0 2])
+0393 colormap(<span class="string">'parula'</span>)
+0394 clim([0 6])
+0395 
+0396 subplot(2,3,5)
+0397 imagesc(avg_t_100_km,E_bin_mid_MC,log10(N_E_100_km))
+0398 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0399 xlabel(<span class="string">'Time [s]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0400 ylim([0 2])
+0401 colormap(<span class="string">'turbo'</span>)
+0402 clim([0 6])
+0403 
+0404 subplot(2,3,6)
+0405 imagesc(avg_t_120_km,E_bin_mid_MC,log10(N_E_120_km))
+0406 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0407 xlabel(<span class="string">'Time [s]'</span>,<span class="string">'fontsize'</span>,font_lb)
+0408 ylim([0 2])
+0409 colormap(<span class="string">'hot'</span>)
+0410 label = <span class="string">'[#e]'</span>; 
+0411 lg = <span class="string">'log'</span>; 
+0412 clim([0 6])
+0413 <a href="../Fun_plot/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>(label,lg);
+0414 
+0415 <span class="comment">% uncomment to save figure</span>
+0416 <span class="comment">% fig.PaperPositionMode = 'manual';</span>
+0417 <span class="comment">% orient(fig,'landscape')</span>
+0418 <span class="comment">% print(fig,'fig04.pdf','-dpdf')</span>
+0419 
+0420 <span class="comment">%% Compute average and standard deviation of the time-dependent Monte Carlo energy distribution</span>
+0421 
+0422 std_80_km = zeros(size(f_E_MC_avg_80_km,1),1); 
+0423 <span class="keyword">for</span> i = 1:size(f_E_MC_avg_80_km,1)
+0424     std_80_km(i) = sqrt(sum((f_E_MC_80_km(i,ind_eq_80_km:end) - <span class="keyword">...</span>
+0425         f_E_MC_avg_80_km(i)).^2)/(length(avg_t_80_km(ind_eq_80_km:end))-1)); 
+0426 <span class="keyword">end</span> 
+0427 
+0428 std_100_km = zeros(size(f_E_MC_avg_100_km,1),1); 
+0429 <span class="keyword">for</span> i = 1:size(f_E_MC_avg_100_km,1)
+0430     std_100_km(i) = sqrt(sum((f_E_MC_100_km(i,ind_eq_100_km:end) - <span class="keyword">...</span>
+0431         f_E_MC_avg_100_km(i)).^2)/(length(avg_t_100_km(ind_eq_100_km:end))-1)); 
+0432 <span class="keyword">end</span>
+0433 
+0434 
+0435 std_120_km = zeros(size(f_E_MC_avg_120_km,1),1); 
+0436 <span class="keyword">for</span> i = 1:size(f_E_MC_avg_120_km,1)
+0437     std_120_km(i) = sqrt(sum((f_E_MC_120_km(i,ind_eq_120_km:end) - <span class="keyword">...</span>
+0438         f_E_MC_avg_120_km(i)).^2)/(length(avg_t_120_km(ind_eq_120_km:end))-1)); 
+0439 <span class="keyword">end</span>
+0440 
+0441 <span class="comment">%% Compute error bar</span>
+0442 
+0443 <span class="comment">% Lower and upper errorbars</span>
+0444 L_80_km = f_E_MC_avg_80_km - std_80_km;
+0445 L_100_km = f_E_MC_avg_100_km - std_100_km;
+0446 L_120_km = f_E_MC_avg_120_km - std_120_km;
+0447 <span class="keyword">for</span> i = 1:length(f_E_MC_avg_80_km)
+0448     <span class="keyword">if</span> L_80_km(i) &lt; 0
+0449         L_80_km(i) = max(1e-1,f_E_MC_avg_80_km(i) - std_80_km(i));
+0450     <span class="keyword">end</span> 
+0451     <span class="keyword">if</span> L_100_km(i) &lt; 0
+0452         L_100_km(i) = max(1e-1,f_E_MC_avg_100_km(i) - std_100_km(i));
+0453     <span class="keyword">end</span> 
+0454 
+0455     <span class="keyword">if</span> L_120_km(i) &lt; 0
+0456         L_120_km(i) = max(1e-1,f_E_MC_avg_120_km(i) - std_120_km(i));
+0457     <span class="keyword">end</span>  
+0458 <span class="keyword">end</span> 
+0459 U_80_km = f_E_MC_avg_80_km + std_80_km;
+0460 U_100_km = f_E_MC_avg_100_km + std_100_km;
+0461 U_120_km = f_E_MC_avg_120_km + std_120_km;
+0462 
+0463 <span class="comment">%% Solution of Boltzmann equation and 80, 100 and 120 km with ERP 200 MW</span>
+0464 latitude = 69.0;  <span class="comment">% Self explanatory</span>
+0465 z0_3 = [80e3 100e3 120e3]; 
+0466 E0_field_3 = [1.4 1.12 0.93];
+0467 f_E_stubbe_3 = zeros(7999,length(z0_3));
+0468 f0_stubbe_3 = cell(length(z0_1),length(E0_field_1)); 
+0469 A_stubbe_3 = zeros(length(z0_1),length(E0_field_1));
+0470 Te_3 = zeros(length(z0_3),1); 
+0471 w_g = zeros(length(z0_3),1); 
+0472 v_en = zeros(length(z0_3),1);
+0473 <span class="keyword">for</span> j = 1:length(z0_3)
+0474 
+0475         <span class="comment">% Call MATLAB MSIS</span>
+0476         [rho,temperature] = <a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>(z0_3(j)); 
+0477 
+0478         <span class="comment">% Neutral densities MATLAB MSIS</span>
+0479         nO = rho(:,2)';   <span class="comment">% [1/m^3]</span>
+0480         nN2 = rho(:,3)';    <span class="comment">% [1/m^3]</span>
+0481         nO2 = rho(:,4)';    <span class="comment">% [1/m^3]</span>
+0482 
+0483         <span class="comment">% Earth's magnetic fiel d - dipole approximation</span>
+0484         <span class="comment">% Reference for dipole magnetic field approximation: Asgeir Brekke (2013)</span>
+0485         <span class="comment">% Physics of the upper polar atmosphere page 136</span>
+0486         Re = 6.37e6; <span class="comment">% Radius of Earth [m]</span>
+0487         H0 = 3.0e-5; <span class="comment">% Mean value of the magnetic field at the magnetic equator on the Earth's surface [Tesla]</span>
+0488         height = z0_3(j); 
+0489         r = Re + height; <span class="comment">% r = radial distance from the center of Earth. r = 0 -&gt; center of Earth</span>
+0490         lambda_m = latitude*pi/180; <span class="comment">% Latitude</span>
+0491         B_magnitude = H0*((Re./r).^3)*sqrt(1 + 3*(sin(lambda_m)).^2); <span class="comment">% [Tesla]</span>
+0492 
+0493         <span class="comment">% Gyrofrequency</span>
+0494         w_g(j) = (q_e*B_magnitude)/me; 
+0495 
+0496         <span class="comment">% Max electron energy [eV]</span>
+0497         max_E = 6.0; 
+0498 
+0499         <span class="comment">% Compute non-Maxwellian distribution</span>
+0500         [f0_exp_stubbe,v_bins_stubbe,Te_nm_2nd,~,A,~,~,~] = <span class="keyword">...</span>
+0501             <a href="../Boltzmann_solver/compute_f0_stubbe_less_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_less_xs</a>(E0_field_3(j),n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E);
+0502 
+0503         <span class="comment">% Energy/speed in the middle fo the bin</span>
+0504         v_bin_mid = v_bins_stubbe(1:end-1)/2 + v_bins_stubbe(2:end)/2; <span class="comment">% [m/s]</span>
+0505         E_bin_mid_eV = (me*v_bin_mid.^2)/(2*eVtoJ); <span class="comment">% [eV]</span>
+0506 
+0507         <span class="comment">% Speed distribution [#e/m^3 * s/m]</span>
+0508         f0_speed_distri = n_e*A*4*pi*v_bin_mid.^2.*f0_exp_stubbe;
+0509 
+0510         <span class="comment">% Convert speed distribution to energy distribution [#e/m^3 * 1/eV]</span>
+0511         f_E_stubbe_3(:,j) = <a href="../Functions/convert_fv2fE.html" class="code" title="function f0_E_stubbe = convert_fv2fE(v_bins_stubbe,f0_v_stubbe)">convert_fv2fE</a>(v_bins_stubbe,f0_speed_distri);
+0512 
+0513         <span class="comment">% Electron temperature (second moment of distribution function)</span>
+0514         Te_3(j) = Te_nm_2nd;
+0515          
+0516         <span class="comment">% Electron-neutral collision frequency with neutral densities [cm^-3] and temperature [K]</span>
+0517         Te = Te_nm_2nd;
+0518         v_en(j) = 1.7e-11*(nN2*m_neg3_to_cm_neg3).*Te + 3.8e-10*(nO2*m_neg3_to_cm_neg3).*sqrt(Te)+ <span class="keyword">...</span>
+0519            1.4e-10*(nO*m_neg3_to_cm_neg3).*sqrt(Te); 
+0520 
+0521 <span class="keyword">end</span> 
+0522 
+0523 
+0524 <span class="comment">%% Second moment temperature of MC</span>
+0525 some_cont = (4*pi*me)/(3*k_b); 
+0526 Te_non_max_MC_120_km = (4*pi*me)/(3*k_b)*trapz(v_bin_mid_MC',(v_bin_mid_MC'.^2.*f_v_MC_avg_120_km)/(n_e*4*pi));
+0527 Te_non_max_MC_100_km = (4*pi*me)/(3*k_b)*trapz(v_bin_mid_MC',(v_bin_mid_MC'.^2.*f_v_MC_avg_100_km)/(n_e*4*pi));
+0528 Te_non_max_MC_80_km = (4*pi*me)/(3*k_b)*trapz(v_bin_mid_MC',(v_bin_mid_MC'.^2.*f_v_MC_avg_80_km)/(n_e*4*pi));
+0529 
+0530 <span class="comment">%% Plot figure 5: Solution of Boltzmann equation and MC run at 80, 100 and 120 km with error bars (Jackife)</span>
+0531 
+0532 <span class="comment">% Some colors</span>
+0533 col_oransje = [255 128 0]./255; 
+0534 col_bla = [0 0 255]./255; 
+0535 col_gron = [0 204 0]./255; 
+0536 
+0537 figure
+0538 subplot(1,3,1)
+0539 phS_80 = loglog(E_bin_mid_eV,f_E_stubbe_3(:,1),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'Color'</span>,col_bla);
+0540 hold on; 
+0541 
+0542 [Pa_80_km,Li_80_km] = <a href="../Fun_plot/JackKnife.html" class="code" title="function [Pa,Li,t] = JackKnife(varargin)">JackKnife</a>(E_bin_mid_conv_MC(f_E_MC_avg_80_km(:)&gt;0)',<span class="keyword">...</span><span class="comment">.</span>
+0543                     f_E_MC_avg_80_km(f_E_MC_avg_80_km(:)&gt;0)',<span class="keyword">...</span>
+0544                     L_80_km(f_E_MC_avg_80_km(:)&gt;0)',<span class="keyword">...</span>
+0545                     U_80_km(f_E_MC_avg_80_km(:)&gt;0)',<span class="keyword">...</span>
+0546                     col_gron,col_oransje);
+0547 hold off;
+0548 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.008 0.008])
+0549 legend([phS_80,Li_80_km,Pa_80_km],<span class="string">'Stubbe'</span>,<span class="string">'MC-run'</span>,<span class="string">'\pm \sigma'</span>,<span class="string">'Location'</span>,<span class="string">'southwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0550 title(<span class="string">'80 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0551 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0552 ylabel(<span class="string">'f_0(E) [m^{-3} eV^{ -1}]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0553 xlim([0.05 3])
+0554 xticks([0.1 0.5 1 2])
+0555 ylim([5e2 1e12])
+0556 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+0557 set(gca,<span class="string">'yscale'</span>,<span class="string">'log'</span>)
+0558 
+0559 subplot(1,3,2)
+0560 phS_100 = loglog(E_bin_mid_eV,f_E_stubbe_3(:,2),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'Color'</span>,col_bla);
+0561 hold on; 
+0562 
+0563 [Pa_100_km,Li_100_km] = <a href="../Fun_plot/JackKnife.html" class="code" title="function [Pa,Li,t] = JackKnife(varargin)">JackKnife</a>(E_bin_mid_conv_MC(f_E_MC_avg_100_km(:)&gt;0)',<span class="keyword">...</span><span class="comment">.</span>
+0564                     f_E_MC_avg_100_km(f_E_MC_avg_100_km(:)&gt;0)',<span class="keyword">...</span>
+0565                     L_100_km(f_E_MC_avg_100_km(:)&gt;0)',<span class="keyword">...</span>
+0566                     U_100_km(f_E_MC_avg_100_km(:)&gt;0)',<span class="keyword">...</span>
+0567                     col_gron,col_oransje);
+0568 hold off;
+0569 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.008 0.008])
+0570 legend([phS_100,Li_100_km,Pa_100_km],<span class="string">'Stubbe'</span>,<span class="string">'MC-run'</span>,<span class="string">'\pm \sigma'</span>,<span class="string">'Location'</span>,<span class="string">'southwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0571 title(<span class="string">'100 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0572 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0573 xlim([0.05 3])
+0574 xticks([0.1 0.5 1 2])
+0575 ylim([5e2 1e12])
+0576 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+0577 set(gca,<span class="string">'yscale'</span>,<span class="string">'log'</span>)
+0578 
+0579 subplot(1,3,3)
+0580 phS_120 = loglog(E_bin_mid_eV,f_E_stubbe_3(:,3),<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.0,<span class="string">'Color'</span>,col_bla);
+0581 hold on; 
+0582 
+0583 [Pa_120_km,Li_120_km] = <a href="../Fun_plot/JackKnife.html" class="code" title="function [Pa,Li,t] = JackKnife(varargin)">JackKnife</a>(E_bin_mid_conv_MC(f_E_MC_avg_120_km(:)&gt;0)',<span class="keyword">...</span><span class="comment">.</span>
+0584                     f_E_MC_avg_120_km(f_E_MC_avg_120_km(:)&gt;0)',<span class="keyword">...</span>
+0585                     L_120_km(f_E_MC_avg_120_km(:)&gt;0)',<span class="keyword">...</span>
+0586                     U_120_km(f_E_MC_avg_120_km(:)&gt;0)',<span class="keyword">...</span>
+0587                     col_gron,col_oransje);
+0588 hold off;
+0589 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.008 0.008])
+0590 legend([phS_120,Li_120_km,Pa_120_km],<span class="string">'Stubbe'</span>,<span class="string">'MC-run'</span>,<span class="string">'\pm \sigma'</span>,<span class="string">'Location'</span>,<span class="string">'southwest'</span>,<span class="string">'FontSize'</span>,font_lg)
+0591 title(<span class="string">'120 km'</span>,<span class="string">'FontSize'</span>,font_t)
+0592 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0593 xlim([0.05 3])
+0594 xticks([0.1 0.5 1 2])
+0595 ylim([5e2 1e12])
+0596 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>)
+0597 set(gca,<span class="string">'yscale'</span>,<span class="string">'log'</span>)
+0598 
+0599 <span class="comment">%% Plot cross sections in figure A1</span>
+0600 
+0601 figure
+0602 subplot(1,3,1)
+0603 ph1 = semilogy(repmat(E_bin_mid_eV,1,8),[xs_e_N2vib0_1 xs_e_N2vib0_2 <span class="keyword">...</span>
+0604     xs_e_N2vib0_3 xs_e_N2vib0_4 xs_e_N2vib0_5 xs_e_N2vib0_6 <span class="keyword">...</span>
+0605     xs_e_N2vib0_7 xs_e_N2vib0_8],<span class="string">'LineWidth'</span>,2.5); 
+0606 cmp1 = colormap(<span class="string">'winter'</span>); 
+0607 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph1,cmp1)
+0608 hold on;
+0609 semilogy(E_old*(1/eVtoJ),xs_old,<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.5,<span class="string">'color'</span>,col60); 
+0610 hold off; 
+0611 legend(<span class="string">'1'</span>,<span class="string">'2'</span>,<span class="string">'3'</span>,<span class="string">'4'</span>,<span class="string">'5'</span>,<span class="string">'6'</span>,<span class="string">'7'</span>,<span class="string">'8'</span>,<span class="string">'9'</span>,<span class="string">'Location'</span>,<span class="string">'northwest'</span>)
+0612 xlim([0 3])
+0613 xticks([0 1 2 3])
+0614 ylim([2e-24 1e-18])
+0615 yticks([1e-24 1e-23 1e-22 1e-21 1e-20 1e-19 1e-18])
+0616 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0617 ylabel(<span class="string">'Cross sections [m^2]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0618 title(<span class="string">'a)'</span>,<span class="string">'FontSize'</span>,font_t)
+0619 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.007 0.004])
+0620 
+0621 col1 = [0,0,204]/255; 
+0622 col2 = [0,150,220]/255; 
+0623 col3 = [116,201,0]/255; 
+0624 col4 = [128,245,0]/255; 
+0625 subplot(1,3,2)
+0626 ph5 = semilogy(repmat(E_bin_mid_eV,1,3),[xs_e_N2elastic xs_e_O2elastic <span class="keyword">...</span>
+0627     xs_e_Oelastic],<span class="string">'LineWidth'</span>,2.5); 
+0628 cmp5 = colormap(<span class="string">'copper'</span>); 
+0629 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph5,cmp5)
+0630 hold on;
+0631 semilogy(E_bin_mid_eV,xs_e_N2rot0_2,<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.5,<span class="string">'color'</span>,col1); 
+0632 semilogy(E_bin_mid_eV,xs_e_N2rot0_4,<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.5,<span class="string">'color'</span>,col2); 
+0633 semilogy(E_bin_mid_eV,xs_e_N2rot0_6,<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.5,<span class="string">'color'</span>,col3); 
+0634 semilogy(E_bin_mid_eV,xs_e_N2rot0_8,<span class="string">'-.'</span>,<span class="string">'LineWidth'</span>,2.5,<span class="string">'color'</span>,col4); 
+0635 hold off; 
+0636 legend(<span class="string">'1'</span>,<span class="string">'2'</span>,<span class="string">'3'</span>,<span class="string">'4'</span>,<span class="string">'5'</span>,<span class="string">'6'</span>,<span class="string">'7'</span>,<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+0637 xlim([0 3])
+0638 xticks([0 1 2 3])
+0639 ylim([2e-24 1e-18])
+0640 yticks([1e-24 1e-23 1e-22 1e-21 1e-20 1e-19 1e-18])
+0641 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0642 title(<span class="string">'b)'</span>,<span class="string">'FontSize'</span>,font_t)
+0643 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.007 0.004])
+0644 subplot(1,3,3)
+0645 ph3 = semilogy(repmat(E_bin_mid_eV,1,3),[xs_e_Ofine_2_1 xs_e_Ofine_2_0 xs_e_Ofine_1_0], <span class="keyword">...</span>
+0646     <span class="string">'LineWidth'</span>,2.5);
+0647 cmp3 = colormap(<span class="string">'cool'</span>); 
+0648 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph3,cmp3)
+0649 hold on; 
+0650 ph4 = semilogy(repmat(E_bin_mid_eV,1,4),[xs_e_O2a1Dg xs_e_O2b1Sgp xs_e_O3P1D xs_e_O3P1S],<span class="string">':'</span>,<span class="string">'LineWidth'</span>,2.5);
+0651 cmp4 = colormap(<span class="string">'autumn'</span>); 
+0652 <a href="../Fun_plot/cm_and_cb_utilities/cmlines.html" class="code" title="function [HL,CLIN] = cmlines(varargin)">cmlines</a>(ph4,cmp4)
+0653 hold off; 
+0654 legend(<span class="string">'1'</span>,<span class="string">'2'</span>,<span class="string">'3'</span>,<span class="string">'4'</span>,<span class="string">'5'</span>,<span class="string">'6'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>)
+0655 xlim([0 3])
+0656 xticks([0 1 2 3])
+0657 ylim([2e-24 1e-18])
+0658 yticks([1e-24 1e-23 1e-22 1e-21 1e-20 1e-19 1e-18])
+0659 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'FontSize'</span>,font_lb)
+0660 title(<span class="string">'c)'</span>,<span class="string">'FontSize'</span>,font_t)
+0661 set(gca,<span class="string">'fontsize'</span>,font_a,<span class="string">'box'</span>,<span class="string">'on'</span>,<span class="string">'tickdir'</span>,<span class="string">'both'</span>,<span class="string">'TickLength'</span>,[0.007 0.004])
+0662 
+0663 
+0664</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
