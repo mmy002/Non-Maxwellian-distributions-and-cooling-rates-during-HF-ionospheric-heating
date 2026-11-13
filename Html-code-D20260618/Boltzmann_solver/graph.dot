@@ -1,0 +1,9 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  compute_f0_stubbe_less_xs -> degrading_electrons_works3;
+  compute_f0_stubbe_more_xs -> degrading_electrons_works3;
+
+  compute_f0_stubbe_less_xs [URL="compute_f0_stubbe_less_xs.html"];
+  compute_f0_stubbe_more_xs [URL="compute_f0_stubbe_more_xs.html"];
+  degrading_electrons_works3 [URL="degrading_electrons_works3.html"];
+}

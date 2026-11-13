@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of degrading_electrons_works3</title>
+  <meta name="keywords" content="degrading_electrons_works3">
+  <meta name="description" content="Only difference from degrading_electrons_works is that dIe and deg_Ie is also an output">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Boltzmann_solver -->
+<h1>degrading_electrons_works3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Only difference from degrading_electrons_works is that dIe and deg_Ie is also an output</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [dI_sum,dIe,deg_Ie,ratio] = degrading_electrons_works3(ex_E,xs_i,E_bins,v_bin_mid,nN_i,num_e_bin_v) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Only difference from degrading_electrons_works is that dIe and deg_Ie is also an output 
+ Code from Bjørn</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compute_f0_stubbe_less_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_less_xs</a>	Use old cross sections for O2 vib. 0->1 from Itikawa</li><li><a href="compute_f0_stubbe_more_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_more_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_more_xs</a>	Use new cross sections of O2 vib. 0->1,2,3,4,5,6,7 from Allen 1995</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [dI_sum,dIe,deg_Ie,ratio] = degrading_electrons_works3(ex_E,xs_i,E_bins,v_bin_mid,nN_i,num_e_bin_v)</a>
+0002 <span class="comment">% Only difference from degrading_electrons_works is that dIe and deg_Ie is also an output</span>
+0003 <span class="comment">% Code from Bjørn</span>
+0004 
+0005 <span class="comment">% Input:</span>
+0006 <span class="comment">% num_e_bin_v: Input histogram for speed [#e/m^3]</span>
+0007 <span class="comment">% ex_E: [levels x 1] excitation energy [J]</span>
+0008 <span class="comment">% xs_i: [energies x levels] cross section as function of energy [m^2]</span>
+0009 <span class="comment">% E_bins: [energies x 1] energy bin edges [J]</span>
+0010 <span class="comment">% v_bin_mid: [speeds-1 x 1] speed in the middle of the bin [m/s]</span>
+0011 <span class="comment">% nN_i: [densities x 1] density of neutral species [m^-3]</span>
+0012 
+0013 <span class="comment">%  Flux of electrons</span>
+0014 Ie = v_bin_mid .* num_e_bin_v; <span class="comment">%  #e/(m^2*s)-&gt; histogram of flux</span>
+0015 
+0016 <span class="comment">% Matlab likes that you create empty matrices for for-loops</span>
+0017 dIe = zeros(length(v_bin_mid),length(ex_E)); 
+0018 deg_Ie = zeros(length(v_bin_mid),length(ex_E)); 
+0019 dI_sum_per_xs = zeros(length(v_bin_mid),length(ex_E)); 
+0020 ratio = zeros(1,length(ex_E)); 
+0021 
+0022 <span class="comment">% Resolution of energy, varies as v^2</span>
+0023 gradE = @(iE) E_bins(iE+1) - E_bins(iE); <span class="comment">% [J]</span>
+0024 
+0025 <span class="comment">% Loop over different excitation levels (ex_E) with corresponding cross sections (xs) and different speeds in</span>
+0026 <span class="comment">% the middle of the bin (u_e_m)</span>
+0027 <span class="keyword">for</span> idE = 1:length(ex_E) 
+0028 
+0029     <span class="keyword">for</span> i = length(E_bins)-1:-1:1 
+0030 
+0031         <span class="comment">% Number of electrons degrading from higher to lower energies;</span>
+0032         <span class="comment">% flux loss at higher energies to lower energies, i.e. how many electrons we loose</span>
+0033         <span class="comment">% Units: m^-3 * #e/(m^2*s) * m^2 = #e/(m^3*s)</span>
+0034         dIe(i,idE) = nN_i(idE) * Ie(i) .* xs_i(i,idE); 
+0035 
+0036         <span class="comment">% The flux of electrons degraded from energy bin [E(iE) E(iE)+gradE(iE)]</span>
+0037         <span class="comment">% to any lower energy bin by excitation of the idE-th state of the current species.</span>
+0038         Ie_degraded = (min(1,ex_E(idE)./gradE(i)))*dIe(i,idE); <span class="comment">% Basically determines if dE is larger/smaller</span>
+0039         <span class="comment">% than gradE and how much of Ie_degraded is outside Ie's bin (percent)</span>
+0040 
+0041         <span class="comment">% Find the energy bins that the electrons in the current</span>
+0042         <span class="comment">% energy bin will degrade to when losing dE_i(idE,1):</span>
+0043         <span class="comment">% Find index of energy (E_bins) between degraded energies:</span>
+0044         <span class="comment">% E(i) - ex_E(1,idE) and E &lt; E(i) + gradE(i) - ex_E(1,idE)</span>
+0045         i_upper_between = find( E_bins &gt; E_bins(i) - ex_E(idE) &amp; E_bins &lt; E_bins(i) + gradE(i) - ex_E(idE) );
+0046       
+0047         <span class="comment">% Find index of E_bins to the left of E(i) - ex_E(1,idE) (lower boundary)</span>
+0048         <span class="comment">% First check if i_upper_between is non-empty or empty</span>
+0049         <span class="keyword">if</span> isempty(i_upper_between) == 0 <span class="comment">% If i_upper_between is not empty:</span>
+0050             
+0051             <span class="keyword">if</span>  i_upper_between(1) &gt; 1 <span class="comment">% If the index of i_upper_between = 2 or larger (i.e only important for the lowest energies)</span>
+0052                 i_upper = zeros(length(i_upper_between)+1,1); <span class="comment">% Create a new zero matrix that includes the new index</span>
+0053                 i_upper(1) = i_upper_between(1)-1; <span class="comment">% Now find the index of E_bins to the left of E(i) - ex_E(1,idE)</span>
+0054                 i_upper(2:end) = i_upper_between; <span class="comment">% Indexes between E_bins between E(i) - ex_E(1,idE) and E &lt; E(i) + gradE(i) - ex_E(1,idE)</span>
+0055             <span class="keyword">else</span> 
+0056                 i_upper = i_upper_between; <span class="comment">% If the index of the first element in i_upper_between = 1 (i.e only important for the lowest energies)</span>
+0057             <span class="keyword">end</span> 
+0058             
+0059         <span class="keyword">else</span> 
+0060             i_upper = i_upper_between; <span class="comment">% If i_upper_between is empty:</span>
+0061         <span class="keyword">end</span> 
+0062 
+0063         <span class="comment">% Percent electrons in a certain lower energy bin</span>
+0064         partition_fract = zeros(size(i_upper));
+0065 
+0066         <span class="keyword">if</span> ( ~isempty(i_upper) &amp;&amp; i_upper(1) &lt; i ) 
+0067 
+0068             <span class="comment">% Distribute the degrading electrons between those bins</span>
+0069             <span class="comment">% Here partition_fract will contain all energy-bins electrons can</span>
+0070             <span class="comment">% degrade into - including the current bin the electrons start at.</span>
+0071             partition_fract(1) = min(1,(E_bins(i_upper(1)) + gradE(i_upper(1)) -  (E_bins(i) - ex_E(idE)))/gradE(i)); <span class="comment">% gradE(i) correct?</span>
+0072             <span class="keyword">if</span> length(i_upper)&gt;2
+0073               partition_fract(2:end-1) = min(1,gradE(i_upper(2:end-1))/gradE(i));
+0074             <span class="keyword">end</span>
+0075             partition_fract(end) =  min(1,(E_bins(i) + gradE(i)-ex_E(idE) - E_bins(i_upper(end)) )/gradE(i));
+0076             <span class="keyword">if</span> i_upper(end) == i
+0077               <span class="comment">% Here we set the partition_fract for the current/starting bin to</span>
+0078               <span class="comment">% zero - we are only interested in calculating the partitioning</span>
+0079               <span class="comment">% of the electrons degrading out of that bin</span>
+0080               partition_fract(end) = 0;
+0081             <span class="keyword">end</span>
+0082             partition_fract = partition_fract/sum(partition_fract);
+0083 
+0084             <span class="comment">% Distribute the degrading electrons in the correct bin</span>
+0085             <span class="keyword">for</span> i_u = find(partition_fract~=0) 
+0086 
+0087                 deg_Ie(i_upper(i_u),idE) = ( deg_Ie(i_upper(i_u),idE) + Ie_degraded * partition_fract(i_u) );
+0088 
+0089             <span class="keyword">end</span>
+0090 
+0091         <span class="keyword">end</span>
+0092 
+0093     <span class="keyword">end</span> 
+0094 
+0095     <span class="comment">% Ratio between electron loss and gain (should be 1)</span>
+0096     ratio(idE) = abs(sum(dIe(:,idE))/sum(deg_Ie(:,idE)));
+0097 
+0098     <span class="comment">% Set flux loss to be negative as it should</span>
+0099     dIe(:,idE) = -1*dIe(:,idE); 
+0100 
+0101     <span class="comment">% Sum of electron loss and gain per cross section</span>
+0102     dI_sum_per_xs(:,idE) = dIe(:,idE) + deg_Ie(:,idE);  
+0103 
+0104 <span class="keyword">end</span> 
+0105 
+0106 <span class="comment">% Units: [#e/(m^3*s)]</span>
+0107 dI_sum = sum(dI_sum_per_xs,2); 
+0108</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

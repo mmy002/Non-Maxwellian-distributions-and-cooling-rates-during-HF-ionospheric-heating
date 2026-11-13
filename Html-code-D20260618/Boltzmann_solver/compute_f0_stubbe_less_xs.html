@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of compute_f0_stubbe_less_xs</title>
+  <meta name="keywords" content="compute_f0_stubbe_less_xs">
+  <meta name="description" content="Use old cross sections for O2 vib. 0->1 from Itikawa">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Boltzmann_solver -->
+<h1>compute_f0_stubbe_less_xs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Use old cross sections for O2 vib. 0->1 from Itikawa</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Use old cross sections for O2 vib. 0-&gt;1 from Itikawa
+ Use old cross sections for fs O from Itikawa
+ Make iteration converge even slower
+ Increase resolution 
+ NEW!!!!: Use new way to integrate G(v), then max in energy can be anything</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="degrading_electrons_works3.html" class="code" title="function [dI_sum,dIe,deg_Ie,ratio] = degrading_electrons_works3(ex_E,xs_i,E_bins,v_bin_mid,nN_i,num_e_bin_v)">degrading_electrons_works3</a>	Only difference from degrading_electrons_works is that dIe and deg_Ie is also an output</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_010.html" class="code" title="function cross_sect = sigma_N2_vib_010(E,E_old,xs_old)">sigma_N2_vib_010</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_09.html" class="code" title="function cross_sect = sigma_N2_vib_09(E,E_old,xs_old)">sigma_N2_vib_09</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_vib.html" class="code" title="function cross_sect = sigma_O2_vib(E,E_old,xs_old)">sigma_O2_vib</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_10.html" class="code" title="function cross_sect = sigma_O_fine_str_10(E,E_old,xs_old)">sigma_O_fine_str_10</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_20.html" class="code" title="function cross_sect = sigma_O_fine_str_20(E,E_old,xs_old)">sigma_O_fine_str_20</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_21.html" class="code" title="function cross_sect = sigma_O_fine_str_21(E,E_old,xs_old)">sigma_O_fine_str_21</a>	Convert from [eV] to [J]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../For_thesis/plot_f0_new.html" class="code" title="">plot_f0_new</a>	Plot figures for thesis</li><li><a href="../plot_f0.html" class="code" title="">plot_f0</a>	Plot figures for part I</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] = </a><span class="keyword">...</span>
+0002     compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)
+0003 <span class="comment">% Use old cross sections for O2 vib. 0-&gt;1 from Itikawa</span>
+0004 <span class="comment">% Use old cross sections for fs O from Itikawa</span>
+0005 <span class="comment">% Make iteration converge even slower</span>
+0006 <span class="comment">% Increase resolution</span>
+0007 <span class="comment">% NEW!!!!: Use new way to integrate G(v), then max in energy can be anything</span>
+0008 
+0009 <span class="comment">%% Some constant</span>
+0010 me = 9.10938291e-31;        <span class="comment">% Electron mass [kg]</span>
+0011 eVtoJ = 1.602176634e-19;    <span class="comment">% Convert from [eV] to [J]</span>
+0012 k_b = 1.380649e-23;         <span class="comment">% Boltzmann constant [J/K]</span>
+0013 q_e = 1.602176634e-19;      <span class="comment">% Elementary charge of 1 electron [C]</span>
+0014 cm_to_m = 0.01;             <span class="comment">% Convert from [cm] to [m]</span>
+0015 g_to_kg = 1/1000;           <span class="comment">% Convert from [g] to [kg]</span>
+0016 K_to_eV = 8.6175e-5;        <span class="comment">% Convert from K to eV</span>
+0017 
+0018 <span class="comment">%% Geophysical and ionospheric</span>
+0019 Te_start = 1000;            <span class="comment">% Start temperature for the iteration scheme</span>
+0020 
+0021 <span class="comment">%% Radio wave heating parameters</span>
+0022 w_HF = 2*pi*f_HF;      <span class="comment">% Angular frequency [1/s]</span>
+0023          
+0024 <span class="comment">%% Energy/speed bins</span>
+0025 
+0026 <span class="comment">% Resolution - more points = smaller resolution</span>
+0027 res = 8000; 
+0028 
+0029 <span class="comment">% Edges for speed bins [m/s]</span>
+0030 v_bins = (linspace(0,sqrt((2*eVtoJ*max_E)/me),res))';
+0031 
+0032 <span class="comment">% Convert speed bins to energy bins [J]</span>
+0033 E_bins = (me*v_bins.^2)/2;
+0034 
+0035 <span class="comment">% Resolution  of speed(constant) [m/2]</span>
+0036 delta_v = v_bins(2)-v_bins(1); 
+0037 
+0038 <span class="comment">% Resolution of energy (varying) [J]</span>
+0039 delta_E = zeros(length(E_bins)-1,1); 
+0040 delta_E_eV = zeros(length(E_bins)-1,1); 
+0041 <span class="keyword">for</span> i = 1:length(E_bins)-1
+0042     delta_E(i,1) = E_bins(i+1)-E_bins(i); 
+0043     delta_E_eV(i,1) = (E_bins(i+1)-E_bins(i))/eVtoJ; 
+0044 <span class="keyword">end</span> 
+0045 
+0046 <span class="comment">% Velocities at the bin-edges</span>
+0047 v_bin_higher = v_bins(2:end); 
+0048 v_bin_lower = v_bins(1:end-1); 
+0049 
+0050 <span class="comment">% Energy/speed in the middle fo the bin</span>
+0051 v_bin_mid = v_bins(1:end-1)/2 + v_bins(2:end)/2; <span class="comment">% [m/s]</span>
+0052 E_bin_mid = (me*v_bin_mid.^2)/2; <span class="comment">% [J]</span>
+0053 
+0054 <span class="comment">%% Maxwellian distribution: [#e/m^3 * s/m]</span>
+0055 f_max_v = n_e*((me/(2*pi*k_b*Te_start))^(3/2)*4*pi*v_bin_mid.^2.*exp(-me*v_bin_mid.^2/(2*k_b*Te_start))); 
+0056 
+0057 <span class="comment">%% Cross sections</span>
+0058 
+0059 <span class="comment">% Excitation energy for inelastic collisions [eV] from Itakawa 1986, 1989, 1990</span>
+0060 exE_N2vib0_1 = 0.2888; 
+0061 exE_N2vib0_2 = 0.5742; 
+0062 exE_N2vib0_3 = 0.8559; 
+0063 exE_N2vib0_4 = 1.1342; 
+0064 exE_N2vib0_5 = 1.4088; 
+0065 exE_N2vib0_6 = 1.6800; 
+0066 exE_N2vib0_7 = 1.9475; 
+0067 exE_N2vib0_8 = 2.2115;
+0068 exE_N2vib0_9 = 2.4718;
+0069 exE_N2vib0_10 = 2.7284;
+0070 exE_O2a1Dg = 0.9770; 
+0071 exE_O2b1Sgp = 1.6270; 
+0072 exE_Ofine_1_0 = 0.0085; 
+0073 exE_Ofine_2_0 = 0.0281; 
+0074 exE_Ofine_2_1 = 0.0196; 
+0075 exE_O1S = 4.1900; 
+0076 exE_O1D = 1.9670; 
+0077 exE_O2vib = 0.193; 
+0078 
+0079 <span class="comment">% Excitation energy. Units [J].</span>
+0080 ex_E = [exE_N2vib0_1; exE_N2vib0_2; exE_N2vib0_3; exE_N2vib0_4; exE_N2vib0_5; <span class="keyword">...</span>
+0081     exE_N2vib0_6; exE_N2vib0_7; exE_N2vib0_8; exE_N2vib0_9; exE_N2vib0_10; <span class="keyword">...</span>
+0082     exE_O2a1Dg; exE_O2b1Sgp; exE_Ofine_1_0; exE_Ofine_2_0; exE_Ofine_2_1; exE_O1S; exE_O1D; exE_O2vib]*eVtoJ; 
+0083 
+0084 <span class="comment">% Neutral densities [m^-3] in same order as the cross sections. Input for degrading electrons</span>
+0085 nN_i = [nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nO2; nO2; nO; nO; nO; nO; nO; nO2]; 
+0086 
+0087 <span class="comment">% Neutral densities [m^-3]. Input for electron-meutral collsion frequency</span>
+0088 <span class="comment">% and eq. 21 in Stubbe 1981</span>
+0089 N_n = nN2 + nO2 + nO; <span class="comment">% Gives same results as Monte Carlo Simulation</span>
+0090 N_n2 = nN2 + nO2; <span class="comment">% Gives same results as Monte Carlo Simulation</span>
+0091 r_N = N_n/N_n2; 
+0092 
+0093 <span class="comment">% Cross sections [m^2]. Energy in must be in [J].</span>
+0094 E_in = E_bin_mid; 
+0095 xs_e_N2vib0_1 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>(E_in,xs_data{4}(:,1),xs_data{4}(:,2)); 
+0096 xs_e_N2vib0_2 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>(E_in,xs_data{5}(:,1),xs_data{5}(:,2));
+0097 xs_e_N2vib0_3 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>(E_in,xs_data{6}(:,1),xs_data{6}(:,2)); 
+0098 xs_e_N2vib0_4 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>(E_in,xs_data{7}(:,1),xs_data{7}(:,2));
+0099 xs_e_N2vib0_5 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>(E_in,xs_data{8}(:,1),xs_data{8}(:,2)); 
+0100 xs_e_N2vib0_6 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>(E_in,xs_data{9}(:,1),xs_data{9}(:,2));
+0101 xs_e_N2vib0_7 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>(E_in,xs_data{10}(:,1),xs_data{10}(:,2)); 
+0102 xs_e_N2vib0_8 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>(E_in,xs_data{11}(:,1),xs_data{11}(:,2)); 
+0103 xs_e_N2vib0_9 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_09.html" class="code" title="function cross_sect = sigma_N2_vib_09(E,E_old,xs_old)">sigma_N2_vib_09</a>(E_in,xs_data{12}(:,1),xs_data{12}(:,2)); 
+0104 xs_e_N2vib0_10 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_010.html" class="code" title="function cross_sect = sigma_N2_vib_010(E,E_old,xs_old)">sigma_N2_vib_010</a>(E_in,xs_data{13}(:,1),xs_data{13}(:,2)); 
+0105 xs_e_O2a1Dg = <a href="../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>(E_in,xs_data{19}(:,1),xs_data{19}(:,2)); 
+0106 xs_e_O2b1Sgp = <a href="../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>(E_in,xs_data{20}(:,1),xs_data{20}(:,2)); 
+0107 xs_e_Ofine_1_0 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_10.html" class="code" title="function cross_sect = sigma_O_fine_str_10(E,E_old,xs_old)">sigma_O_fine_str_10</a>(E_in,xs_data{21}(:,1),xs_data{21}(:,2));  
+0108 xs_e_Ofine_2_0 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_20.html" class="code" title="function cross_sect = sigma_O_fine_str_20(E,E_old,xs_old)">sigma_O_fine_str_20</a>(E_in,xs_data{22}(:,1),xs_data{22}(:,2)); 
+0109 xs_e_Ofine_2_1 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_21.html" class="code" title="function cross_sect = sigma_O_fine_str_21(E,E_old,xs_old)">sigma_O_fine_str_21</a>(E_in,xs_data{23}(:,1),xs_data{23}(:,2));  
+0110 xs_e_O3P1D = <a href="../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>(E_in,xs_data{24}(:,1),xs_data{24}(:,2)); 
+0111 xs_e_O3P1S = <a href="../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>(E_in,xs_data{25}(:,1),xs_data{25}(:,2)); 
+0112 xs_e_O2vib = <a href="../Cross_section/Funtion_interp/sigma_O2_vib.html" class="code" title="function cross_sect = sigma_O2_vib(E,E_old,xs_old)">sigma_O2_vib</a>(E_in,xs_data{26}(:,1),xs_data{26}(:,2));
+0113 
+0114 xs_i = [xs_e_N2vib0_1 xs_e_N2vib0_2 xs_e_N2vib0_3 xs_e_N2vib0_4 xs_e_N2vib0_5 <span class="keyword">...</span>
+0115     xs_e_N2vib0_6 xs_e_N2vib0_7 xs_e_N2vib0_8 xs_e_N2vib0_9 xs_e_N2vib0_10 xs_e_O2a1Dg <span class="keyword">...</span>
+0116     xs_e_O2b1Sgp xs_e_Ofine_1_0 xs_e_Ofine_2_0 xs_e_Ofine_2_1 xs_e_O3P1D xs_e_O3P1S xs_e_O2vib];
+0117 
+0118 <span class="comment">% Set cross sections to zero below threshold for excitation</span>
+0119 <span class="keyword">for</span> m = 1:length(ex_E)
+0120     [~,ind_trh] = min(abs(E_bin_mid-ex_E(m))); <span class="comment">% J</span>
+0121     xs_i(1:ind_trh,m) = 0; 
+0122 <span class="keyword">end</span> 
+0123 
+0124 <span class="comment">%% Constants from Stubbe 1981 (which are hopefully correct)</span>
+0125 gamma = -(q_e*E0_field)/me;                    <span class="comment">% Q*V/(m*kg)</span>
+0126 b = 2.8e-23;                                   <span class="comment">% [cm*s]</span>
+0127 sigma0_B0 = 2.49e-32;                          <span class="comment">% [g*cm^4*s^-2]</span>
+0128 b_SI = b*cm_to_m;                              <span class="comment">% [m*s]</span>
+0129 sigma0_B0_SI = sigma0_B0*g_to_kg*(cm_to_m)^4;  <span class="comment">% [kg*m^4*s^-2]</span>
+0130 nu = b_SI*N_n*v_bin_mid.^2;                    <span class="comment">% Electron-neutral collision frequency [1/s]</span>
+0131 
+0132 <span class="comment">%% Solve eq. 21 from Stubbe 1981 by a numerical iteration technique</span>
+0133 
+0134 num_iter = 80; 
+0135 f0_iterate = zeros(length(v_bin_mid),num_iter); 
+0136 f0_iterate(:,1) = f_max_v; <span class="comment">% Form: ne*A*4*pi*v^2*exp(x) and units: [#e/m^3 * s/m]</span>
+0137 f0 = zeros(length(v_bin_mid),num_iter); 
+0138 G_v = zeros(length(v_bin_mid),num_iter); 
+0139 
+0140 <span class="comment">% The iteration</span>
+0141 <span class="keyword">for</span> j = 1:num_iter
+0142 
+0143     <span class="comment">% Input: Histogram [#e/m^3] per speed bin</span>
+0144     histogram_in = f0_iterate(:,j)*delta_v; 
+0145     
+0146     <span class="comment">% Electrons degrading in energy due to inelastic collisions. Same-ish as eq. 14 in Stubbe 1981</span>
+0147     [dI_sum,dIe,deg_Ie,~] = <a href="degrading_electrons_works3.html" class="code" title="function [dI_sum,dIe,deg_Ie,ratio] = degrading_electrons_works3(ex_E,xs_i,E_bins,v_bin_mid,nN_i,num_e_bin_v)">degrading_electrons_works3</a>(ex_E,xs_i,E_bins,v_bin_mid,<span class="keyword">...</span>
+0148         nN_i,histogram_in); <span class="comment">% dI_Sum: [#e/(m^3*s)]</span>
+0149 
+0150     <span class="comment">% Convert output from degrading electron function to something somewhat sensible</span>
+0151     df_dt_vib = dI_sum./(4*pi*v_bin_mid.^2*delta_v); <span class="comment">% Form: A*exp(x) and units: [#e/(m^3*s) * s^3/m^3]</span>
+0152 
+0153     <span class="comment">% This is Eq. 18 in Stubbe 1981: The inelastic collision integral integrated from 0 to u</span>
+0154     <span class="comment">%n_pow2 = 2; % should be 2</span>
+0155     <span class="comment">%G_v(:,j)  = cumtrapz(v_bin_mid,v_bin_mid.^n_pow2.*df_dt_vib);</span>
+0156     G_v(:,j) = cumsum((v_bin_higher.^3/3 - v_bin_lower.^3/3).*df_dt_vib);
+0157 
+0158     <span class="comment">% Set G(v) to zero if negative</span>
+0159     <span class="comment">%G_v(G_v(:,j)&lt;0,j) = 1e-200;</span>
+0160     <span class="comment">% for i = 1:length(v_bin_mid)</span>
+0161     <span class="comment">%     if G_v(i,j) &lt; 0</span>
+0162     <span class="comment">%         G_v(i,j) = 1e-200;%1e-300;%1e-200;%1e-22;</span>
+0163     <span class="comment">%     end</span>
+0164     <span class="comment">% end</span>
+0165 
+0166     <span class="comment">% Compute the ugly expression, eq. 21 in Stubbe 1981</span>
+0167     ledd_oppe = me^2*G_v(:,j); 
+0168     f0_in = (f0_iterate(:,j)./(4*pi*v_bin_mid.^2)); <span class="comment">% Form: A*exp(x) and units: [#e/m^3 * s^3/m^3]</span>
+0169     ledd_nede = N_n2*4*sigma0_B0_SI*v_bin_mid.*f0_in; 
+0170     G_v_over_f0 = ledd_oppe./ledd_nede; 
+0171     heating_term = (me^2*b_SI*r_N*gamma.^2)/(24*sigma0_B0_SI) * (v_bin_mid.^3./(w_HF^2 + (nu).^2));
+0172     ugly_exp = (me*v_bin_mid + G_v_over_f0)./(k_b*Tn + heating_term);   
+0173     f0(:,j) = exp(-cumtrapz(v_bin_mid,ugly_exp)); 
+0174 
+0175     <span class="comment">% Normalization</span>
+0176     A = n_e/trapz(v_bin_mid,n_e*4*pi*v_bin_mid.^2.*f0(:,j)); 
+0177 
+0178     <span class="comment">% Break after the given number of iterations</span>
+0179     <span class="keyword">if</span> j &gt;= num_iter
+0180         <span class="keyword">break</span> 
+0181     <span class="keyword">end</span> 
+0182 
+0183     <span class="comment">% Distribution: Form: ne*A*4*pi*v^2*exp(x): [#e/m^3 * s/m]</span>
+0184     <span class="comment">%f0_iterate(:,j+1) = n_e*A*4*pi*v_bin_mid.^2.*f0(:,j);</span>
+0185     <span class="comment">% c_s_1 = 0.0001;</span>
+0186     <span class="comment">% c_s_2 = 0.1;</span>
+0187     <span class="comment">%</span>
+0188     <span class="comment">% if j &lt; 50</span>
+0189     <span class="comment">%     f0_iterate(:,j+1) = c_s_1*f0_iterate(:,j) + (1-c_s_1)*n_e*A*4*pi*v_bin_mid.^2.*f0(:,j);</span>
+0190     <span class="comment">% else</span>
+0191     <span class="comment">%    f0_iterate(:,j+1) = c_s_2*f0_iterate(:,j) + (1-c_s_2)*n_e*A*4*pi*v_bin_mid.^2.*f0(:,j);</span>
+0192     <span class="comment">% end</span>
+0193     C = n_e*A*4*pi*v_bin_mid.^2;
+0194     alpha_c = 0.01;
+0195     gamma_c = 0.3; 
+0196     <span class="comment">%f0_iterate(:,j+1) = C.*f0(:,j);</span>
+0197     <span class="comment">%f0_iterate(:,j+1) = (1-alpha_c)*C.*f0(:,j) + alpha_c*f0_iterate(:,j);</span>
+0198     f0_iterate(:,j+1) = (1-alpha_c)*(C.*f0(:,j)).^gamma_c.*f0_iterate(:,j).^(1-gamma_c) + <span class="keyword">...</span>
+0199         alpha_c*f0_iterate(:,j); 
+0200 
+0201 <span class="keyword">end</span> 
+0202 
+0203 <span class="comment">%% For saving data</span>
+0204 f0_save = f0(:,end); 
+0205 A_save = A; 
+0206  
+0207 <span class="comment">%% Compute temperature of distribution based on Stubbe 1981 version</span>
+0208 some_cont = (4*pi*me)/(3*k_b); 
+0209 Te_non_max = some_cont*trapz(v_bin_mid,v_bin_mid.^4*A.*f0(:,end));
+0210 
+0211 <span class="comment">%% NEW energy grid with constant delta E</span>
+0212 
+0213 <span class="comment">% Bin edges</span>
+0214 E_bins_new = (linspace(0,eVtoJ*max_E,res))'; <span class="comment">% [J]</span>
+0215 
+0216 <span class="comment">% Resolution  of speed(constant) [J]</span>
+0217 delta_E_new = E_bins_new(end)-E_bins_new(end-1); 
+0218 
+0219 <span class="comment">% Energy/speed in the middle fo the bin</span>
+0220 E_bin_mid_new = E_bins_new(1:end-1)/2 + E_bins_new(2:end)/2; <span class="comment">% [J]</span>
+0221 
+0222 <span class="comment">%% NEW distributions for energy grid with constant delta E</span>
+0223 f0_A_save_new = interp1(E_bin_mid,A.*f0(:,end),E_bin_mid_new); <span class="comment">% Non-Maxwellian</span>
+0224 
+0225 <span class="comment">%% Temperature by gradient</span>
+0226 Te_grad = -f0_A_save_new./gradient(f0_A_save_new,delta_E_new*(1/eVtoJ)*(1/K_to_eV)); <span class="comment">% delta E in K</span>
+0227 
+0228 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
