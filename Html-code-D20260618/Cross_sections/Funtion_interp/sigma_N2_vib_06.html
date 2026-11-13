@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sigma_N2_vib_06</title>
+  <meta name="keywords" content="sigma_N2_vib_06">
+  <meta name="description" content="Convert from [eV] to [J]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Funtion_interp -->
+<h1>sigma_N2_vib_06
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Convert from [eV] to [J]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cross_sect = sigma_N2_vib_06(E,E_old,xs_old) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert from [eV] to [J]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Boltzmann_solver/compute_f0_stubbe_less_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_less_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_less_xs</a>	Use old cross sections for O2 vib. 0->1 from Itikawa</li><li><a href="../../Boltzmann_solver/compute_f0_stubbe_more_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_more_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_more_xs</a>	Use new cross sections of O2 vib. 0->1,2,3,4,5,6,7 from Allen 1995</li><li><a href="../../Cooling_rates/Functions/analytical_cooling_rates.html" class="code" title="function [L_non_max_vib,L_maxw_vib_2nd,L_maxw_vib_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] =analytical_cooling_rates(v_bins_stubbe,f0_exp_stubbe,Te_2nd,Te_L,A,nNe,nN2,nO2,T_vib,xs_data)">analytical_cooling_rates</a>	Now A (normalization constant) is also an input</li><li><a href="../../For_thesis/plot_f0_new.html" class="code" title="">plot_f0_new</a>	Plot figures for thesis</li><li><a href="../../MC_simulation/f_e_workerBG3.html" class="code" title="function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data)">f_e_workerBG3</a>	1     2     3      4       5                              1 2     3    4       5   6   7     8  9</li><li><a href="../../plot_f0.html" class="code" title="">plot_f0</a>	Plot figures for part I</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)</a>
+0002 
+0003 <span class="comment">% Convert from [eV] to [J]</span>
+0004 eVtoJ = 1.602176634e-19; 
+0005 
+0006 <span class="comment">% Interpolation</span>
+0007 cross_sect = exp(interp1(E_old,log(xs_old),E,<span class="string">'pchip'</span>)); 
+0008 
+0009 <span class="comment">% Set to zero below excitation energy and above sample data</span>
+0010 <span class="keyword">for</span> i = 1:length(E)
+0011     <span class="keyword">if</span> E(i)*(1/eVtoJ) &lt; E_old*(1/eVtoJ)
+0012         cross_sect(i) = 0; 
+0013     <span class="keyword">end</span> 
+0014     <span class="keyword">if</span> E(i)*(1/eVtoJ) &gt; E_old*(1/eVtoJ)
+0015         cross_sect(i) = 0; 
+0016     <span class="keyword">end</span> 
+0017 <span class="keyword">end</span> 
+0018 
+0019 
+0020 <span class="comment">% Remove any negative values</span>
+0021 <span class="comment">% cross_sect(cross_sect &lt; 0) = 0;</span>
+0022 
+0023 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sigma_N2_rot_02_born_apprx</title>
+  <meta name="keywords" content="sigma_N2_rot_02_born_apprx">
+  <meta name="description" content="Calling: cross_sect = sigma_N2_rot_02(E)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Funtion_interp -->
+<h1>sigma_N2_rot_02_born_apprx
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Calling: cross_sect = sigma_N2_rot_02(E)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cross_sect = sigma_N2_rot_02_born_apprx(E) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Calling: cross_sect = sigma_N2_rot_02(E)
+ Input: E, energy [J], for interpolation 
+ Output: cross_sect, cross sections for rotational excitation (0-&gt;2) of N2 [m^2] per energy [J]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="sigma_interp.html" class="code" title="function cross_sect = sigma_interp(E,E_old,xs_old)">sigma_interp</a>	Convert from [eV] to [J]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cross_sect = sigma_N2_rot_02_born_apprx(E)</a>
+0002 
+0003 <span class="comment">% Calling: cross_sect = sigma_N2_rot_02(E)</span>
+0004 <span class="comment">% Input: E, energy [J], for interpolation</span>
+0005 <span class="comment">% Output: cross_sect, cross sections for rotational excitation (0-&gt;2) of N2 [m^2] per energy [J]</span>
+0006 
+0007 <span class="comment">% Convert from cm to m</span>
+0008 cm_to_m = 0.01; 
+0009 
+0010 <span class="comment">% Convert from [eV] to [J]</span>
+0011 eVtoJ = 1.602176634e-19;     
+0012 
+0013 <span class="comment">% From Itakava 1986 fig. 5.1. Units cm^2 per eV. Born approximation.</span>
+0014 rot_N2_0_2 = load(<span class="string">'N2_rot_0_2_born.mat'</span>); 
+0015 E_old = (10.^(rot_N2_0_2.N2_rot_0_2(:,1)))*eVtoJ; 
+0016 xs_old = (10.^(rot_N2_0_2.N2_rot_0_2(:,2)))*(cm_to_m)^2; 
+0017 
+0018 <span class="comment">% Remove some values</span>
+0019 E_old(22:end) = []; 
+0020 xs_old(22:end) = []; 
+0021 
+0022 <span class="comment">% Find values in cross sections energy vector (eV) closest to E energy vector</span>
+0023 <span class="comment">% (E might be out of range of cross section energy vector)</span>
+0024 [~,closestIndex_1] = min(abs(E-E_old(1))); 
+0025 [~,closestIndex_end] = min(abs(E-E_old(end))); 
+0026 E_interp = E(closestIndex_1:closestIndex_end); 
+0027 
+0028 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0029 <span class="comment">% INTERPOLATION</span>
+0030 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0031 <a href="sigma_interp.html" class="code" title="function cross_sect = sigma_interp(E,E_old,xs_old)">sigma_interp</a> = interp1(E_old,xs_old,E_interp,<span class="string">'pchip'</span>); 
+0032 cross_sect = [zeros((closestIndex_1-1),1); <a href="sigma_interp.html" class="code" title="function cross_sect = sigma_interp(E,E_old,xs_old)">sigma_interp</a>; zeros(length(E)-closestIndex_end,1)]; 
+0033 
+0034 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

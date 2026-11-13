@@ -1,0 +1,44 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  sigma_N2_el -> sigma_interp;
+  sigma_N2_rot_02_born_apprx -> sigma_interp;
+  sigma_O2_el -> sigma_interp;
+  sigma_O_el_2 -> sigma_interp;
+
+  sigma_N2_el [URL="sigma_N2_el.html"];
+  sigma_N2_rot_02 [URL="sigma_N2_rot_02.html"];
+  sigma_N2_rot_02_born_apprx [URL="sigma_N2_rot_02_born_apprx.html"];
+  sigma_N2_rot_04 [URL="sigma_N2_rot_04.html"];
+  sigma_N2_rot_06 [URL="sigma_N2_rot_06.html"];
+  sigma_N2_rot_08 [URL="sigma_N2_rot_08.html"];
+  sigma_N2_vib_01 [URL="sigma_N2_vib_01.html"];
+  sigma_N2_vib_010 [URL="sigma_N2_vib_010.html"];
+  sigma_N2_vib_02 [URL="sigma_N2_vib_02.html"];
+  sigma_N2_vib_03 [URL="sigma_N2_vib_03.html"];
+  sigma_N2_vib_04 [URL="sigma_N2_vib_04.html"];
+  sigma_N2_vib_05 [URL="sigma_N2_vib_05.html"];
+  sigma_N2_vib_06 [URL="sigma_N2_vib_06.html"];
+  sigma_N2_vib_07 [URL="sigma_N2_vib_07.html"];
+  sigma_N2_vib_08 [URL="sigma_N2_vib_08.html"];
+  sigma_N2_vib_09 [URL="sigma_N2_vib_09.html"];
+  sigma_O2_a1_delta_g [URL="sigma_O2_a1_delta_g.html"];
+  sigma_O2_b1_delta_g [URL="sigma_O2_b1_delta_g.html"];
+  sigma_O2_el [URL="sigma_O2_el.html"];
+  sigma_O2_rot_13 [URL="sigma_O2_rot_13.html"];
+  sigma_O2_vib [URL="sigma_O2_vib.html"];
+  sigma_O2_vib_01 [URL="sigma_O2_vib_01.html"];
+  sigma_O2_vib_02 [URL="sigma_O2_vib_02.html"];
+  sigma_O2_vib_03 [URL="sigma_O2_vib_03.html"];
+  sigma_O2_vib_04 [URL="sigma_O2_vib_04.html"];
+  sigma_O2_vib_05 [URL="sigma_O2_vib_05.html"];
+  sigma_O2_vib_06 [URL="sigma_O2_vib_06.html"];
+  sigma_O2_vib_07 [URL="sigma_O2_vib_07.html"];
+  sigma_O_3P_1D [URL="sigma_O_3P_1D.html"];
+  sigma_O_3P_1S [URL="sigma_O_3P_1S.html"];
+  sigma_O_el_2 [URL="sigma_O_el_2.html"];
+  sigma_O_fine_str_10 [URL="sigma_O_fine_str_10.html"];
+  sigma_O_fine_str_20 [URL="sigma_O_fine_str_20.html"];
+  sigma_O_fine_str_21 [URL="sigma_O_fine_str_21.html"];
+  sigma_O_fine_str_bell [URL="sigma_O_fine_str_bell.html"];
+  sigma_interp [URL="sigma_interp.html"];
+}

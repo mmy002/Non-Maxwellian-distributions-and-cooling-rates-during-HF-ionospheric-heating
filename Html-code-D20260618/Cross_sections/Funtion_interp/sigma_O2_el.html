@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sigma_O2_el</title>
+  <meta name="keywords" content="sigma_O2_el">
+  <meta name="description" content="Find values in cross sections energy vector E_old closest to E energy vector">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Funtion_interp -->
+<h1>sigma_O2_el
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Find values in cross sections energy vector E_old closest to E energy vector</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cross_sect = sigma_O2_el(E,E_old,xs_old) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Find values in cross sections energy vector E_old closest to E energy vector 
+ (E might be out of range of cross section energy vector)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="sigma_interp.html" class="code" title="function cross_sect = sigma_interp(E,E_old,xs_old)">sigma_interp</a>	Convert from [eV] to [J]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Cooling_rates/Functions/L_rot_el.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el</a>	Function for more cross sections (O2 vib 0->1,2,..,7)</li><li><a href="../../Cooling_rates/Functions/L_rot_el_new.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_new(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_new</a>	Add new cross section for O2 and N2 rot</li><li><a href="../../Cooling_rates/Functions/L_rot_el_old.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_old(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_old</a>	Function for more cross sections (O2 vib 0->1,2,..,7)</li><li><a href="../../For_thesis/plot_f0_new.html" class="code" title="">plot_f0_new</a>	Plot figures for thesis</li><li><a href="../../MC_simulation/f_e_workerBG3.html" class="code" title="function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data)">f_e_workerBG3</a>	1     2     3      4       5                              1 2     3    4       5   6   7     8  9</li><li><a href="../../plot_f0.html" class="code" title="">plot_f0</a>	Plot figures for part I</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cross_sect = sigma_O2_el(E,E_old,xs_old)</a>
+0002 
+0003 <span class="comment">% Find values in cross sections energy vector E_old closest to E energy vector</span>
+0004 <span class="comment">% (E might be out of range of cross section energy vector)</span>
+0005 [~,closestIndex_1] = min(abs(E-E_old(1))); 
+0006 [~,closestIndex_end] = min(abs(E-E_old(end))); 
+0007 E_interp = E(closestIndex_1:closestIndex_end);
+0008 
+0009 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0010 <span class="comment">% INTERPOLATION</span>
+0011 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0012 <a href="sigma_interp.html" class="code" title="function cross_sect = sigma_interp(E,E_old,xs_old)">sigma_interp</a> = exp(interp1(E_old,log(xs_old),E_interp,<span class="string">'pchip'</span>)); 
+0013 
+0014 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0015 <span class="comment">% EXTRAPOLATION</span>
+0016 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0017 sigma_extrap = exp(interp1(E_old,log(xs_old),E,<span class="string">'pchip'</span>,<span class="string">'extrap'</span>)); 
+0018 sigma_extrap = sigma_extrap(1:closestIndex_1-1); 
+0019 
+0020 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0021 <span class="comment">% CROSS SECTIONS</span>
+0022 <span class="comment">%----------------------------------------------------------------------------------------------------------------</span>
+0023 cross_sect = [sigma_extrap; <a href="sigma_interp.html" class="code" title="function cross_sect = sigma_interp(E,E_old,xs_old)">sigma_interp</a>; zeros(length(E)-closestIndex_end,1)]; 
+0024 
+0025 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

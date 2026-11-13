@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sigma_O2_vib_03</title>
+  <meta name="keywords" content="sigma_O2_vib_03">
+  <meta name="description" content="Calling: cross_sect = sigma_O2_vib(E)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Funtion_interp -->
+<h1>sigma_O2_vib_03
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Calling: cross_sect = sigma_O2_vib(E)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cross_sect = sigma_O2_vib_03(E,E_old,xs_old) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Calling: cross_sect = sigma_O2_vib(E)
+ Input: E, energy [J]
+ Output: cross_sect, cross sections [m^2] per energy [J] for vibrational excitation of O2 v:0-&gt;1</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Boltzmann_solver/compute_f0_stubbe_more_xs.html" class="code" title="function [f0_save,v_bins,Te_non_max,Te_grad,A_save,dI_sum,dIe,deg_Ie] =compute_f0_stubbe_more_xs(E0_field,n_e,Tn,nO,nN2,nO2,f_HF,xs_data,max_E)">compute_f0_stubbe_more_xs</a>	Use new cross sections of O2 vib. 0->1,2,3,4,5,6,7 from Allen 1995</li><li><a href="../../Cooling_rates/Functions/analytical_cooling_rates.html" class="code" title="function [L_non_max_vib,L_maxw_vib_2nd,L_maxw_vib_L,Q_non_max,Q_maxw_2nd,Q_maxw_L] =analytical_cooling_rates(v_bins_stubbe,f0_exp_stubbe,Te_2nd,Te_L,A,nNe,nN2,nO2,T_vib,xs_data)">analytical_cooling_rates</a>	Now A (normalization constant) is also an input</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cross_sect = sigma_O2_vib_03(E,E_old,xs_old)</a>
+0002 <span class="comment">% Calling: cross_sect = sigma_O2_vib(E)</span>
+0003 <span class="comment">% Input: E, energy [J]</span>
+0004 <span class="comment">% Output: cross_sect, cross sections [m^2] per energy [J] for vibrational excitation of O2 v:0-&gt;1</span>
+0005 
+0006 <span class="comment">% Interpolation</span>
+0007 <span class="comment">%cross_sect = exp(interp1(E_old,log(xs_old),E,'pchip'));</span>
+0008 cross_sect = interp1(E_old,xs_old,E,<span class="string">'linear'</span>); <span class="comment">% linear or nearest</span>
+0009 
+0010 <span class="comment">% Set to zero below excitation energy and above sample data</span>
+0011 <span class="keyword">for</span> i = 1:length(E)
+0012     <span class="keyword">if</span> E(i) &lt; E_old(1)
+0013         cross_sect(i) = 0; 
+0014     <span class="keyword">end</span> 
+0015     <span class="keyword">if</span> E(i) &gt; E_old(end)
+0016         cross_sect(i) = 0; 
+0017     <span class="keyword">end</span> 
+0018 <span class="keyword">end</span> 
+0019 
+0020 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

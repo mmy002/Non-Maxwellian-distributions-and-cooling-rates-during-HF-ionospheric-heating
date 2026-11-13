@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sigma_O2_rot_13</title>
+  <meta name="keywords" content="sigma_O2_rot_13">
+  <meta name="description" content="Calling: cross_sect = sigma_N2_rot_02(E)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section --><!-- # Funtion_interp -->
+<h1>sigma_O2_rot_13
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Calling: cross_sect = sigma_N2_rot_02(E)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cross_sect = sigma_O2_rot_13(E,E_old,xs_old) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Calling: cross_sect = sigma_N2_rot_02(E)
+ Input: E, energy [J], for interpolation 
+ Output: cross_sect, cross sections for rotational excitation (0-&gt;6) of O2 [m^2] per energy [J]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Cooling_rates/Functions/L_rot_el.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el</a>	Function for more cross sections (O2 vib 0->1,2,..,7)</li><li><a href="../../Cooling_rates/Functions/L_rot_el_old.html" class="code" title="function [L_rot_N2_SI,L_rot_O2_SI,L_el_SI] = L_rot_el_old(v_bins_stubbe,f0_exp_stubbe,A,xs_data,nNe,nN2,nO2,nO,Te_non_max,Tn)">L_rot_el_old</a>	Function for more cross sections (O2 vib 0->1,2,..,7)</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cross_sect = sigma_O2_rot_13(E,E_old,xs_old)</a>
+0002 
+0003 <span class="comment">% Calling: cross_sect = sigma_N2_rot_02(E)</span>
+0004 <span class="comment">% Input: E, energy [J], for interpolation</span>
+0005 <span class="comment">% Output: cross_sect, cross sections for rotational excitation (0-&gt;6) of O2 [m^2] per energy [J]</span>
+0006 
+0007 <span class="comment">% Convert from [eV] to [J]</span>
+0008 eVtoJ = 1.602176634e-19; 
+0009 
+0010 <span class="comment">% Interpolation</span>
+0011 cross_sect = exp(interp1(E_old,log(xs_old),E,<span class="string">'pchip'</span>)); 
+0012 
+0013 <span class="comment">% Set to zero below excitation energy and above sample data</span>
+0014 <span class="keyword">for</span> i = 1:length(E)
+0015     <span class="keyword">if</span> E(i)*(1/eVtoJ) &lt; E_old*(1/eVtoJ)
+0016         cross_sect(i) = 0; 
+0017     <span class="keyword">end</span> 
+0018     <span class="keyword">if</span> E(i)*(1/eVtoJ) &gt; E_old*(1/eVtoJ)
+0019         cross_sect(i) = 0; 
+0020     <span class="keyword">end</span> 
+0021 <span class="keyword">end</span> 
+0022 
+0023 <span class="comment">% % Convert from cm to m</span>
+0024 <span class="comment">% cm_to_m = 0.01;</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% % Convert from [eV] to [J]</span>
+0027 <span class="comment">% eVtoJ = 1.602176634e-19;</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% % From Itakawa 1989 fig.5.1. Units cm^2 per eV.</span>
+0030 <span class="comment">% rot_O2_1_3 = load('O2_rot_1_3.mat');</span>
+0031 <span class="comment">% E_old = (10.^(rot_O2_1_3.O2_rot_1_3(:,1)))*eVtoJ;</span>
+0032 <span class="comment">% xs_old = (10.^(rot_O2_1_3.O2_rot_1_3(:,2)))*(cm_to_m)^2;</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% % Find values in cross sections energy vector (eV) closest to E energy vector</span>
+0035 <span class="comment">% % (E might be out of range of cross section energy vector)</span>
+0036 <span class="comment">% [~,closestIndex_1] = min(abs(E-E_old (1)));</span>
+0037 <span class="comment">% [~,closestIndex_end] = min(abs(E-E_old (end)));</span>
+0038 <span class="comment">% E_interp = E(closestIndex_1:closestIndex_end);</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% %----------------------------------------------------------------------------------------------------------------</span>
+0041 <span class="comment">% % INTERPOLATION</span>
+0042 <span class="comment">% %----------------------------------------------------------------------------------------------------------------</span>
+0043 <span class="comment">% sigma_interp = interp1(E_old,xs_old,E_interp,'pchip');</span>
+0044 <span class="comment">% cross_sect = [zeros((closestIndex_1-1),1); sigma_interp; zeros(length(E)-closestIndex_end,1)];</span>
+0045 
+0046 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
