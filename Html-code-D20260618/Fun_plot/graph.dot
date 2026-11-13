@@ -1,0 +1,7 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+
+  JackKnife [URL="JackKnife.html"];
+  colorbar_labeled [URL="colorbar_labeled.html"];
+  suptitle [URL="suptitle.html"];
+}
