@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_MC_data</title>
+  <meta name="keywords" content="plot_MC_data">
+  <meta name="description" content="% Script for loading, processing and ploting data of MC runs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # MC_simulation -->
+<h1>plot_MC_data
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Script for loading, processing and ploting data of MC runs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Script for loading, processing and ploting data of MC runs 
+ Format MC data:10 000 electrons (row) x (301) (columns)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Script for loading, processing and ploting data of MC runs</span>
+0002 <span class="comment">% Format MC data:10 000 electrons (row) x (301) (columns)</span>
+0003 
+0004 <span class="comment">%% Graphics setup</span>
+0005 lftsz = 14; <span class="comment">% font-size for labels</span>
+0006 tftsz = 15; <span class="comment">% font-size for titles</span>
+0007 aftsz = 12; <span class="comment">% font-size for axes and legends</span>
+0008 
+0009 <span class="comment">%% Physical constants</span>
+0010 m_e = 9.1093835611e-31;        <span class="comment">% Electron rest mass [kg]</span>
+0011 q_e = 1.602176620898e-19;      <span class="comment">% Elementary charge [C]</span>
+0012 eVtoJ = 1.602176634e-19;       <span class="comment">% Convert from [eV] to [J]</span>
+0013 
+0014 <span class="comment">%% Energy and velocity-distributions</span>
+0015 <span class="comment">% Here we reduce the particle energies and velocities down to energy and</span>
+0016 <span class="comment">% velocity-distributions - this is effectively histograms in 1 and 2</span>
+0017 <span class="comment">% dimensions. Depending on how many particles we trace and for how long the</span>
+0018 <span class="comment">% distributions will become increasingly smooth - and for the widths, they</span>
+0019 <span class="comment">% will increase indefinitely in this case where there are no energy-losses</span>
+0020 <span class="comment">% and tend to some steady-state when inellastic collisions are introduced.</span>
+0021 
+0022 <span class="comment">% Load data for the MC run (go first to the folder containing the data...)</span>
+0023 dfiles = dir(<span class="string">'*.mat'</span>);
+0024 
+0025 <span class="comment">% Bin-edges for the histcounts and histcounts2 function calls</span>
+0026 E_bins = 0:0.025:4;
+0027 
+0028 <span class="comment">% Load the first file</span>
+0029 load(dfiles(1).name)
+0030 
+0031 N_E = zeros(numel(E_bins)-1,size(E_all,2));
+0032 <span class="keyword">for</span> it = size(E_all,2):-1:1
+0033   N_E(:,it) = histcounts(E_all(:,it),E_bins)';
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="keyword">for</span> i1 = 2:numel(dfiles)
+0037 
+0038   <span class="keyword">if</span> rem(i1,10) == 0
+0039     fprintf(<span class="string">'%d at %s\n'</span>,i1,datestr(now,<span class="string">'HH:MM:SS'</span>))
+0040   <span class="keyword">end</span>
+0041 
+0042   load(dfiles(i1).name)
+0043 
+0044   <span class="keyword">for</span> it = 1:size(E_all,2)
+0045     N_E(:,it) = N_E(:,it) + histcounts(E_all(:,it),E_bins)';
+0046   <span class="keyword">end</span>
+0047 
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">%% Plot energy distribution and energy as a function of time</span>
+0051 
+0052 <span class="comment">% Energy/speed in the middle fo the bin</span>
+0053 E_bin_mid = E_bins(1:end-1)/2 + E_bins(2:end)/2; 
+0054 
+0055 <span class="comment">% Pick certain times to plot</span>
+0056 pick_ind_N_E = [1 2 8 26:length(avg_t)]; 
+0057 pick_ind_legend = [1 2 8 26:55:length(avg_t)]; 
+0058 
+0059 [p1,p2] = fileparts(pwd); 
+0060 figure(<span class="string">'name'</span>,p2)
+0061 subplot(2,1,1)
+0062 phNE = semilogy(E_bin_mid,N_E(:,pick_ind_N_E));
+0063 set(phNE,<span class="string">'linewidth'</span>,2)
+0064 xlabel(<span class="string">'Energy [eV]'</span>,<span class="string">'fontsize'</span>,lftsz)
+0065 ylabel(<span class="string">'[#e]'</span>,<span class="string">'fontsize'</span>,lftsz)
+0066 title(<span class="string">'a)'</span>)
+0067 colormap(turbo)
+0068 legend(num2str(avg_t(pick_ind_legend)',<span class="string">'%2.4f'</span>))
+0069 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0070 xlim([0 2.5])
+0071 subplot(2,1,2)
+0072 imagesc(avg_t,E_bins,log10(N_E))
+0073 xlabel(<span class="string">'Time [s]'</span>,<span class="string">'fontsize'</span>,lftsz)
+0074 ylabel(<span class="string">'Energy [eV]'</span>,<span class="string">'fontsize'</span>,lftsz)
+0075 title(<span class="string">'b)'</span>)
+0076 set(gca,<span class="string">'fontsize'</span>,aftsz)
+0077 
+0078 
+0079</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

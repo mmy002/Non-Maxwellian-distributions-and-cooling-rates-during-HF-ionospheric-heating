@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of v_e_HF_workBG4</title>
+  <meta name="keywords" content="v_e_HF_workBG4">
+  <meta name="description" content="% Script for MC-trajectory calculations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # MC_simulation -->
+<h1>v_e_HF_workBG4
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Script for MC-trajectory calculations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Script for MC-trajectory calculations
+ Includes only collisions between electrons and neutrals 
+ Runs simultions for all collisions given by parameter n_coll</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Cross_section/Process_data/get_data_withN2vib.html" class="code" title="function out = get_data_withN2vib()">get_data_withN2vib</a>	Original one with less cross sections</li><li><a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>	</li><li><a href="../MC_simulation/Plasma/E0_HF_pump.html" class="code" title="function [E0,E0b] = E0_HF_pump(epsilon,beta,ERP,h0)">E0_HF_pump</a>	E0_HF_PUMP - E-field at lowest ionospheric altitude</li><li><a href="../MC_simulation/Plasma/conductivity_T_hf.html" class="code" title="function sigma = conductivity_T_hf(w,ne,ny_e,B)">conductivity_T_hf</a>	CONDUCTIVITY_T_HF - High frequency electron conductivity tensor</li><li><a href="../MC_simulation/Plasma/dielectric_T_hf.html" class="code" title="function epsilon = dielectric_T_hf(w,ne,ny_e,B)">dielectric_T_hf</a>	DIELECTRIC_T_HF - plasma dielectric tensor, high frequency case</li><li><a href="../MC_simulation/Plasma/n_refractive_indx.html" class="code" title="function n = n_refractive_indx(w,sigma,epsilon)">n_refractive_indx</a>	N_REFRACTIVE_INDX - Complex refractive index for HF-waves in electron plasma</li><li><a href="../MC_simulation/Plasma/w_e_gyro.html" class="code" title="function w_e = w_e_gyro(B)">w_e_gyro</a>	W_E_GYRO - angular electron gyro frequency (non-relativistic)</li><li><a href="f_e_workerBG3.html" class="code" title="function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data)">f_e_workerBG3</a>	1     2     3      4       5                              1 2     3    4       5   6   7     8  9</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Script for MC-trajectory calculations</span>
+0002 <span class="comment">% Includes only collisions between electrons and neutrals</span>
+0003 <span class="comment">% Runs simultions for all collisions given by parameter n_coll</span>
+0004 
+0005 <span class="comment">%% Physical constants</span>
+0006 c0 = 2.99792458e8;             <span class="comment">% Speed of light [m/s]</span>
+0007 h = 6.62607015e-34;            <span class="comment">% Plank's constant [Js]</span>
+0008 kB = 1.380649e-23;             <span class="comment">% Boltzmann constant [J/K]</span>
+0009 m_e = 9.1093835611e-31;        <span class="comment">% electron rest mass [kg]</span>
+0010 q_e = 1.602176620898e-19;      <span class="comment">% elementary charge [C]</span>
+0011 
+0012 <span class="comment">%% Geophysical and ionospheric</span>
+0013 B = 5e-05;         <span class="comment">% Magnetic field-strength [T]</span>
+0014 n_e = 1e10;        <span class="comment">% electron density [/m^3]</span>
+0015 nu_e = 1e6;        <span class="comment">% electron collision-frequency [/s]</span>
+0016 w_e = <a href="../MC_simulation/Plasma/w_e_gyro.html" class="code" title="function w_e = w_e_gyro(B)">w_e_gyro</a>(B); <span class="comment">% electron gyro-frequency [rad/s]</span>
+0017 T_e = 300;         <span class="comment">% electron temperature [K]</span>
+0018 
+0019 <span class="comment">%% Heating</span>
+0020 w_HF = 2*pi*4.6e6; <span class="comment">% HF-frequency of Heating [rad/s]</span>
+0021 ERP = 200e6;       <span class="comment">% Effective radiative power [W]</span>
+0022 z0 = 80e3;        <span class="comment">% altitude [m]</span>
+0023 
+0024 <span class="comment">%% Radio-wave-propagation etc</span>
+0025 beta_HF = 1;                                       <span class="comment">% Reduction-factor due to absorption up to z0, 1 &lt;-&gt; no loss</span>
+0026 epsilon1 = <a href="../MC_simulation/Plasma/dielectric_T_hf.html" class="code" title="function epsilon = dielectric_T_hf(w,ne,ny_e,B)">dielectric_T_hf</a>(w_HF,n_e,nu_e,B);       <span class="comment">% HF Dielectric tensor at hight</span>
+0027 sigma1 = <a href="../MC_simulation/Plasma/conductivity_T_hf.html" class="code" title="function sigma = conductivity_T_hf(w,ne,ny_e,B)">conductivity_T_hf</a>(w_HF,n_e,nu_e,B);       <span class="comment">% HF conductivity tensor</span>
+0028 n_refr1 = <a href="../MC_simulation/Plasma/n_refractive_indx.html" class="code" title="function n = n_refractive_indx(w,sigma,epsilon)">n_refractive_indx</a>(w_HF,sigma1,epsilon1); <span class="comment">% Refractive index</span>
+0029 [Eo1_0,Eo1_0b] = <a href="../MC_simulation/Plasma/E0_HF_pump.html" class="code" title="function [E0,E0b] = E0_HF_pump(epsilon,beta,ERP,h0)">E0_HF_pump</a>(n_refr1{1},1,ERP,z0);  <span class="comment">% E-fields at height [V/m]</span>
+0030 theta2B = 12/180*pi;                               <span class="comment">% Angle of k-vector to B (rad)</span>
+0031 
+0032 <span class="comment">%% Load data for cross sections</span>
+0033 xs_data = <a href="../Cross_section/Process_data/get_data_withN2vib.html" class="code" title="function out = get_data_withN2vib()">get_data_withN2vib</a>(); 
+0034 
+0035 <span class="comment">%% Call MATLAB MSIS for neutral densities</span>
+0036 [rho,~] = <a href="../Functions/neutral_output_MSIS.html" class="code" title="function [rho,temperature] = neutral_output_MSIS(height)">neutral_output_MSIS</a>(z0); 
+0037 
+0038 <span class="comment">% Neutral densities MATLAB MSIS</span>
+0039 nO = rho(:,2)';   <span class="comment">% [1/m^3]</span>
+0040 nN2 = rho(:,3)';    <span class="comment">% [1/m^3]</span>
+0041 nO2 = rho(:,4)';    <span class="comment">% [1/m^3]</span>
+0042 
+0043 Nn = [nN2; nO2; nO; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; nN2; <span class="keyword">...</span>
+0044     nO2; nO2; nO; nO; nO; nO; nO; nO2]; 
+0045 
+0046 <span class="comment">%% Modeling with collisions, using parfor to parallelize the workings</span>
+0047 <span class="comment">% This speeds things up with a factor of 40 or thereabouts</span>
+0048 <span class="comment">% downside is that we get the results in 100 separate files with 1e5</span>
+0049 <span class="comment">% velocity evolutions in each file</span>
+0050 n_p = 10000; <span class="comment">% Number of electron for each loop</span>
+0051 n_colls = 300; 
+0052 filename = <span class="string">'BG3-run1'</span>;
+0053 delete(gcp(<span class="string">'nocreate'</span>))
+0054 pool = parpool(20)<span class="comment">%parpool(48)</span>
+0055 
+0056 <span class="comment">% Excitation energy for inelastic collisions [eV] from Itakawa 1986, 1989, 1990</span>
+0057 exE_N2elastic = 0; 
+0058 exE_O2elastic = 0; 
+0059 exE_Oelastic = 0; 
+0060 exE_N2vib0_1 = 0.2888; 
+0061 exE_N2vib0_2 = 0.5742; 
+0062 exE_N2vib0_3 = 0.8559; 
+0063 exE_N2vib0_4 = 1.1342; 
+0064 exE_N2vib0_5 = 1.4088; 
+0065 exE_N2vib0_6 = 1.6800; 
+0066 exE_N2vib0_7 = 1.9475; 
+0067 exE_N2vib0_8 = 2.2115; 
+0068 exE_N2rot0_2 = 2*2.4668e-4;
+0069 exE_N2rot0_4 = 4*2.4668e-4; 
+0070 exE_N2rot0_6 = 6*2.4668e-4; 
+0071 exE_N2rot0_8 = 8*2.4668e-4; 
+0072 exE_O2a1Dg = 0.9770; 
+0073 exE_O2b1Sgp = 1.6270; 
+0074 exE_Ofine_1_0 = 0.0085; 
+0075 exE_Ofine_2_0 = 0.0281; 
+0076 exE_Ofine_2_1 = 0.0196; 
+0077 exE_O1S = 4.1900; 
+0078 exE_O1D = 1.9670; 
+0079 exE_O2vib = 0.193; 
+0080 dE = [exE_N2elastic; exE_O2elastic; exE_Oelastic; exE_N2vib0_1; exE_N2vib0_2; exE_N2vib0_3; exE_N2vib0_4; exE_N2vib0_5; <span class="keyword">...</span>
+0081     exE_N2vib0_6; exE_N2vib0_7; exE_N2vib0_8; exE_N2rot0_2; exE_N2rot0_4; exE_N2rot0_6; exE_N2rot0_8; exE_O2a1Dg; <span class="keyword">...</span>
+0082     exE_O2b1Sgp; exE_Ofine_1_0; exE_Ofine_2_0; exE_Ofine_2_1; exE_O1S; exE_O1D; exE_O2vib]; 
+0083 
+0084 <span class="comment">% Folder stuff</span>
+0085 t_start = clock;
+0086 dirname = sprintf(<span class="string">'MC-Run-2-%s'</span>,sprintf(<span class="string">'UT-%d%02d%02d-%02d%02d%02d'</span>,floor(clock))); 
+0087 mkdir(dirname) <span class="comment">% Create new folder</span>
+0088 addpath(dirname) <span class="comment">% Add created folder to matlab path</span>
+0089 cd(dirname) <span class="comment">% Go to folder with data for the MC run</span>
+0090 pwd 
+0091 
+0092 <span class="comment">% Max number of iterations</span>
+0093 max_iter = 10;<span class="comment">%100;</span>
+0094 
+0095 parameters = cell(2,3); 
+0096 parameters{1,1} = <span class="string">'#electrons'</span>; 
+0097 parameters{1,2} = <span class="string">'#coll'</span>; 
+0098 parameters{1,3} = <span class="string">'height_km'</span>; 
+0099 parameters{2,1} = n_p*max_iter; 
+0100 parameters{2,2} = n_colls; 
+0101 parameters{2,3} = z0/1000; 
+0102 
+0103 tic
+0104 <span class="keyword">for</span> i_iter = 1:max_iter
+0105 
+0106     <span class="keyword">if</span> rem(i_iter,1)==0
+0107     fprintf(<span class="string">'Starting with loop %d at %s, %2.2f done\n'</span>,<span class="keyword">...</span>
+0108           i_iter,<span class="keyword">...</span>
+0109           datestr(now,<span class="string">'HH:MM:SS'</span>),<span class="keyword">...</span>
+0110           (i_iter-1)/100)
+0111     <span class="keyword">end</span>
+0112 
+0113     t_all = zeros(n_p,n_colls+1);
+0114     E_all = zeros(n_p,n_colls+1);
+0115     v_pars = zeros(n_p,n_colls+1);
+0116     v_perps = zeros(n_p,n_colls+1);
+0117     v_x = zeros(n_p,n_colls+1);
+0118     v_y = zeros(n_p,n_colls+1);
+0119     dnCol = 250;
+0120 
+0121     <span class="comment">%for iP = 1:n_p</span>
+0122     parfor (iP = 1:n_p, 48 )
+0123         [t_a,E_a,v_par,v_perp,v_X,v_Y] = <a href="f_e_workerBG3.html" class="code" title="function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data)">f_e_workerBG3</a>(n_colls*dnCol,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,xs_data);
+0124         t_all(iP,:)   = t_a(1:dnCol:end);
+0125         E_all(iP,:)   = E_a(1:dnCol:end);
+0126         v_pars(iP,:)  = v_par(1:dnCol:end);
+0127         v_perps(iP,:) = v_perp(1:dnCol:end);
+0128         v_x(iP,:)     = v_X(1:dnCol:end);
+0129         v_y(iP,:)     = v_Y(1:dnCol:end);
+0130     <span class="keyword">end</span> 
+0131 
+0132     avg_t = mean(t_all);
+0133     currfilename = sprintf(<span class="string">'%s-%04d.mat'</span>,filename,i_iter);
+0134     save(currfilename,<span class="keyword">...</span>
+0135     <span class="string">'t_all'</span>,<span class="keyword">...</span>
+0136     <span class="string">'E_all'</span>,<span class="keyword">...</span>
+0137     <span class="string">'v_pars'</span>,<span class="keyword">...</span>
+0138     <span class="string">'v_perps'</span>,<span class="keyword">...</span>
+0139     <span class="string">'v_x'</span>,<span class="keyword">...</span>
+0140     <span class="string">'v_y'</span>,<span class="keyword">...</span>
+0141     <span class="string">'dE'</span>,<span class="keyword">...</span>
+0142     <span class="string">'avg_t'</span>,<span class="keyword">...</span>
+0143     <span class="string">'parameters'</span>);
+0144 
+0145 <span class="keyword">end</span>
+0146 toc</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

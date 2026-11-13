@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of v_e_HF_L</title>
+  <meta name="keywords" content="v_e_HF_L">
+  <meta name="description" content="V_E_HF_L - charged-particle velocity in an LHCP HF-wave E-field">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # MC_simulation --><!-- # Plasma -->
+<h1>v_e_HF_L
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>V_E_HF_L - charged-particle velocity in an LHCP HF-wave E-field</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> V_E_HF_L - charged-particle velocity in an LHCP HF-wave E-field
+ where the wave-frequency is not equal to the gyro-frequency of the
+ particle. 
+ 
+ Calling:
+  V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)
+ Input:
+  B       - magnetic field-strangth (T), double scalar
+  E       - HF-wave electrical field amplitude (V/m), duoble scalar
+  V0      - initial particle velocity (m/s), double array [3 x 1]
+  m       - particle mass (kg), double scalar
+  q_e     - particle charge (C), double scalar
+  t       - time (s), double array [1 x n_t]
+  t0      - time-zero, reference-time (s), double scalar.
+  theta2B - angle to the magnetic field of the HF-wave-propagation
+  w_HF    - HF-radio-wave angular frequency (rad/s), double array
+ Output:
+   V - velocity (m/s), double array [3 x n_t]
+ 
+ These velocity-components are obtained by analytical integration
+ of the momentum-equations for magnetized particles in an
+ Left-hand circular polarized E-field at a frequency that is not
+ equal to the particle gyro-frequency (for which resonance would
+ occur). The integration is obtained with the aid of the symbolic
+ capabillities of matlab~2020:
+ %% Physical constants
+ syms q_e m positive
+ %% Magnetic-field
+ syms B real % magnetic-field-strength
+ %% E-field parameters
+ syms E      real  % HF E-field amplitude
+ syms w_HF   positive  % HF frequency
+ syms theta2B  real% angle-of-propagation relative to B-field
+ %% Time-coordinate
+ syms t t0 real
+ %% Position and velocity vectorial functions
+ syms R(t) [1 3]
+ syms V(t) [1 3]
+ %% Initial conditions, at t0
+ syms R0 [1 3]
+ syms V0 [1 3]
+ 
+ %% Equations of motion
+ ODES_L = [diff(R) == V,diff(V) == -q_e/m*(E*[cos((t-t0)*w_HF)*cos(theta2B),sin((t-t0)*w_HF),cos((t-t0)*w_HF)*sin(theta2B)]+cross(V,[0,0,-B]))];
+ ODES_R = [diff(R) == V,diff(V) == -q_e/m*(E*[cos((t-t0)*w_HF)*cos(theta2B),-sin((t-t0)*w_HF),cos((t-t0)*w_HF)*sin(theta2B)]+cross(V,[0,0,-B]))];
+ I_CONDS = [R(0)==R0,V(0)==V0];
+ SOL_L = dsolve(ODES_L,I_CONDS);
+ SOL_R = dsolve(ODES_R,I_CONDS);
+ V_Lfcn = matlabFunction([SOL_L.V1;SOL_L.V2;SOL_L.V3]);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="w_e_gyro.html" class="code" title="function w_e = w_e_gyro(B)">w_e_gyro</a>	W_E_GYRO - angular electron gyro frequency (non-relativistic)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MC_simulation/f_e_workerBG3.html" class="code" title="function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data)">f_e_workerBG3</a>	1     2     3      4       5                              1 2     3    4       5   6   7     8  9</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)</a>
+0002 <span class="comment">% V_E_HF_L - charged-particle velocity in an LHCP HF-wave E-field</span>
+0003 <span class="comment">% where the wave-frequency is not equal to the gyro-frequency of the</span>
+0004 <span class="comment">% particle.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  B       - magnetic field-strangth (T), double scalar</span>
+0010 <span class="comment">%  E       - HF-wave electrical field amplitude (V/m), duoble scalar</span>
+0011 <span class="comment">%  V0      - initial particle velocity (m/s), double array [3 x 1]</span>
+0012 <span class="comment">%  m       - particle mass (kg), double scalar</span>
+0013 <span class="comment">%  q_e     - particle charge (C), double scalar</span>
+0014 <span class="comment">%  t       - time (s), double array [1 x n_t]</span>
+0015 <span class="comment">%  t0      - time-zero, reference-time (s), double scalar.</span>
+0016 <span class="comment">%  theta2B - angle to the magnetic field of the HF-wave-propagation</span>
+0017 <span class="comment">%  w_HF    - HF-radio-wave angular frequency (rad/s), double array</span>
+0018 <span class="comment">% Output:</span>
+0019 <span class="comment">%   V - velocity (m/s), double array [3 x n_t]</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% These velocity-components are obtained by analytical integration</span>
+0022 <span class="comment">% of the momentum-equations for magnetized particles in an</span>
+0023 <span class="comment">% Left-hand circular polarized E-field at a frequency that is not</span>
+0024 <span class="comment">% equal to the particle gyro-frequency (for which resonance would</span>
+0025 <span class="comment">% occur). The integration is obtained with the aid of the symbolic</span>
+0026 <span class="comment">% capabillities of matlab~2020:</span>
+0027 <span class="comment">% %% Physical constants</span>
+0028 <span class="comment">% syms q_e m positive</span>
+0029 <span class="comment">% %% Magnetic-field</span>
+0030 <span class="comment">% syms B real % magnetic-field-strength</span>
+0031 <span class="comment">% %% E-field parameters</span>
+0032 <span class="comment">% syms E      real  % HF E-field amplitude</span>
+0033 <span class="comment">% syms w_HF   positive  % HF frequency</span>
+0034 <span class="comment">% syms theta2B  real% angle-of-propagation relative to B-field</span>
+0035 <span class="comment">% %% Time-coordinate</span>
+0036 <span class="comment">% syms t t0 real</span>
+0037 <span class="comment">% %% Position and velocity vectorial functions</span>
+0038 <span class="comment">% syms R(t) [1 3]</span>
+0039 <span class="comment">% syms V(t) [1 3]</span>
+0040 <span class="comment">% %% Initial conditions, at t0</span>
+0041 <span class="comment">% syms R0 [1 3]</span>
+0042 <span class="comment">% syms V0 [1 3]</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% %% Equations of motion</span>
+0045 <span class="comment">% ODES_L = [diff(R) == V,diff(V) == -q_e/m*(E*[cos((t-t0)*w_HF)*cos(theta2B),sin((t-t0)*w_HF),cos((t-t0)*w_HF)*sin(theta2B)]+cross(V,[0,0,-B]))];</span>
+0046 <span class="comment">% ODES_R = [diff(R) == V,diff(V) == -q_e/m*(E*[cos((t-t0)*w_HF)*cos(theta2B),-sin((t-t0)*w_HF),cos((t-t0)*w_HF)*sin(theta2B)]+cross(V,[0,0,-B]))];</span>
+0047 <span class="comment">% I_CONDS = [R(0)==R0,V(0)==V0];</span>
+0048 <span class="comment">% SOL_L = dsolve(ODES_L,I_CONDS);</span>
+0049 <span class="comment">% SOL_R = dsolve(ODES_R,I_CONDS);</span>
+0050 <span class="comment">% V_Lfcn = matlabFunction([SOL_L.V1;SOL_L.V2;SOL_L.V3]);</span>
+0051 
+0052 
+0053 
+0054 
+0055 <span class="comment">% These velocity-components are obtained by analytical integration</span>
+0056 <span class="comment">% of the momentum-equations for magnetized particles in an</span>
+0057 <span class="comment">% Left-hand circular polarized E-field at a frequency that is not</span>
+0058 <span class="comment">% equal to the particle gyro-frequency (for which resonance would</span>
+0059 <span class="comment">% occur). The integration is obtained with the aid of the symbolic</span>
+0060 <span class="comment">% capabillities of matlab~2020:</span>
+0061 <span class="comment">% syms R0 [1 3]   % initial particle position</span>
+0062 <span class="comment">% syms V0 [1 3]   % initial particle velocity</span>
+0063 <span class="comment">% syms B          % magnetic-field-strength</span>
+0064 <span class="comment">% syms E          % HF-E-field amplitude</span>
+0065 <span class="comment">% syms w_HF       % angular frequency of HF-wave</span>
+0066 <span class="comment">% syms t          % time-variable</span>
+0067 <span class="comment">% syms R(t) [1 3] % particle trajectory</span>
+0068 <span class="comment">% syms V(t) [1 3] % particle velocity &quot;trajectory&quot;</span>
+0069 <span class="comment">% syms q_e m      % particle charge and mass</span>
+0070 <span class="comment">% syms theta2B    % HF-wave propagation angle rel B-field</span>
+0071 <span class="comment">% % Equations of motion, written as coupled first-order ODEs such</span>
+0072 <span class="comment">% % that the solutions will give v(t) explicitly, for an L-mode</span>
+0073 <span class="comment">% % polarized E-field</span>
+0074 <span class="comment">% ODES_L = [diff(R) == V,diff(V) == -q_e/m*(E*[cos((t-t0)*w_HF)*cos(theta2B),sin((t-t0)*w_HF),cos((t-t0)*w_HF)*sin(theta2B)]+cross(V,[0,0,-B]))];</span>
+0075 <span class="comment">% and an R-mode polarized E-field</span>
+0076 <span class="comment">% ODES_R = [diff(R) == V,diff(V) == -q_e/m*(E*[cos((t-t0)*w_HF)*cos(theta2B),-sin((t-t0)*w_HF),cos((t-t0)*w_HF)*sin(theta2B)]+cross(V,[0,0,-B]))];</span>
+0077 <span class="comment">% % Initial conditions</span>
+0078 <span class="comment">% I_CONDS = [R(0)==R0,V(0)==V0];</span>
+0079 <span class="comment">% % solutions:</span>
+0080 <span class="comment">% SOL_L = dsolve(ODES_L,I_CONDS);</span>
+0081 <span class="comment">% SOL_R = dsolve(ODES_R,I_CONDS);</span>
+0082 <span class="comment">% V_Lfcn = matlabFunction([SOL_L.V1;SOL_L.V2;SOL_L.V3]);</span>
+0083 w_e = <a href="w_e_gyro.html" class="code" title="function w_e = w_e_gyro(B)">w_e_gyro</a>(B);
+0084 V = [(B.*E.*q_e.^2.*sin(theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0085      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0086      (B.*E.*q_e.^2.*sin(theta2B+t0.*w_HF-w_e*t))./<span class="keyword">...</span>
+0087      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0088      (B.*E.*q_e.^2.*sin(theta2B-t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0089      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0090      (B.^2.*V0(1).*q_e.^2.*cos(w_e*t))./<span class="keyword">...</span>
+0091      (m.^2.*( w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0092      (B.^2.*V0(2).*q_e.^2.*sin(w_e*t))./ <span class="keyword">...</span>
+0093      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0094      (B.*E.*q_e.^2.*sin(-theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0095      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0096      (V0(1).*m.^2.*w_HF.^2.*cos(w_e*t))./<span class="keyword">...</span>
+0097      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0098      (V0(2).*m.^2.*w_HF.^2.*sin(w_e*t))./ <span class="keyword">...</span>
+0099      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0100      (B.*E.*q_e.^2.*sin(t.*w_HF-t0.*w_HF))./ <span class="keyword">...</span>
+0101      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0102      (B.*E.*q_e.^2.*sin(t0.*w_HF+w_e*t))./ <span class="keyword">...</span>
+0103      (2*m.^2.*( w_HF.^2 - w_e.^2) ) + <span class="keyword">...</span>
+0104      (B.*E.*q_e.^2.*sin(t0.*w_HF-w_e*t))./ <span class="keyword">...</span>
+0105      (2*m.^2.*( w_HF.^2 - w_e.^2) ) - <span class="keyword">...</span>
+0106      (E.*m.*q_e.*w_HF.*sin(theta2B+t.*w_HF-t0.*w_HF))./ <span class="keyword">...</span>
+0107      (2*m.^2.*( w_HF.^2 - w_e.^2) ) + <span class="keyword">...</span>
+0108      (E.*m.*q_e.*w_HF.*sin(theta2B-t.*w_HF+t0.*w_HF))./ <span class="keyword">...</span>
+0109      (2*m.^2.*( w_HF.^2 - w_e.^2) ) - <span class="keyword">...</span>
+0110      (E.*m.*q_e.*w_HF.*sin(theta2B+t0.*w_HF+w_e*t))./ <span class="keyword">...</span>
+0111      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0112      (E.*m.*q_e.*w_HF.*sin(theta2B+t0.*w_HF-w_e*t))./ <span class="keyword">...</span>
+0113      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0114      (E.*m.*q_e.*w_HF.*sin(theta2B-t0.*w_HF+w_e*t))./ <span class="keyword">...</span>
+0115      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0116      (E.*m.*q_e.*w_HF.*sin(-theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0117      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0118      (E.*m.*q_e.*w_HF.*sin(t0.*w_HF+w_e*t))./ <span class="keyword">...</span>
+0119      (2*m.^2.*( w_HF.^2 - w_e.^2) ) + <span class="keyword">...</span>
+0120      (E.*m.*q_e.*w_HF.*sin(t0.*w_HF-w_e*t))./<span class="keyword">...</span>
+0121      (2*m.^2.*( w_HF.^2 - w_e.^2) );                                    <span class="comment">% End of v_x</span>
+0122      (B.*E.*q_e.^2.*cos(theta2B+t.*w_HF-t0.*w_HF).*(-1.0./2.0))./ <span class="keyword">...</span>
+0123      (m.^2.*( w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0124      (B.*E.*q_e.^2.*cos(theta2B-t.*w_HF+t0.*w_HF))./<span class="keyword">...</span>
+0125      (2*m.^2.*( w_HF.^2 - w_e.^2) ) + <span class="keyword">...</span>
+0126      (B.*E.*q_e.^2.*cos(theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0127      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0128      (B.*E.*q_e.^2.*cos(theta2B+t0.*w_HF-w_e*t))./<span class="keyword">...</span>
+0129      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0130      (B.*E.*q_e.^2.*cos(theta2B-t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0131      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0132      (B.^2.*V0(2).*q_e.^2.*cos(w_e*t))./<span class="keyword">...</span>
+0133      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0134      (B.*E.*q_e.^2.*cos(-theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0135      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0136      (B.^2.*V0(1).*q_e.^2.*sin(w_e*t))./<span class="keyword">...</span>
+0137      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0138      (V0(2).*m.^2.*w_HF.^2.*cos(w_e*t))./<span class="keyword">...</span>
+0139      (m.^2.*( w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0140      (B.*E.*q_e.^2.*cos(t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0141      (2*m.^2.*( w_HF.^2 - w_e.^2) ) - <span class="keyword">...</span>
+0142      (B.*E.*q_e.^2.*cos(t0.*w_HF-w_e*t))./<span class="keyword">...</span>
+0143      (2*m.^2.*( w_HF.^2 - w_e.^2) ) - <span class="keyword">...</span>
+0144      (V0(1).*m.^2.*w_HF.^2.*sin(w_e*t))./<span class="keyword">...</span>
+0145      (m.^2.*( w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0146      (E.*m.*q_e.*w_HF.*cos(theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0147      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0148      (E.*m.*q_e.*w_HF.*cos(theta2B+t0.*w_HF-w_e*t))./<span class="keyword">...</span>
+0149      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0150      (E.*m.*q_e.*w_HF.*cos(theta2B-t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0151      (4*m.^2.*(w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0152      (E.*m.*q_e.*w_HF.*cos(-theta2B+t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0153      (4*m.^2.*(w_HF.^2 - w_e.^2)) + <span class="keyword">...</span>
+0154      (E.*m.*q_e.*w_HF.*cos(t.*w_HF-t0.*w_HF))./<span class="keyword">...</span>
+0155      (m.^2.*( w_HF.^2 - w_e.^2)) - <span class="keyword">...</span>
+0156      (E.*m.*q_e.*w_HF.*cos(t0.*w_HF+w_e*t))./<span class="keyword">...</span>
+0157      (2*m.^2.*( w_HF.^2 - w_e.^2) ) - <span class="keyword">...</span>
+0158      (E.*m.*q_e.*w_HF.*cos(t0.*w_HF-w_e*t))./<span class="keyword">...</span>
+0159      (2*m.^2.*( w_HF.^2 - w_e.^2) );                                    <span class="comment">% End of v_y</span>
+0160      V0(3) + <span class="keyword">...</span>
+0161      (E.*q_e.*cos(theta2B+t0.*w_HF))./(m.*w_HF.*2.0) - <span class="keyword">...</span>
+0162      (E.*q_e.*cos(theta2B-t0.*w_HF))./(m.*w_HF.*2.0) + <span class="keyword">...</span>
+0163      (E.*q_e.*cos(theta2B+t.*w_HF-t0.*w_HF))./(m.*w_HF.*2.0) - <span class="keyword">...</span>
+0164      (E.*q_e.*cos(theta2B-t.*w_HF+t0.*w_HF))./(m.*w_HF.*2.0)];</pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

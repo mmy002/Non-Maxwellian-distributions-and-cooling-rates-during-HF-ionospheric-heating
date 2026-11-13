@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ode_boris_moverV</title>
+  <meta name="keywords" content="ode_boris_moverV">
+  <meta name="description" content="ODE_BORIS_MOVER - charged particle equation-of-motion-solver in B and E-fields">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # MC_simulation --><!-- # Physics -->
+<h1>ode_boris_moverV
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ODE_BORIS_MOVER - charged particle equation-of-motion-solver in B and E-fields</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function rv = ode_boris_moverV(t,r0v0,q,m,Ein,Bin,wMax,nu,v_loss_fraction) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ODE_BORIS_MOVER - charged particle equation-of-motion-solver in B and E-fields
+   The ode_boris_mover integrates the equations of motion in
+   magnetic and electrical fields with the Boris-mover scheme
+   [e.g. 1].
+ 
+ Calling:
+   rv = ode_boris_mover(t,r0v0,q,m,Ein,Bin[,wMax])
+ Input:
+   t    - time (s), double array [1 x n_t] for desired output
+   r0v0 - initial particle position, double array [6 x 1] with the
+          first 3 components for the position (m) and the last 3
+          positions for the velocity (m/s). The velocities will be
+          treated as the velocity at half the time-step before t0,
+          that is no special treatment of the velocities at the
+          initiation.
+   q    - particle charge (C), scalar double
+   m    - particle mass (kg), scalar double
+   Ein  - electrical field (V/m), either a [3 x 1] array for a
+          static uniform E-field or a function handle to a
+          function f_E(t,r) returning a [3 x 1] electrical in
+          position r at time t.
+   Bin  - magnetic field (T), either a [3 x 1] array for a
+          static uniform B-field or a function handle to a
+          function f_B(t,r) returning a [3 x 1] electrical in
+          position r at time t.
+   wMax - maximum expected gyro-frequency, used to limit the
+          time-step of the solver. Optional argument, defaults to
+          zero. 
+ Output:
+  rv    - particle phase-space coordinates, double array [6 x n_t].
+          The first 3 rows are the particle position (m), rows 4
+          to 6 are the particle velocity (m/s),
+ 
+ The equations of the Boris scheme are:
+   x_{k+1}   = x_k + Dt*v_{k+1/2}
+   v_{k+1/2} = u' + q' E_k
+
+ with
+
+   u' = u + ( u + ( u � h ) ) � s
+   u  = v_{k-1/2} + q'*E_k
+   h  = q'*B_k
+   s  = 2*h/( 1 + h^2 )
+
+   q' = Dt�(q/2m)
+ 
+ Example:
+   % Physical constants and parameters
+   m_e = 9.1094e-31;        % electron mass (kg)
+   q_e = 1.6022e-19;        % electron charge (C)
+   B = 5e-5;                % Magnetic field strength (T)
+   w_e = (q_e*B/m_e);       % electron gyro-frequency
+   T_gyro = 1/(w_e/(2*pi)); % gyro-period
+   % Initial conditions and time-span
+   v_0    = (2*q_e*1/m_e).^(1/2); % velocity of 1 eV electron (m/s)
+   r_gyro = v_0/w_e;               % electron gyro-radius
+   t_out = linspace(0,100*T_gyro,10001); % requested time-steps 
+   % ODE-integration:
+   rv = ode_boris_mover(t_out,[0;-r_gyro;0;v_0(1);0;0],-q_e,m_e,[0;0;0],[0;0;B]);
+   % Digestion of solution
+   r_c = mean(rv(1:3,:),2);
+   subplot(2,2,1)
+   plot(rv(1,:),rv(2,:)),
+   ylabel('y-position (m)'),xlabel('x-position (m)'),
+   title('X-Y trajectory 100 gyrations')
+   subplot(2,2,2)
+   plot(rv(1,:),rv(2,:)),
+   ylabel('y-velocity (m/s)'),xlabel('x-velocity (m/s)'),
+   title('v_x-v_y 100 gyrations')
+   subplot(2,2,3)
+   plot(t_out,((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);
+   r_max = max(((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);
+   r_min = min(((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);
+   r_g = mean(((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);
+   ylabel('(r_{max} - r_{min})/r_g'),xlabel('time (s)'),
+   title(sprintf('relative variation of gyro-radius: %g',...
+                 (r_max-r_min)/r_gyro))
+   subplot(2,2,4)
+   plot(t_out,(rv(4,:).^2+rv(5,:).^2+rv(6,:).^2)*m_e/2/q_e)
+   K_max = max((rv(4,:).^2+rv(5,:).^2+rv(6,:).^2)*m_e/2/q_e);
+   K_min = min((rv(4,:).^2+rv(5,:).^2+rv(6,:).^2)*m_e/2/q_e);
+   ylabel('(K_{max} - K_{min})/K_0'),xlabel('time (s)'),
+   title(sprintf('relative variation of Kinetic energy: %g',...
+                 (K_max-K_min)/1))
+ 
+   The current implementation adjusts the time-increment to 1/20
+   of the gyro-period at the current particle position. That might
+   lead to errors where the B-field varies abruptly over distances
+   smaller than |1/20*r_gyro|. The mover conserves kinetic energy
+   for particles in a uniform B-field to machine precision, and
+   keeps relative variation of gyro-radius to ~4e-4.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function rv = ode_boris_moverV(t,r0v0,q,m,Ein,Bin,wMax,nu,v_loss_fraction)</a>
+0002 <span class="comment">% ODE_BORIS_MOVER - charged particle equation-of-motion-solver in B and E-fields</span>
+0003 <span class="comment">%   The ode_boris_mover integrates the equations of motion in</span>
+0004 <span class="comment">%   magnetic and electrical fields with the Boris-mover scheme</span>
+0005 <span class="comment">%   [e.g. 1].</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   rv = ode_boris_mover(t,r0v0,q,m,Ein,Bin[,wMax])</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   t    - time (s), double array [1 x n_t] for desired output</span>
+0011 <span class="comment">%   r0v0 - initial particle position, double array [6 x 1] with the</span>
+0012 <span class="comment">%          first 3 components for the position (m) and the last 3</span>
+0013 <span class="comment">%          positions for the velocity (m/s). The velocities will be</span>
+0014 <span class="comment">%          treated as the velocity at half the time-step before t0,</span>
+0015 <span class="comment">%          that is no special treatment of the velocities at the</span>
+0016 <span class="comment">%          initiation.</span>
+0017 <span class="comment">%   q    - particle charge (C), scalar double</span>
+0018 <span class="comment">%   m    - particle mass (kg), scalar double</span>
+0019 <span class="comment">%   Ein  - electrical field (V/m), either a [3 x 1] array for a</span>
+0020 <span class="comment">%          static uniform E-field or a function handle to a</span>
+0021 <span class="comment">%          function f_E(t,r) returning a [3 x 1] electrical in</span>
+0022 <span class="comment">%          position r at time t.</span>
+0023 <span class="comment">%   Bin  - magnetic field (T), either a [3 x 1] array for a</span>
+0024 <span class="comment">%          static uniform B-field or a function handle to a</span>
+0025 <span class="comment">%          function f_B(t,r) returning a [3 x 1] electrical in</span>
+0026 <span class="comment">%          position r at time t.</span>
+0027 <span class="comment">%   wMax - maximum expected gyro-frequency, used to limit the</span>
+0028 <span class="comment">%          time-step of the solver. Optional argument, defaults to</span>
+0029 <span class="comment">%          zero.</span>
+0030 <span class="comment">% Output:</span>
+0031 <span class="comment">%  rv    - particle phase-space coordinates, double array [6 x n_t].</span>
+0032 <span class="comment">%          The first 3 rows are the particle position (m), rows 4</span>
+0033 <span class="comment">%          to 6 are the particle velocity (m/s),</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% The equations of the Boris scheme are:</span>
+0036 <span class="comment">%   x_{k+1}   = x_k + Dt*v_{k+1/2}</span>
+0037 <span class="comment">%   v_{k+1/2} = u' + q' E_k</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% with</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%   u' = u + ( u + ( u � h ) ) � s</span>
+0042 <span class="comment">%   u  = v_{k-1/2} + q'*E_k</span>
+0043 <span class="comment">%   h  = q'*B_k</span>
+0044 <span class="comment">%   s  = 2*h/( 1 + h^2 )</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%   q' = Dt�(q/2m)</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% Example:</span>
+0049 <span class="comment">%   % Physical constants and parameters</span>
+0050 <span class="comment">%   m_e = 9.1094e-31;        % electron mass (kg)</span>
+0051 <span class="comment">%   q_e = 1.6022e-19;        % electron charge (C)</span>
+0052 <span class="comment">%   B = 5e-5;                % Magnetic field strength (T)</span>
+0053 <span class="comment">%   w_e = (q_e*B/m_e);       % electron gyro-frequency</span>
+0054 <span class="comment">%   T_gyro = 1/(w_e/(2*pi)); % gyro-period</span>
+0055 <span class="comment">%   % Initial conditions and time-span</span>
+0056 <span class="comment">%   v_0    = (2*q_e*1/m_e).^(1/2); % velocity of 1 eV electron (m/s)</span>
+0057 <span class="comment">%   r_gyro = v_0/w_e;               % electron gyro-radius</span>
+0058 <span class="comment">%   t_out = linspace(0,100*T_gyro,10001); % requested time-steps</span>
+0059 <span class="comment">%   % ODE-integration:</span>
+0060 <span class="comment">%   rv = ode_boris_mover(t_out,[0;-r_gyro;0;v_0(1);0;0],-q_e,m_e,[0;0;0],[0;0;B]);</span>
+0061 <span class="comment">%   % Digestion of solution</span>
+0062 <span class="comment">%   r_c = mean(rv(1:3,:),2);</span>
+0063 <span class="comment">%   subplot(2,2,1)</span>
+0064 <span class="comment">%   plot(rv(1,:),rv(2,:)),</span>
+0065 <span class="comment">%   ylabel('y-position (m)'),xlabel('x-position (m)'),</span>
+0066 <span class="comment">%   title('X-Y trajectory 100 gyrations')</span>
+0067 <span class="comment">%   subplot(2,2,2)</span>
+0068 <span class="comment">%   plot(rv(1,:),rv(2,:)),</span>
+0069 <span class="comment">%   ylabel('y-velocity (m/s)'),xlabel('x-velocity (m/s)'),</span>
+0070 <span class="comment">%   title('v_x-v_y 100 gyrations')</span>
+0071 <span class="comment">%   subplot(2,2,3)</span>
+0072 <span class="comment">%   plot(t_out,((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);</span>
+0073 <span class="comment">%   r_max = max(((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);</span>
+0074 <span class="comment">%   r_min = min(((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);</span>
+0075 <span class="comment">%   r_g = mean(((rv(1,:)-r_c(1)).^2+(rv(2,:)-r_c(2)).^2).^.5);</span>
+0076 <span class="comment">%   ylabel('(r_{max} - r_{min})/r_g'),xlabel('time (s)'),</span>
+0077 <span class="comment">%   title(sprintf('relative variation of gyro-radius: %g',...</span>
+0078 <span class="comment">%                 (r_max-r_min)/r_gyro))</span>
+0079 <span class="comment">%   subplot(2,2,4)</span>
+0080 <span class="comment">%   plot(t_out,(rv(4,:).^2+rv(5,:).^2+rv(6,:).^2)*m_e/2/q_e)</span>
+0081 <span class="comment">%   K_max = max((rv(4,:).^2+rv(5,:).^2+rv(6,:).^2)*m_e/2/q_e);</span>
+0082 <span class="comment">%   K_min = min((rv(4,:).^2+rv(5,:).^2+rv(6,:).^2)*m_e/2/q_e);</span>
+0083 <span class="comment">%   ylabel('(K_{max} - K_{min})/K_0'),xlabel('time (s)'),</span>
+0084 <span class="comment">%   title(sprintf('relative variation of Kinetic energy: %g',...</span>
+0085 <span class="comment">%                 (K_max-K_min)/1))</span>
+0086 <span class="comment">%</span>
+0087 <span class="comment">%   The current implementation adjusts the time-increment to 1/20</span>
+0088 <span class="comment">%   of the gyro-period at the current particle position. That might</span>
+0089 <span class="comment">%   lead to errors where the B-field varies abruptly over distances</span>
+0090 <span class="comment">%   smaller than |1/20*r_gyro|. The mover conserves kinetic energy</span>
+0091 <span class="comment">%   for particles in a uniform B-field to machine precision, and</span>
+0092 <span class="comment">%   keeps relative variation of gyro-radius to ~4e-4.</span>
+0093 
+0094 <span class="comment">%  Copyright � Bjorn Gustavsson 20190118, bjorn.gustavsson@uit.no</span>
+0095 <span class="comment">%  This is free software, licensed under GNU GPL version 2 or later</span>
+0096 
+0097 <span class="comment">% TODO: implement handling of w_max similar to E and B so that we</span>
+0098 <span class="comment">% can get the maximum gyro-frequency inside a sphere with radius</span>
+0099 <span class="comment">% r_gyro centred at the current position.</span>
+0100 
+0101 <span class="keyword">if</span> nargin &lt; 7 || isempty(wMax)
+0102   wMax = 0;
+0103 <span class="keyword">end</span>
+0104 <span class="keyword">if</span> nargin &lt; 8 || isempty(wMax)
+0105   nu = 0;
+0106 <span class="keyword">end</span>
+0107 <span class="keyword">if</span> nargin &lt; 8 || isempty(wMax)
+0108   v_loss_fraction = 0;
+0109 <span class="keyword">end</span>
+0110 
+0111 n_p = size(r0v0,1);
+0112 <span class="comment">%% initial speeds</span>
+0113 <span class="keyword">for</span> i_p = n_p:-1:1,
+0114     v0_norm(i_p) = norm(r0v0(i_p,4:6));
+0115 <span class="keyword">end</span>
+0116 <span class="comment">%% Start assigning output variables:</span>
+0117 rv(n_p,6,numel(t)) = 0;
+0118 rv(:,:,1) = r0v0;
+0119 
+0120 <span class="comment">% wbh = waitbar(0,'Patience Bjorn, patience...');</span>
+0121 <span class="comment">% Initialize the particle position and velocity:</span>
+0122 r = rv(:,1:3);
+0123 v = rv(:,4:6);
+0124 <span class="comment">% Starting time:</span>
+0125 t_running = t(1);
+0126 i_next = 2;
+0127 <span class="keyword">while</span> t_running &lt; t(end)
+0128   <span class="comment">% for i1 = 2:numel(t),</span>
+0129 <span class="comment">% $$$   try</span>
+0130 <span class="comment">% $$$     waitbar(t_running/t(end),wbh)</span>
+0131 <span class="comment">% $$$   end</span>
+0132   <span class="comment">% Calculate the E and B-fields at current positions:</span>
+0133   <span class="keyword">if</span> isempty(Ein) <span class="comment">% &quot;Special case for when the E-field depends on</span>
+0134                   <span class="comment">% the local B-field (case: plasma-spheric</span>
+0135                   <span class="comment">% corotation) - then the Bin function has to</span>
+0136                   <span class="comment">% return both B and E fields</span>
+0137     [B,E] = Bin(t_running,r);
+0138   <span class="keyword">else</span>
+0139     <span class="keyword">if</span> isa(Ein,<span class="string">'function_handle'</span>)
+0140       E = Ein(t_running,r);
+0141     <span class="keyword">else</span>
+0142       E = Ein;
+0143     <span class="keyword">end</span>
+0144     <span class="keyword">if</span> isa(Bin,<span class="string">'function_handle'</span>)
+0145       B = Bin(t_running,r);
+0146     <span class="keyword">else</span>
+0147       B = Bin;
+0148     <span class="keyword">end</span>
+0149   <span class="keyword">end</span>
+0150   
+0151   <span class="comment">%% Update the increment in time</span>
+0152   <span class="comment">%  to ensure nice trajectories along the track use 1 20th of a</span>
+0153   <span class="comment">%  gyro-period, or the time to the next requested time for output</span>
+0154   <span class="comment">%</span>
+0155   <span class="comment">%  Start with the gyro-frequency:</span>
+0156   w_c = max(abs(q.*sum(B.^2,2).^(1/2)./m));
+0157   Dt = min(0.05/(max(w_c,wMax)/2/pi),t(i_next)-t_running);
+0158   
+0159   <span class="keyword">for</span> i_p = 1:n_p,
+0160     <span class="comment">%% Then the Boris-scheme:</span>
+0161     q_prime = Dt*q(i_p)/(2*m(i_p));
+0162     h = q_prime*B(min(i_p,end),:);
+0163     s = 2*h/(1+norm(h)^2);
+0164     u  = v(i_p,:) + q_prime*E(min(i_p,end),:);
+0165     u_prime = u + cross( u + cross( u, h ), s);
+0166     
+0167     v_halfstep = u_prime + q_prime*E(min(i_p,end),:);
+0168     r(i_p,:) = r(i_p,:) + v_halfstep*Dt;
+0169     v(i_p,:) = v_halfstep;
+0170     <span class="keyword">if</span> rand(1) &lt; nu*Dt
+0171       e_new = randn(3,1);
+0172       e_new = e_new/norm(e_new);
+0173       <span class="comment">%v(i_p,:) = v0_norm(i_p) + (norm(v_halfstep)-v0_norm(i_p))*e_new*(1-v_loss_fraction);</span>
+0174       v(i_p,:) = norm(v_halfstep)*e_new*(1-v_loss_fraction);    
+0175     <span class="keyword">end</span>
+0176   <span class="keyword">end</span>
+0177   t_running = t_running + Dt;
+0178   <span class="keyword">if</span> t_running == t(i_next)
+0179     rv(:,:,i_next) = [r,v];
+0180     <span class="keyword">if</span> i_p == n_p
+0181       i_next = i_next+1;
+0182     <span class="keyword">end</span>
+0183   <span class="keyword">end</span>
+0184 <span class="keyword">end</span>
+0185 
+0186 <span class="comment">% $$$ try</span>
+0187 <span class="comment">% $$$   close(wbh)</span>
+0188 <span class="comment">% $$$ end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

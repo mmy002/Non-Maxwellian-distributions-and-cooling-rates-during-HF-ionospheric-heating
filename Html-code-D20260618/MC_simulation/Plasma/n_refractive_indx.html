@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of n_refractive_indx</title>
+  <meta name="keywords" content="n_refractive_indx">
+  <meta name="description" content="N_REFRACTIVE_INDX - Complex refractive index for HF-waves in electron plasma">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # MC_simulation --><!-- # Plasma -->
+<h1>n_refractive_indx
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>N_REFRACTIVE_INDX - Complex refractive index for HF-waves in electron plasma</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function n = n_refractive_indx(w,sigma,epsilon) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> N_REFRACTIVE_INDX - Complex refractive index for HF-waves in electron plasma
+   
+ Calling: 
+  n = n_refractive_indx(w,sigma,epsilon)
+ Input:
+  w       - angular frequency (rad/s)
+  sigma   - conductivity tensor
+  epsilon - dielectric tensor</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MC_simulation/v_e_HF_workBG4.html" class="code" title="">v_e_HF_workBG4</a>	% Script for MC-trajectory calculations</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function n = n_refractive_indx(w,sigma,epsilon)</a>
+0002 <span class="comment">% N_REFRACTIVE_INDX - Complex refractive index for HF-waves in electron plasma</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  n = n_refractive_indx(w,sigma,epsilon)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  w       - angular frequency (rad/s)</span>
+0008 <span class="comment">%  sigma   - conductivity tensor</span>
+0009 <span class="comment">%  epsilon - dielectric tensor</span>
+0010 
+0011 <span class="comment">% (c) 2008 B Gustavsson, all rights reserved</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% This program is free software; you can redistribute it and/or modify</span>
+0014 <span class="comment">% it under the terms of the GNU General Public License as published by</span>
+0015 <span class="comment">% the Free Software Foundation; either version 2 of the License, or</span>
+0016 <span class="comment">% (at your option) any later version.</span>
+0017 
+0018 <span class="comment">% Ep_0    = 1e-9/36/pi;               % Permittivity [As/Vm]</span>
+0019 c0  = 2.99792458e8;                   <span class="comment">% Speed of light [m/s]</span>
+0020 my_0    = 4*pi*1e-7;                  <span class="comment">% Permeability [Vs/Am]</span>
+0021 Ep_0    = 1/(my_0*c0^2);              <span class="comment">% Permittivity [As/Vm]</span>
+0022 
+0023 <span class="keyword">if</span> all(size(sigma) == 3)
+0024   n{1} = sqrt(epsilon{1,1}+1i*(1./(w*Ep_0)).*sigma{1,1});
+0025   n{2} = sqrt(epsilon{2,2}+1i*(1./(w*Ep_0)).*sigma{2,2});
+0026   n{3} = sqrt(epsilon{3,3}+1i*(1./(w*Ep_0)).*sigma{3,3});
+0027 <span class="keyword">else</span>
+0028   n = sqrt(epsilon+1i*(4*pi./w).*sigma);
+0029 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

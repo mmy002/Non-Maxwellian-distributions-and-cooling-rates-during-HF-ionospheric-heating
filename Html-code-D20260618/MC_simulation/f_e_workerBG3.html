@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of f_e_workerBG3</title>
+  <meta name="keywords" content="f_e_workerBG3">
+  <meta name="description" content="1     2     3      4       5                              1 2     3    4       5   6   7     8  9">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # MC_simulation -->
+<h1>f_e_workerBG3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>1     2     3      4       5                              1 2     3    4       5   6   7     8  9</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">         1     2     3      4       5                              1 2     3    4       5   6   7     8  9 
+ f_e_worker - calculate the evolution of electron-velocities in HF-heating
+ of magnetized plasma. This version only takes idealized ellastic
+ collisions into account with a somewhat naive approach to angular
+ scattering.
+ 
+ Calling:
+  [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_worker2(n_colls,B,Eo1_0,w_HF,theta2B,w_e,T_e.Sigma,dE)
+ Input:
+  n_colls - number or collisions to run for, scalar integer
+  B       - magnetic field strength (T), double scalar
+  Eo1_0   - local E-field amplitude of the HF-radio-wave (V/m), double
+            scalar
+  w_HF    - angular frequency of the HF-radio-wave heating wave (rad/s),
+            double scalar
+  theta2B - Angle to the magnetic field of the HF-radio-wave propagation
+            (radians), double scalar.
+  w_e     - angular electron gyro-frequency (rad/s), double scalar
+  T_e     - electron temperature (K), double scalar
+ Output:
+  t_all   - time at collisions (s), double array [1 x n_colls + 1]
+  E_all   - electron energy at collision (eV), double array [1 x n_colls + 1]
+  v_pars  - electron-velocity (m/s) component parallel to B, double array
+            [1 x n_colls + 1] 
+  v_perps - electron-velocity (m/s) component perpendicular to B, double
+            array [1 x n_colls + 1] 
+  v_x     - electron-velocity (m/s) component perp to B par E-W, double
+            array [1 x n_colls + 1] 
+  v_y     - electron-velocity (m/s) component perp to B par N-S, double
+            array [1 x n_colls + 1]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Cross_section/Funtion_interp/sigma_N2_el.html" class="code" title="function cross_sect = sigma_N2_el(E,E_old,xs_old)">sigma_N2_el</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_02.html" class="code" title="function cross_sect = sigma_N2_rot_02(E,E_old,xs_old)">sigma_N2_rot_02</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_04.html" class="code" title="function cross_sect = sigma_N2_rot_04(E,E_old,xs_old)">sigma_N2_rot_04</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_06.html" class="code" title="function cross_sect = sigma_N2_rot_06(E,E_old,xs_old)">sigma_N2_rot_06</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_rot_08.html" class="code" title="function cross_sect = sigma_N2_rot_08(E,E_old,xs_old)">sigma_N2_rot_08</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_el.html" class="code" title="function cross_sect = sigma_O2_el(E,E_old,xs_old)">sigma_O2_el</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../Cross_section/Funtion_interp/sigma_O2_vib.html" class="code" title="function cross_sect = sigma_O2_vib(E,E_old,xs_old)">sigma_O2_vib</a>	Calling: cross_sect = sigma_O2_vib(E)</li><li><a href="../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_el_2.html" class="code" title="function cross_sect = sigma_O_el_2(E,E_old,xs_old)">sigma_O_el_2</a>	Find values in cross sections energy vector E_old closest to E energy vector</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_10.html" class="code" title="function cross_sect = sigma_O_fine_str_10(E,E_old,xs_old)">sigma_O_fine_str_10</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_20.html" class="code" title="function cross_sect = sigma_O_fine_str_20(E,E_old,xs_old)">sigma_O_fine_str_20</a>	Convert from [eV] to [J]</li><li><a href="../Cross_section/Funtion_interp/sigma_O_fine_str_21.html" class="code" title="function cross_sect = sigma_O_fine_str_21(E,E_old,xs_old)">sigma_O_fine_str_21</a>	Convert from [eV] to [J]</li><li><a href="../MC_simulation/Plasma/v_e_HF_L.html" class="code" title="function V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)">v_e_HF_L</a>	V_E_HF_L - charged-particle velocity in an LHCP HF-wave E-field</li><li><a href="../MC_simulation/Plasma/v_thermal.html" class="code" title="function V = v_thermal(T,m)">v_thermal</a>	V_THERMAL - thermal velocity</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="v_e_HF_workBG4.html" class="code" title="">v_e_HF_workBG4</a>	% Script for MC-trajectory calculations</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_workerBG3(n_colls,B,Eo1_0,w_HF,theta2B,T_e,Nn,dE,ps_data)</a>
+0002 <span class="comment">%         1     2     3      4       5                              1 2     3    4       5   6   7     8  9</span>
+0003 <span class="comment">% f_e_worker - calculate the evolution of electron-velocities in HF-heating</span>
+0004 <span class="comment">% of magnetized plasma. This version only takes idealized ellastic</span>
+0005 <span class="comment">% collisions into account with a somewhat naive approach to angular</span>
+0006 <span class="comment">% scattering.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%  [t_all,E_all,v_pars,v_perps,v_x,v_y] = f_e_worker2(n_colls,B,Eo1_0,w_HF,theta2B,w_e,T_e.Sigma,dE)</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%  n_colls - number or collisions to run for, scalar integer</span>
+0012 <span class="comment">%  B       - magnetic field strength (T), double scalar</span>
+0013 <span class="comment">%  Eo1_0   - local E-field amplitude of the HF-radio-wave (V/m), double</span>
+0014 <span class="comment">%            scalar</span>
+0015 <span class="comment">%  w_HF    - angular frequency of the HF-radio-wave heating wave (rad/s),</span>
+0016 <span class="comment">%            double scalar</span>
+0017 <span class="comment">%  theta2B - Angle to the magnetic field of the HF-radio-wave propagation</span>
+0018 <span class="comment">%            (radians), double scalar.</span>
+0019 <span class="comment">%  w_e     - angular electron gyro-frequency (rad/s), double scalar</span>
+0020 <span class="comment">%  T_e     - electron temperature (K), double scalar</span>
+0021 <span class="comment">% Output:</span>
+0022 <span class="comment">%  t_all   - time at collisions (s), double array [1 x n_colls + 1]</span>
+0023 <span class="comment">%  E_all   - electron energy at collision (eV), double array [1 x n_colls + 1]</span>
+0024 <span class="comment">%  v_pars  - electron-velocity (m/s) component parallel to B, double array</span>
+0025 <span class="comment">%            [1 x n_colls + 1]</span>
+0026 <span class="comment">%  v_perps - electron-velocity (m/s) component perpendicular to B, double</span>
+0027 <span class="comment">%            array [1 x n_colls + 1]</span>
+0028 <span class="comment">%  v_x     - electron-velocity (m/s) component perp to B par E-W, double</span>
+0029 <span class="comment">%            array [1 x n_colls + 1]</span>
+0030 <span class="comment">%  v_y     - electron-velocity (m/s) component perp to B par N-S, double</span>
+0031 <span class="comment">%            array [1 x n_colls + 1]</span>
+0032 
+0033 n_p = 1;
+0034 iP = 1;
+0035 
+0036 <span class="comment">% Allocate memory for outputs</span>
+0037 t_all = zeros(n_p,n_colls+1);  
+0038 E_all = zeros(n_p,n_colls+1);  
+0039 v_pars = zeros(n_p,n_colls+1);  
+0040 v_perps = zeros(n_p,n_colls+1); 
+0041 v_x = zeros(n_p,n_colls+1);     
+0042 v_y = zeros(n_p,n_colls+1);     
+0043 
+0044 <span class="comment">% Physical constants</span>
+0045 m_e = 9.1093835611e-31;   <span class="comment">% electron rest mass [kg]</span>
+0046 q_e = 1.602176620898e-19; <span class="comment">% elementary charge [C]</span>
+0047 
+0048 <span class="comment">% Initial velocity, from a T_e K thermal population</span>
+0049 v0 =  <a href="../MC_simulation/Plasma/v_thermal.html" class="code" title="function V = v_thermal(T,m)">v_thermal</a>(T_e,m_e)/sqrt(3)*randn(3,1);
+0050 <span class="keyword">while</span> isnan(v0==1) 
+0051     v0 =  <a href="../MC_simulation/Plasma/v_thermal.html" class="code" title="function V = v_thermal(T,m)">v_thermal</a>(T_e,m_e)/sqrt(3)*randn(3,1); <span class="comment">% In case v0 is NaN</span>
+0052 <span class="keyword">end</span> 
+0053 
+0054 t0 = 0;
+0055 t_long = t0;
+0056 v_long = v0;
+0057 <span class="comment">% Time between collisions, &quot;waiting-time&quot;.</span>
+0058 
+0059 <span class="comment">% Corresponding electron energy</span>
+0060 E0 = m_e/2*sum(v0.^2)/q_e;
+0061 E = E0; 
+0062 
+0063 <span class="comment">% Convert from [eV] to [J]</span>
+0064 eVtoJ = 1.602176634e-19;  
+0065 
+0066 <span class="keyword">for</span> i1 = 1:n_colls
+0067 
+0068     <span class="comment">% Cross sections</span>
+0069     xs_e_N2elastic = <a href="../Cross_section/Funtion_interp/sigma_N2_el.html" class="code" title="function cross_sect = sigma_N2_el(E,E_old,xs_old)">sigma_N2_el</a>(E*eVtoJ,ps_data{1}(:,1),ps_data{1}(:,2));
+0070     xs_e_O2elastic = <a href="../Cross_section/Funtion_interp/sigma_O2_el.html" class="code" title="function cross_sect = sigma_O2_el(E,E_old,xs_old)">sigma_O2_el</a>(E*eVtoJ,ps_data{2}(:,1),ps_data{2}(:,2));
+0071     xs_e_Oelastic = <a href="../Cross_section/Funtion_interp/sigma_O_el_2.html" class="code" title="function cross_sect = sigma_O_el_2(E,E_old,xs_old)">sigma_O_el_2</a>(E*eVtoJ,ps_data{3}(:,1),ps_data{3}(:,2));
+0072     xs_e_N2vib0_1 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_01.html" class="code" title="function cross_sect = sigma_N2_vib_01(E,E_old,xs_old)">sigma_N2_vib_01</a>(E*eVtoJ,ps_data{4}(:,1),ps_data{4}(:,2)); 
+0073     xs_e_N2vib0_2 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_02.html" class="code" title="function cross_sect = sigma_N2_vib_02(E,E_old,xs_old)">sigma_N2_vib_02</a>(E*eVtoJ,ps_data{5}(:,1),ps_data{5}(:,2));
+0074     xs_e_N2vib0_3 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_03.html" class="code" title="function cross_sect = sigma_N2_vib_03(E,E_old,xs_old)">sigma_N2_vib_03</a>(E*eVtoJ,ps_data{6}(:,1),ps_data{6}(:,2)); 
+0075     xs_e_N2vib0_4 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_04.html" class="code" title="function cross_sect = sigma_N2_vib_04(E,E_old,xs_old)">sigma_N2_vib_04</a>(E*eVtoJ,ps_data{7}(:,1),ps_data{7}(:,2));
+0076     xs_e_N2vib0_5 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_05.html" class="code" title="function cross_sect = sigma_N2_vib_05(E,E_old,xs_old)">sigma_N2_vib_05</a>(E*eVtoJ,ps_data{8}(:,1),ps_data{8}(:,2)); 
+0077     xs_e_N2vib0_6 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_06.html" class="code" title="function cross_sect = sigma_N2_vib_06(E,E_old,xs_old)">sigma_N2_vib_06</a>(E*eVtoJ,ps_data{9}(:,1),ps_data{9}(:,2));
+0078     xs_e_N2vib0_7 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_07.html" class="code" title="function cross_sect = sigma_N2_vib_07(E,E_old,xs_old)">sigma_N2_vib_07</a>(E*eVtoJ,ps_data{10}(:,1),ps_data{10}(:,2)); 
+0079     xs_e_N2vib0_8 = <a href="../Cross_section/Funtion_interp/sigma_N2_vib_08.html" class="code" title="function cross_sect = sigma_N2_vib_08(E,E_old,xs_old)">sigma_N2_vib_08</a>(E*eVtoJ,ps_data{11}(:,1),ps_data{11}(:,2)); 
+0080     xs_e_N2rot0_2 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_02.html" class="code" title="function cross_sect = sigma_N2_rot_02(E,E_old,xs_old)">sigma_N2_rot_02</a>(E*eVtoJ,ps_data{12}(:,1),ps_data{12}(:,2)); 
+0081     xs_e_N2rot0_4 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_04.html" class="code" title="function cross_sect = sigma_N2_rot_04(E,E_old,xs_old)">sigma_N2_rot_04</a>(E*eVtoJ,ps_data{13}(:,1),ps_data{13}(:,2));
+0082     xs_e_N2rot0_6 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_06.html" class="code" title="function cross_sect = sigma_N2_rot_06(E,E_old,xs_old)">sigma_N2_rot_06</a>(E*eVtoJ,ps_data{14}(:,1),ps_data{14}(:,2)); 
+0083     xs_e_N2rot0_8 = <a href="../Cross_section/Funtion_interp/sigma_N2_rot_08.html" class="code" title="function cross_sect = sigma_N2_rot_08(E,E_old,xs_old)">sigma_N2_rot_08</a>(E*eVtoJ,ps_data{15}(:,1),ps_data{15}(:,2)); 
+0084     xs_e_O2a1Dg = <a href="../Cross_section/Funtion_interp/sigma_O2_a1_delta_g.html" class="code" title="function cross_sect = sigma_O2_a1_delta_g(E,E_old,xs_old)">sigma_O2_a1_delta_g</a>(E*eVtoJ,ps_data{16}(:,1),ps_data{16}(:,2)); 
+0085     xs_e_O2b1Sgp = <a href="../Cross_section/Funtion_interp/sigma_O2_b1_delta_g.html" class="code" title="function cross_sect = sigma_O2_b1_delta_g(E,E_old,xs_old)">sigma_O2_b1_delta_g</a>(E*eVtoJ,ps_data{17}(:,1),ps_data{17}(:,2)); 
+0086     xs_e_Ofine_1_0 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_10.html" class="code" title="function cross_sect = sigma_O_fine_str_10(E,E_old,xs_old)">sigma_O_fine_str_10</a>(E*eVtoJ,ps_data{18}(:,1),ps_data{18}(:,2));  
+0087     xs_e_Ofine_2_0 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_20.html" class="code" title="function cross_sect = sigma_O_fine_str_20(E,E_old,xs_old)">sigma_O_fine_str_20</a>(E*eVtoJ,ps_data{19}(:,1),ps_data{19}(:,2)); 
+0088     xs_e_Ofine_2_1 = <a href="../Cross_section/Funtion_interp/sigma_O_fine_str_21.html" class="code" title="function cross_sect = sigma_O_fine_str_21(E,E_old,xs_old)">sigma_O_fine_str_21</a>(E*eVtoJ,ps_data{20}(:,1),ps_data{20}(:,2));  
+0089     xs_e_O3P1D = <a href="../Cross_section/Funtion_interp/sigma_O_3P_1D.html" class="code" title="function cross_sect = sigma_O_3P_1D(E,E_old,xs_old)">sigma_O_3P_1D</a>(E*eVtoJ,ps_data{21}(:,1),ps_data{21}(:,2)); 
+0090     xs_e_O3P1S = <a href="../Cross_section/Funtion_interp/sigma_O_3P_1S.html" class="code" title="function cross_sect = sigma_O_3P_1S(E,E_old,xs_old)">sigma_O_3P_1S</a>(E*eVtoJ,ps_data{22}(:,1),ps_data{22}(:,2)); 
+0091     xs_e_O2_vib = <a href="../Cross_section/Funtion_interp/sigma_O2_vib.html" class="code" title="function cross_sect = sigma_O2_vib(E,E_old,xs_old)">sigma_O2_vib</a>(E*eVtoJ,ps_data{23}(:,1),ps_data{23}(:,2)); 
+0092     sigma = [xs_e_N2elastic; xs_e_O2elastic; xs_e_Oelastic; xs_e_N2vib0_1; xs_e_N2vib0_2; xs_e_N2vib0_3; xs_e_N2vib0_4; <span class="keyword">...</span>
+0093     xs_e_N2vib0_5; xs_e_N2vib0_6; xs_e_N2vib0_7; xs_e_N2vib0_8; xs_e_N2rot0_2; xs_e_N2rot0_4; xs_e_N2rot0_6; xs_e_N2rot0_8; <span class="keyword">...</span>
+0094     xs_e_O2a1Dg; xs_e_O2b1Sgp; xs_e_Ofine_1_0; xs_e_Ofine_2_0; xs_e_Ofine_2_1; xs_e_O3P1D; xs_e_O3P1S; xs_e_O2_vib];
+0095 
+0096     v = sqrt(sum(v0.^2)); <span class="comment">% Speed [m/s]</span>
+0097     T_colls = exprnd(1./(sigma.*Nn*v)); <span class="comment">% Mean time between collisions [s]</span>
+0098     
+0099     <span class="comment">% Choose the three collisions with the lowest mean time</span>
+0100     [T_colls1,iDE] = sort(T_colls);
+0101     t_curr = [0,T_colls1(1)];
+0102     
+0103     <span class="keyword">if</span> ~isempty(t_long) <span class="comment">% maybe this?</span>
+0104     t_curr = t_curr + t_long(end);
+0105     t0 = t_curr(1);
+0106     <span class="keyword">end</span>
+0107     
+0108     v0_before = v0; 
+0109 
+0110     <span class="comment">% Equation of motion for E-field and B-field. Velocity as function of time</span>
+0111     v_curr = <a href="../MC_simulation/Plasma/v_e_HF_L.html" class="code" title="function V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)">v_e_HF_L</a>(B,Eo1_0,v0,m_e,q_e,t_curr([1 end])-t0,-t0,theta2B,w_HF); 
+0112     v0 = v_curr(:,end);
+0113     
+0114     <span class="comment">% Here we handle angular scattering of electrons after collisions</span>
+0115     e_post = randn(3,1); <span class="comment">% Velocity-unit-vector (new direction of velocity)</span>
+0116     e_v = e_post/norm(e_post); 
+0117   
+0118     <span class="comment">% Energy before and after collision</span>
+0119     E0 = m_e/2*sum(v0.^2)/q_e; 
+0120     E  = E0 - dE(iDE(1));
+0121     
+0122     <span class="comment">% If energy is negative</span>
+0123     <span class="keyword">if</span> E &lt; 0 
+0124         t_curr = [0,T_colls1(2)];
+0125         <span class="comment">% or: t_curr = [T_colls1(1),T_colls1(2)];</span>
+0126         <span class="keyword">if</span> ~isempty(t_long) <span class="comment">% maybe this?</span>
+0127         t_curr = t_curr + t_long(end);
+0128         t0 = t_curr(1);
+0129         <span class="keyword">end</span>
+0130         
+0131         <span class="comment">% Beveglessligning for E-felt og B-felt. Velocity as function of time</span>
+0132         v_curr = <a href="../MC_simulation/Plasma/v_e_HF_L.html" class="code" title="function V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)">v_e_HF_L</a>(B,Eo1_0,v0_before,m_e,q_e,t_curr([1 end])-t0,-t0,theta2B,w_HF); 
+0133         v0 = v_curr(:,end); 
+0134 
+0135         E0 = m_e/2*sum(v0.^2)/q_e; <span class="comment">% =&gt; v0^2 = 2*q_e*E/m_e =&gt; v0 = sqrt(2*q_e*E/m_e)</span>
+0136         E  = E0 - dE(iDE(2)); 
+0137     <span class="keyword">end</span> 
+0138 
+0139     <span class="keyword">if</span> E &lt; 0 
+0140         t_curr = [0,T_colls1(3)];
+0141         
+0142         <span class="keyword">if</span> ~isempty(t_long) <span class="comment">% maybe this?</span>
+0143         t_curr = t_curr + t_long(end);
+0144         t0 = t_curr(1);
+0145         <span class="keyword">end</span>
+0146         
+0147         <span class="comment">% Beveglessligning for E-felt og B-felt. Velocity as function of time</span>
+0148         v_curr = <a href="../MC_simulation/Plasma/v_e_HF_L.html" class="code" title="function V = v_e_HF_L(B,E,V0,m,q_e,t,t0,theta2B,w_HF)">v_e_HF_L</a>(B,Eo1_0,v0_before,m_e,q_e,t_curr([1 end])-t0,-t0,theta2B,w_HF); 
+0149         v0 = v_curr(:,end); 
+0150 
+0151         E0 = m_e/2*sum(v0.^2)/q_e; <span class="comment">% =&gt; v0^2 = 2*q_e*E/m_e =&gt; v0 = sqrt(2*q_e*E/m_e)</span>
+0152         E  = E0 - dE(iDE(3)); 
+0153     <span class="keyword">end</span> 
+0154 
+0155     <span class="comment">% New electron velocity after collision</span>
+0156     v0 = e_v*sqrt(2*q_e*E/m_e);
+0157     
+0158     <span class="comment">% Save time and velocity</span>
+0159     t_long = [t_long,t_curr(end)];
+0160     v_long = [v_long,v_curr(:,end)];
+0161 
+0162 <span class="keyword">end</span>
+0163 
+0164 <span class="comment">% Calculate the electron energy and extract the velocity-components</span>
+0165 E_all(iP,:) = m_e/2*sum(v_long.^2)/q_e;
+0166 v_pars(iP,:) = v_long(3,:);
+0167 v_perps(iP,:) = (v_long(1,:).^2+v_long(2,:).^2).^.5;
+0168 v_x(iP,:) = v_long(1,:);
+0169 v_y(iP,:) = v_long(2,:);
+0170 t_all(iP,:) = t_long;
+0171 
+0172 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

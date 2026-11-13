@@ -1,0 +1,14 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  v_e_HF_L -> w_e_gyro;
+
+  E0_HF_pump [URL="E0_HF_pump.html"];
+  conductivity_T_hf [URL="conductivity_T_hf.html"];
+  dielectric_T_hf [URL="dielectric_T_hf.html"];
+  f_plasma [URL="f_plasma.html"];
+  n_refractive_indx [URL="n_refractive_indx.html"];
+  v_e_HF_L [URL="v_e_HF_L.html"];
+  v_thermal [URL="v_thermal.html"];
+  w_e_gyro [URL="w_e_gyro.html"];
+  w_plasma [URL="w_plasma.html"];
+}
