@@ -1,0 +1,525 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of LXCAT_parser</title>
+  <meta name="keywords" content="LXCAT_parser">
+  <meta name="description" content="LXCAT_parser - parses LXCAT cross-section files, returns structs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Cross_section -->
+<h1>LXCAT_parser
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LXCAT_parser - parses LXCAT cross-section files, returns structs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function XS_struct = LXCAT_parser(fname) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LXCAT_parser - parses LXCAT cross-section files, returns structs
+ in cell-array. The structs contain fields:
+  type   - the type of collision: 'elastic', 'rotation', 'vibration',
+           'excitation', 'ionization'.
+  header - cell array with the sub-header as strings, one line per element
+  Species - char-array with spieces identifier: O, O2, N2 etc.
+  Process - char array describing what collision it is.
+  E      - energy, (eV), double array
+  xs     - cross-section (m^2), double array with cross-section
+ for elastic collisions there is a field:
+  m_over_m for the mass-ratio between colliding particle and target
+ for other collisions there are fields:
+  dE     - excitation-energy (eV) double scalar. Energy cost from the
+           lower to the upper state.
+  g_over_g - ratio of statistical weights, double scalar.
+  
+  % Example:
+  XS_O2ion = LXCAT_parser('Cross-section-O2-ionization.txt');
+  figure
+  colormap(turbo)
+  for i1 = 1:numel(XS_O2ion)
+    dE_O2i(i1) = XS_O2ion{i1}.dE;
+  end
+  for i1 = 1:numel(XS_O2ion)
+    phO2i(i1) = loglog(XS_O2ion{i1}.E,XS_O2ion{i1}.xs);
+    hold on
+  end
+  [~,idE] = sort(dE_O2i);
+  cmlines(phO2i(idE))
+  lgh = legend(phO2i,num2str(dE_O2i(:)),'location','southeast');
+  set(phO2i,'linewidth',2)
+  title(lgh,'ionization dE (eV)')
+  axis([10 1e3 4e-24 4e-20])
+  xlabel('Energy (eV)')
+  ylabel('Cross-section (m^2)')
+  title('Ionization-cross-sections O_2')</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function XS = read_rotational(fileID)</a></li><li><a href="#_sub2" class="code">function XS = read_vibrational(fileID)</a></li><li><a href="#_sub3" class="code">function XS = read_excitation(fileID)</a></li><li><a href="#_sub4" class="code">function XS = read_elastic(fileID)</a></li><li><a href="#_sub5" class="code">function XS = read_ionization(fileID)</a></li><li><a href="#_sub6" class="code">function XS = read_momentum(fileID)</a></li><li><a href="#_sub7" class="code">function XS = read_attachment(fileID)</a></li><li><a href="#_sub8" class="code">function [Species,Process,dE,g_over_g,collider] = parse_header(header)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function XS_struct = LXCAT_parser(fname)</a>
+0002 <span class="comment">% LXCAT_parser - parses LXCAT cross-section files, returns structs</span>
+0003 <span class="comment">% in cell-array. The structs contain fields:</span>
+0004 <span class="comment">%  type   - the type of collision: 'elastic', 'rotation', 'vibration',</span>
+0005 <span class="comment">%           'excitation', 'ionization'.</span>
+0006 <span class="comment">%  header - cell array with the sub-header as strings, one line per element</span>
+0007 <span class="comment">%  Species - char-array with spieces identifier: O, O2, N2 etc.</span>
+0008 <span class="comment">%  Process - char array describing what collision it is.</span>
+0009 <span class="comment">%  E      - energy, (eV), double array</span>
+0010 <span class="comment">%  xs     - cross-section (m^2), double array with cross-section</span>
+0011 <span class="comment">% for elastic collisions there is a field:</span>
+0012 <span class="comment">%  m_over_m for the mass-ratio between colliding particle and target</span>
+0013 <span class="comment">% for other collisions there are fields:</span>
+0014 <span class="comment">%  dE     - excitation-energy (eV) double scalar. Energy cost from the</span>
+0015 <span class="comment">%           lower to the upper state.</span>
+0016 <span class="comment">%  g_over_g - ratio of statistical weights, double scalar.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  % Example:</span>
+0019 <span class="comment">%  XS_O2ion = LXCAT_parser('Cross-section-O2-ionization.txt');</span>
+0020 <span class="comment">%  figure</span>
+0021 <span class="comment">%  colormap(turbo)</span>
+0022 <span class="comment">%  for i1 = 1:numel(XS_O2ion)</span>
+0023 <span class="comment">%    dE_O2i(i1) = XS_O2ion{i1}.dE;</span>
+0024 <span class="comment">%  end</span>
+0025 <span class="comment">%  for i1 = 1:numel(XS_O2ion)</span>
+0026 <span class="comment">%    phO2i(i1) = loglog(XS_O2ion{i1}.E,XS_O2ion{i1}.xs);</span>
+0027 <span class="comment">%    hold on</span>
+0028 <span class="comment">%  end</span>
+0029 <span class="comment">%  [~,idE] = sort(dE_O2i);</span>
+0030 <span class="comment">%  cmlines(phO2i(idE))</span>
+0031 <span class="comment">%  lgh = legend(phO2i,num2str(dE_O2i(:)),'location','southeast');</span>
+0032 <span class="comment">%  set(phO2i,'linewidth',2)</span>
+0033 <span class="comment">%  title(lgh,'ionization dE (eV)')</span>
+0034 <span class="comment">%  axis([10 1e3 4e-24 4e-20])</span>
+0035 <span class="comment">%  xlabel('Energy (eV)')</span>
+0036 <span class="comment">%  ylabel('Cross-section (m^2)')</span>
+0037 <span class="comment">%  title('Ionization-cross-sections O_2')</span>
+0038 
+0039 KEYWORDS = {&quot;MOMENTUM&quot;;    <span class="comment">% 1</span>
+0040             &quot;ELASTIC&quot;;     <span class="comment">% 2</span>
+0041             &quot;EFFECTIVE&quot;;   <span class="comment">% 3</span>
+0042             &quot;EXCITATION&quot;;  <span class="comment">% 4</span>
+0043             &quot;IONIZATION&quot;;  <span class="comment">% 5</span>
+0044             &quot;ATTACHMENT&quot;;  <span class="comment">% 6</span>
+0045             &quot;VIBRATIONAL&quot;; <span class="comment">% 7</span>
+0046             &quot;ROTATIONAL&quot;}; <span class="comment">% 8</span>
+0047 fileID = fopen(fname);
+0048 <span class="keyword">if</span> fileID &lt; 0
+0049   disp([<span class="string">'Could not open file: '</span>,fname])
+0050   <span class="keyword">return</span>
+0051 <span class="keyword">end</span>
+0052 iXS = 1;
+0053 
+0054 <span class="keyword">while</span> ~feof(fileID)
+0055   cline = fgets(fileID);
+0056   coll_type = find_in_cellstr(strim(cline),KEYWORDS);
+0057   <span class="keyword">if</span> ~isempty(coll_type)
+0058     <span class="keyword">switch</span> coll_type
+0059       <span class="keyword">case</span> 1
+0060         <span class="comment">%curr_XS = read_momentum(fileID);</span>
+0061       <span class="keyword">case</span> 2
+0062         curr_XS = <a href="#_sub4" class="code" title="subfunction XS = read_elastic(fileID)">read_elastic</a>(fileID);
+0063       <span class="keyword">case</span> 3
+0064         <span class="comment">%curr_XS = read_effective(fileID);</span>
+0065       <span class="keyword">case</span> 4
+0066         curr_XS = <a href="#_sub3" class="code" title="subfunction XS = read_excitation(fileID)">read_excitation</a>(fileID);
+0067       <span class="keyword">case</span> 5
+0068         curr_XS = <a href="#_sub5" class="code" title="subfunction XS = read_ionization(fileID)">read_ionization</a>(fileID);
+0069       <span class="keyword">case</span> 6
+0070         <span class="comment">%curr_XS = read_attachment(fileID);</span>
+0071       <span class="keyword">case</span> 7
+0072         curr_XS = <a href="#_sub2" class="code" title="subfunction XS = read_vibrational(fileID)">read_vibrational</a>(fileID);
+0073       <span class="keyword">case</span> 8
+0074         curr_XS = <a href="#_sub1" class="code" title="subfunction XS = read_rotational(fileID)">read_rotational</a>(fileID);
+0075       <span class="keyword">otherwise</span>
+0076         disp(<span class="string">'This is strange'</span>)
+0077         disp([<span class="string">'cline is: '</span>,cline])
+0078         disp([<span class="string">'and coll_type is apparently: '</span>,num2str(coll_type)])
+0079     <span class="keyword">end</span>
+0080     XS_struct{iXS} = curr_XS;
+0081     iXS = iXS + 1;
+0082   <span class="keyword">end</span>
+0083 <span class="keyword">end</span>
+0084 
+0085 fclose(fileID);
+0086 
+0087 <span class="keyword">end</span>
+0088 
+0089 
+0090 <span class="comment">%</span>
+0091 <span class="comment">% Specialized funcion for each Collision type. They all return cell-arrays</span>
+0092 <span class="comment">% of structs with the relevant attibutes.</span>
+0093 <span class="comment">%</span>
+0094 <a name="_sub1" href="#_subfunctions" class="code">function XS = read_rotational(fileID)</a>
+0095 <span class="comment">% read_rotational - read rotational cross-sections</span>
+0096 <span class="comment">% read_rotational reads a rotational cross-section part, and returns a</span>
+0097 <span class="comment">% cross-sections struct, with fields:</span>
+0098 <span class="comment">%  type   - the char array 'rotation'</span>
+0099 <span class="comment">%  header - cell array with the sub-header as strings, one line per element</span>
+0100 <span class="comment">%  dE     - excitation-energy (eV) double scalar. Energy cost from the</span>
+0101 <span class="comment">%           lower to the upper state.</span>
+0102 <span class="comment">%  g_over_g - ratio of statistical weights, double scalar.</span>
+0103 <span class="comment">%  Species - char-array with spieces identifier: O, O2, N2 etc.</span>
+0104 <span class="comment">%  Process - char array describing what collision it is.</span>
+0105 <span class="comment">%  E      - energy, (eV), double array</span>
+0106 <span class="comment">%  xs     - cross-section (m^2), double array with cross-section</span>
+0107 <span class="comment">%</span>
+0108 <span class="comment">% Calling:</span>
+0109 <span class="comment">%  XS = read_rotational(fileID)</span>
+0110 XS.type = <span class="string">'rotation'</span>;
+0111 <span class="comment">%</span>
+0112 iC = 1;
+0113 cline = fgetl(fileID);
+0114 header{iC} = strim(cline);
+0115 <span class="comment">%while isempty(strfind(cline,'-----'))</span>
+0116 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0117   header{iC} = strim(cline);
+0118   cline = fgetl(fileID);
+0119   iC = iC + 1;
+0120 <span class="keyword">end</span>
+0121 
+0122 XS.header = header';
+0123 [Species,Process,dE,g_over_g,collider] = <a href="#_sub8" class="code" title="subfunction [Species,Process,dE,g_over_g,collider] = parse_header(header)">parse_header</a>(XS.header);
+0124 XS.dE = dE;             <span class="comment">% excitation-energy (eV)</span>
+0125 XS.g_over_g = g_over_g; <span class="comment">% ratio of statistical weights</span>
+0126 XS.Species = Species;
+0127 XS.Process = Process;
+0128 XS.impactor = collider;
+0129 
+0130 cline = fgetl(fileID);
+0131 vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0132 XS.E = vals(1);
+0133 XS.xs = vals(2);
+0134 <span class="comment">%while isempty(strfind(cline,'-----'))</span>
+0135 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0136   cline = fgetl(fileID);
+0137   <span class="comment">% if ~isempty(strfind(cline,'-----'))</span>
+0138   <span class="keyword">if</span> contains(cline,<span class="string">'-----'</span>)
+0139     <span class="keyword">break</span>
+0140   <span class="keyword">end</span>
+0141   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0142   XS.E(end+1) = vals(1);
+0143   XS.xs(end+1) = vals(2);
+0144 <span class="keyword">end</span>
+0145 
+0146 <span class="keyword">end</span>
+0147 
+0148 
+0149 
+0150 <a name="_sub2" href="#_subfunctions" class="code">function XS = read_vibrational(fileID)</a>
+0151 <span class="comment">% read_vibrational - read vibrational cross-sections</span>
+0152 <span class="comment">% read_vibrational reads a vibrational cross-section part, and returns a</span>
+0153 <span class="comment">% cross-sections struct, with fields:</span>
+0154 <span class="comment">%  type   - the char array 'vibration'</span>
+0155 <span class="comment">%  header - cell array with the sub-header as strings, one line per element</span>
+0156 <span class="comment">%  dE     - excitation-energy (eV) double scalar. Energy cost from the</span>
+0157 <span class="comment">%           lower to the upper state.</span>
+0158 <span class="comment">%  g_over_g - ratio of statistical weights, double scalar.</span>
+0159 <span class="comment">%  Species - char-array with spieces identifier: O, O2, N2 etc.</span>
+0160 <span class="comment">%  Process - char array describing what collision it is.</span>
+0161 <span class="comment">%  E      - energy, (eV), double array</span>
+0162 <span class="comment">%  xs     - cross-section (m^2), double array with cross-section</span>
+0163 <span class="comment">%</span>
+0164 <span class="comment">% Calling:</span>
+0165 <span class="comment">%  XS = read_vibrational(fileID)</span>
+0166 
+0167 XS.type = <span class="string">'vibration'</span>;
+0168 <span class="comment">%</span>
+0169 iC = 1;
+0170 cline = fgetl(fileID);
+0171 header{iC} = strim(cline);
+0172 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0173 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0174   header{iC} = strim(cline);
+0175   cline = fgetl(fileID);
+0176   iC = iC + 1;
+0177 <span class="keyword">end</span>
+0178 
+0179 XS.header = header';
+0180 [Species,Process,dE,g_over_g,collider] = <a href="#_sub8" class="code" title="subfunction [Species,Process,dE,g_over_g,collider] = parse_header(header)">parse_header</a>(XS.header);
+0181 XS.dE = dE;             <span class="comment">% excitation-energy (eV)</span>
+0182 XS.g_over_g = g_over_g; <span class="comment">% ratio of statistical weights</span>
+0183 XS.Species = Species;
+0184 XS.Process = Process;
+0185 XS.impactor = collider;
+0186 
+0187 cline = fgetl(fileID);
+0188 vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0189 XS.E = vals(1);
+0190 XS.xs = vals(2);
+0191 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0192 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0193   cline = fgetl(fileID);
+0194   <span class="comment">% if ~isempty(strfind(cline,'-----'))</span>
+0195   <span class="keyword">if</span> contains(cline,<span class="string">'-----'</span>)
+0196     <span class="keyword">break</span>
+0197   <span class="keyword">end</span>
+0198   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0199   XS.E(end+1) = vals(1);
+0200   XS.xs(end+1) = vals(2);
+0201 <span class="keyword">end</span>
+0202 
+0203 <span class="keyword">end</span>
+0204 
+0205 <a name="_sub3" href="#_subfunctions" class="code">function XS = read_excitation(fileID)</a>
+0206 <span class="comment">% read_excitation - read excitation cross-sections</span>
+0207 <span class="comment">% read_excitation reads an excitation cross-section part, and returns a</span>
+0208 <span class="comment">% cross-sections struct, with fields:</span>
+0209 <span class="comment">%  type   - the char array 'excitation'</span>
+0210 <span class="comment">%  header - cell array with the sub-header as strings, one line per element</span>
+0211 <span class="comment">%  dE     - excitation-energy (eV) double scalar. Energy cost from the</span>
+0212 <span class="comment">%           lower to the upper state.</span>
+0213 <span class="comment">%  g_over_g - ratio of statistical weights, double scalar.</span>
+0214 <span class="comment">%  Species - char-array with spieces identifier: O, O2, N2 etc.</span>
+0215 <span class="comment">%  Process - char array describing what collision it is.</span>
+0216 <span class="comment">%  E      - energy, (eV), double array</span>
+0217 <span class="comment">%  xs     - cross-section (m^2), double array with cross-section</span>
+0218 <span class="comment">%</span>
+0219 <span class="comment">% Calling:</span>
+0220 <span class="comment">%  XS = read_excitation(fileID)</span>
+0221 
+0222 XS.type = <span class="string">'excitation'</span>;
+0223 cline = fgetl(fileID);
+0224 XS.process = strim(cline);
+0225 
+0226 two_way = strfind(strim(cline),<span class="string">'&lt;-&gt;'</span>);
+0227 cline = fgetl(fileID);
+0228 <span class="keyword">if</span> two_way
+0229   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0230   dE = vals(1);
+0231   weight_ratio = vals(2);
+0232 <span class="keyword">else</span>
+0233   dE = sscanf(cline,<span class="string">'%f'</span>);
+0234   weight_ratio = nan;
+0235 <span class="keyword">end</span>
+0236 
+0237 XS.dE = dE;
+0238 XS.g_over_g = weight_ratio;
+0239 
+0240 iC = 1;
+0241 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0242 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0243   cline = fgetl(fileID);
+0244   header{iC} = strim(cline);
+0245   iC = iC + 1;
+0246 <span class="keyword">end</span>
+0247 XS.header = header(1:end-1)';
+0248 
+0249 <span class="comment">% [Species,Process,dE,g_over_g,collider] = parse_header(XS.header);</span>
+0250 [Species,Process] = <a href="#_sub8" class="code" title="subfunction [Species,Process,dE,g_over_g,collider] = parse_header(header)">parse_header</a>(XS.header);
+0251 <span class="comment">%XS.dE = dE;             % excitation-energy (eV)</span>
+0252 <span class="comment">%XS.g_over_g = g_over_g; % ratio of statistical weights</span>
+0253 XS.Species = Species;
+0254 XS.Process = Process;
+0255 
+0256 cline = fgetl(fileID);
+0257 vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0258 XS.E = vals(1);
+0259 XS.xs = vals(2);
+0260 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0261 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0262   cline = fgetl(fileID);
+0263 <span class="comment">%  if ~isempty(strfind(cline,'-----'))</span>
+0264   <span class="keyword">if</span> contains(cline,<span class="string">'-----'</span>)
+0265     <span class="keyword">break</span>
+0266   <span class="keyword">end</span>
+0267   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0268   XS.E(end+1) = vals(1);
+0269   XS.xs(end+1) = vals(2);
+0270 <span class="keyword">end</span>
+0271 
+0272 <span class="keyword">end</span>
+0273 
+0274 <a name="_sub4" href="#_subfunctions" class="code">function XS = read_elastic(fileID)</a>
+0275 <span class="comment">% read_elastic - read elastic cross-sections</span>
+0276 <span class="comment">% read_elastic reads an elastic cross-section part, and returns a</span>
+0277 <span class="comment">% cross-sections struct, with fields:</span>
+0278 <span class="comment">%  type   - the char array 'excitation'</span>
+0279 <span class="comment">%  header - cell array with the sub-header as strings, one line per element</span>
+0280 <span class="comment">%  m_over_m - mass-ratio double array</span>
+0281 <span class="comment">%  g_over_g - ratio of statistical weights, double scalar.</span>
+0282 <span class="comment">%  Species - char-array with spieces identifier: O, O2, N2 etc.</span>
+0283 <span class="comment">%  Process - char array describing what collision it is.</span>
+0284 <span class="comment">%  E       - energy (eV) double array. Energies of the corresponding</span>
+0285 <span class="comment">%            cross-section</span>
+0286 <span class="comment">%  xs      - cross-section (m^2), double array with cross-section</span>
+0287 <span class="comment">%</span>
+0288 <span class="comment">% Calling:</span>
+0289 <span class="comment">%  XS = read_elastic(fileID)</span>
+0290 
+0291 XS.type = <span class="string">'elastic'</span>;
+0292 cline = fgetl(fileID);
+0293 XS.process = strim(cline);
+0294 
+0295 two_way = strfind(strim(cline),<span class="string">'&lt;-&gt;'</span>);
+0296 cline = fgetl(fileID);
+0297 <span class="keyword">if</span> two_way
+0298   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0299   m_over_m = vals(1);
+0300   weight_ratio = vals(2);
+0301 <span class="keyword">else</span>
+0302   m_over_m = sscanf(cline,<span class="string">'%f'</span>);
+0303   weight_ratio = nan;
+0304 <span class="keyword">end</span>
+0305 
+0306 XS.m_over_m = m_over_m;
+0307 XS.g_over_g = weight_ratio;
+0308 
+0309 iC = 1;
+0310 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0311 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0312   cline = fgetl(fileID);
+0313   cmnts{iC} = strim(cline);
+0314   iC = iC + 1;
+0315 <span class="keyword">end</span>
+0316 XS.header = cmnts(1:end-1)';
+0317 
+0318 cline = fgetl(fileID);
+0319 vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0320 XS.E = vals(1);
+0321 XS.xs = vals(2);
+0322 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0323 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0324   cline = fgetl(fileID);
+0325   <span class="comment">% if ~isempty(strfind(cline,'-----'))</span>
+0326   <span class="keyword">if</span> contains(cline,<span class="string">'-----'</span>)
+0327     <span class="keyword">break</span>
+0328   <span class="keyword">end</span>
+0329   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0330   XS.E(end+1) = vals(1);
+0331   XS.xs(end+1) = vals(2);
+0332 <span class="keyword">end</span>
+0333 
+0334 <span class="keyword">end</span>
+0335 
+0336 <a name="_sub5" href="#_subfunctions" class="code">function XS = read_ionization(fileID)</a>
+0337 <span class="comment">% read_ionization - read ionization cross-sections</span>
+0338 <span class="comment">% read_ionization reads an ionization cross-section part, and returns a</span>
+0339 <span class="comment">% cross-sections struct, with fields:</span>
+0340 <span class="comment">%  type   - the char array 'excitation'</span>
+0341 <span class="comment">%  header - cell array with the sub-header as strings, one line per element</span>
+0342 <span class="comment">%  dE     - excitation-energy (eV) double scalar. Energy cost from the</span>
+0343 <span class="comment">%           lower to the upper state.</span>
+0344 <span class="comment">%  Species - char-array with spieces identifier: O, O2, N2 etc.</span>
+0345 <span class="comment">%  Process - char array describing what collision it is.</span>
+0346 <span class="comment">%  E      - energy, (eV), double array</span>
+0347 <span class="comment">%  xs     - cross-section (m^2), double array with cross-section</span>
+0348 <span class="comment">%</span>
+0349 <span class="comment">% Calling:</span>
+0350 <span class="comment">%  XS = read_excitation(fileID)</span>
+0351 
+0352 XS.type = <span class="string">'ionization'</span>;
+0353 cline = fgetl(fileID);
+0354 XS.process = strim(cline);
+0355 
+0356 two_way = strfind(strim(cline),<span class="string">'&lt;-&gt;'</span>);
+0357 cline = fgetl(fileID);
+0358 <span class="keyword">if</span> two_way
+0359   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0360   dE = vals(1);
+0361   weight_ratio = vals(2);
+0362 <span class="keyword">else</span>
+0363   dE = sscanf(cline,<span class="string">'%f'</span>);
+0364   weight_ratio = nan;
+0365 <span class="keyword">end</span>
+0366 
+0367 XS.dE = dE;
+0368 XS.g_over_g = weight_ratio;
+0369 
+0370 iC = 1;
+0371 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0372 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0373   cline = fgetl(fileID);
+0374   cmnts{iC} = strim(cline);
+0375   iC = iC + 1;
+0376 <span class="keyword">end</span>
+0377 XS.header = cmnts(1:end-1)';
+0378 [Species,Process] = <a href="#_sub8" class="code" title="subfunction [Species,Process,dE,g_over_g,collider] = parse_header(header)">parse_header</a>(XS.header);
+0379 XS.Species = Species;
+0380 XS.Process = Process;
+0381 
+0382 cline = fgetl(fileID);
+0383 vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0384 XS.E = vals(1);
+0385 XS.xs = vals(2);
+0386 <span class="comment">% while isempty(strfind(cline,'-----'))</span>
+0387 <span class="keyword">while</span> ~contains(cline,<span class="string">'-----'</span>)
+0388   cline = fgetl(fileID);
+0389   <span class="comment">% if ~isempty(strfind(cline,'-----'))</span>
+0390   <span class="keyword">if</span> contains(cline,<span class="string">'-----'</span>)
+0391     <span class="keyword">break</span>
+0392   <span class="keyword">end</span>
+0393   vals = sscanf(cline,<span class="string">'%f %f'</span>);
+0394   XS.E(end+1) = vals(1);
+0395   XS.xs(end+1) = vals(2);
+0396 <span class="keyword">end</span>
+0397 
+0398 <span class="keyword">end</span>
+0399 
+0400 
+0401 <a name="_sub6" href="#_subfunctions" class="code">function XS = read_momentum(fileID)</a>
+0402 
+0403 XS = [];
+0404 <span class="keyword">end</span>
+0405 
+0406 <a name="_sub7" href="#_subfunctions" class="code">function XS = read_attachment(fileID)</a>
+0407 
+0408 XS = [];
+0409 <span class="keyword">end</span>
+0410 
+0411 <a name="_sub8" href="#_subfunctions" class="code">function [Species,Process,dE,g_over_g,collider] = parse_header(header)</a>
+0412 <span class="comment">% parse_header - function that parse out relevant parameters (dE, g1/g0)</span>
+0413 <span class="comment">% from the sub-headers before the cross-section-tables.</span>
+0414 <span class="comment">%</span>
+0415 
+0416 KEYWORDS = {&quot;SPECIES&quot;;  <span class="comment">% 1</span>
+0417             &quot;PROCESS&quot;;  <span class="comment">% 2</span>
+0418             &quot;PARAM&quot;;    <span class="comment">% 3</span>
+0419             &quot;g1/g0&quot;};   <span class="comment">% 4</span>
+0420 
+0421 iSpecies = find_in_cellstr(KEYWORDS{1},header);
+0422 iProcess = find_in_cellstr(KEYWORDS{2},header);
+0423 iParam   = find_in_cellstr(KEYWORDS{3},header);
+0424 iWeights = find_in_cellstr(KEYWORDS{4},header);
+0425 <span class="comment">% Parse out the target species</span>
+0426 [tok,rems] = strtok(header{iSpecies},<span class="string">' '</span>);
+0427 <span class="keyword">while</span> ~isempty(rems)
+0428   collider = tok;
+0429   [tok,rems] = strtok(rems,<span class="string">' /'</span>);
+0430 <span class="keyword">end</span>
+0431 Species = strim(tok);
+0432 <span class="comment">% Parse out the process</span>
+0433 [~,rems] = strtok(header{iProcess},<span class="string">' '</span>);
+0434 <span class="comment">% Parse out the parameters: dE and possibly g1/g0</span>
+0435 Process = strim(rems);
+0436 [~,rems] = strtok(header{iParam},<span class="string">'='</span>);
+0437 [tok,rems] = strtok(rems,<span class="string">'= '</span>);
+0438 dE = str2double(tok);
+0439 <span class="keyword">if</span> ~isempty(iWeights)
+0440   [~,rems] = strtok(rems,<span class="string">'='</span>);
+0441   [tok,~] = strtok(rems,<span class="string">'= '</span>);
+0442   g_over_g = str2double(tok);
+0443 <span class="keyword">else</span>
+0444   g_over_g = nan; <span class="comment">% TODO: Change this to 1?</span>
+0445 <span class="keyword">end</span>
+0446 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
