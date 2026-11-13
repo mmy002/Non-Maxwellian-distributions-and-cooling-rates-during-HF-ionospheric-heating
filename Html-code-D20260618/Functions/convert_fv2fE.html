@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of convert_fv2fE</title>
+  <meta name="keywords" content="convert_fv2fE">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # Functions -->
+<h1>convert_fv2fE
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function f0_E_stubbe = convert_fv2fE(v_bins_stubbe,f0_v_stubbe) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../For_thesis/plot_f0_new.html" class="code" title="">plot_f0_new</a>	Plot figures for thesis</li><li><a href="../For_thesis/plot_maxwellian.html" class="code" title="">plot_maxwellian</a>	% Graphics setup</li><li><a href="../plot_f0.html" class="code" title="">plot_f0</a>	Plot figures for part I</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function f0_E_stubbe = convert_fv2fE(v_bins_stubbe,f0_v_stubbe)</a>
+0002 
+0003 me = 9.10938291e-31;        <span class="comment">% Electron mass [kg]</span>
+0004 eVtoJ = 1.602176634e-19;    <span class="comment">% Convert from [eV] to [J]</span>
+0005 
+0006 <span class="comment">% Convert speed bins to energy bins</span>
+0007 E_bins_stubbe = (me*v_bins_stubbe.^2)/2; <span class="comment">% [J]</span>
+0008 
+0009 <span class="comment">% Resolution of speed(constant) [m/s]</span>
+0010 delta_v_stubbe = v_bins_stubbe(2)-v_bins_stubbe(1); <span class="comment">% Resolution of speed(constant) [m/s]</span>
+0011 
+0012 <span class="comment">% Resolution of energy (varying)</span>
+0013 delta_E_eV = zeros(length(E_bins_stubbe)-1,1); 
+0014 <span class="keyword">for</span> i = 1:length(E_bins_stubbe)-1
+0015     delta_E_eV(i,1) = (E_bins_stubbe(i+1)-E_bins_stubbe(i))/eVtoJ; <span class="comment">% [eV]</span>
+0016 <span class="keyword">end</span> 
+0017 
+0018 
+0019 <span class="comment">% Convert speed distribution to energy distribution [#e/m^3 * 1/eV]</span>
+0020 f0_E_stubbe = (f0_v_stubbe*delta_v_stubbe)./delta_E_eV; 
+0021 
+0022 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 18-Jun-2026 09:28:20 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>
